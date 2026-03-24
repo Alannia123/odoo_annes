@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <!-- ID CARD DOCUMENT TEMPLATE - Mary Immaculate School -->
+<!-- ID CARD DOCUMENT TEMPLATE - Mary Immaculate School -->
+<template id="student_id_card_student_template_document">
+<t t-call="web.basic_layout">
+    <div class="page">
+
+        <style>
+            @page {
+                size: A4 portrait;
+                margin: 8mm;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .id-grid {
+                display: table;
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 4mm;
+            }
+
+            .id-grid-row {
+                display: table-row;
+            }
+
+            .id-grid-cell {
+                display: table-cell;
+                width: 54mm;
+                vertical-align: top;
+                padding: 2mm;
+            }
+
+            /* ══════════════════════════════
+               CARD WRAPPER
+            ══════════════════════════════ */
+            .id-card {
+                width: 54mm;
+                height: 86mm;
+                border: 2px solid #0a3d62;
+                border-radius: 5px;
+                background: #ffffff;
+                overflow: hidden;
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 6.5px;
+                position: relative;
+                display: block;
+            }
+
+            /* ══════════════════════════════
+               TOP STRIPE
+            ══════════════════════════════ */
+            .top-stripe {
+                width: 100%;
+                height: 8mm;
+                background: linear-gradient(to right, #003399, #0066cc, #33aaff);
+                display: block;
+                position: relative;
+            }
+
+            .top-stripe-wave {
+                width: 100%;
+                height: 3mm;
+                background: linear-gradient(to right, #003399, #0066cc, #33aaff);
+                clip-path: ellipse(50% 100% at 50% 0%);
+                display: block;
+            }
+
+            /* ══════════════════════════════
+               HEADER SECTION
+            ══════════════════════════════ */
+            .header {
+                padding: 1mm 2mm 0.5mm 2mm;
+                text-align: center;
+                background: white;
+            }
+
+            .logo-name-row {
+                display: table;
+                width: 100%;
+                margin-bottom: 1mm;
+            }
+
+            .logo-cell {
+                display: table-cell;
+                width: 12mm;
+                vertical-align: middle;
+            }
+
+            .name-cell {
+                display: table-cell;
+                vertical-align: middle;
+                padding-left: 1mm;
+                text-align: left;
+            }
+
+            .school-logo {
+                width: 11mm;
+                height: 11mm;
+                border-radius: 50%;
+                border: 1px solid #004aad;
+                display: block;
+            }
+
+            .school-name {
+                font-size: 8px;
+                font-weight: bold;
+                color: #003399;
+                line-height: 1.2;
+                font-variant: small-caps;
+            }
+
+            .affiliation-box {
+                border: 1px solid red;
+                padding: 0.8mm 1mm;
+                margin: 0 auto;
+                display: block;
+            }
+
+            .affiliation {
+                font-size: 5px;
+                color: red;
+                font-weight: bold;
+                text-align: center;
+                line-height: 1.4;
+            }
+
+            .address-text {
+                font-size: 5px;
+                color: #003399;
+                font-weight: bold;
+                text-align: center;
+                line-height: 1.4;
+            }
+
+            /* ══════════════════════════════
+               PHOTO
+            ══════════════════════════════ */
+            .photo-wrapper {
+                text-align: center;
+                margin: 1mm 0;
+            }
+
+            .photo {
+                width: 24mm;
+                height: 28mm;
+                border: 2px solid #003399;
+                display: inline-block;
+                object-fit: cover;
+            }
+
+            .photo-placeholder {
+                width: 24mm;
+                height: 28mm;
+                border: 2px solid #003399;
+                display: inline-block;
+                background: #d0e8ff;
+            }
+
+            /* ══════════════════════════════
+               STUDENT NAME
+            ══════════════════════════════ */
+            .student-name {
+                text-align: center;
+                font-size: 8.5px;
+                font-weight: bold;
+                color: red;
+                margin: 1mm 0 0.5mm 0;
+                display: block;
+            }
+
+            /* ══════════════════════════════
+               DETAILS
+            ══════════════════════════════ */
+            .details {
+                padding: 0 2mm;
+            }
+
+            .detail-row {
+                display: table;
+                width: 100%;
+                margin-bottom: 0.3mm;
+            }
+
+            .d-label {
+                display: table-cell;
+                color: purple;
+                font-weight: bold;
+                font-size: 6px;
+                white-space: nowrap;
+            }
+
+            .d-sep {
+                display: table-cell;
+                color: #444;
+                font-size: 6px;
+                padding: 0 0.5mm;
+                white-space: nowrap;
+            }
+
+            .d-value {
+                display: table-cell;
+                color: #006600;
+                font-size: 6px;
+                width: 100%;
+                overflow: hidden;
+            }
+
+            .d-mobile {
+                display: table-cell;
+                color: red;
+                font-weight: bold;
+                font-size: 6px;
+                width: 100%;
+            }
+
+            .blood-drop {
+                display: inline-block;
+                width: 5px;
+                height: 7px;
+                vertical-align: middle;
+            }
+
+            .blood-val {
+                color: #006600;
+                font-weight: bold;
+            }
+
+            /* ══════════════════════════════
+               BOTTOM STRIPE
+            ══════════════════════════════ */
+            .bottom-area {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 7mm;
+                background: linear-gradient(to right, #003399, #0066cc, #33aaff);
+                display: block;
+            }
+
+            .session {
+                position: absolute;
+                bottom: 1.5mm;
+                left: 2mm;
+                background: #1a5fb4;
+                border: 1px solid white;
+                color: white;
+                font-size: 5px;
+                font-weight: bold;
+                padding: 0.5mm 1.5mm;
+                border-radius: 2px;
+                line-height: 1.4;
+            }
+
+            .signature {
+                position: absolute;
+                bottom: 1mm;
+                right: 2mm;
+                text-align: center;
+                font-size: 5.5px;
+                color: white;
+                font-weight: bold;
+            }
+
+            .signature img {
+                height: 5mm;
+                display: block;
+                margin: 0 auto 0.3mm auto;
+            }
+
+        </style>
+
+        <!-- Build rows of 4 cards each -->
+        <table style="border-collapse:separate; border-spacing:4mm; width:100%;">
+            <tr>
+                <t t-foreach="docs" t-as="doc">
+                    <td style="vertical-align:top; padding:0;">
+
+                        <div class="id-card">
+
+                            <!-- TOP STRIPE -->
+                            <div class="top-stripe"></div>
+                            <div class="top-stripe-wave"></div>
+
+                            <!-- HEADER -->
+                            <div class="header">
+                                <div class="logo-name-row">
+                                    <div class="logo-cell">
+                                        <img t-if="company.logo"
+                                             t-att-src="image_data_uri(company.logo)"
+                                             class="school-logo"/>
+                                    </div>
+                                    <div class="name-cell">
+                                        <div class="school-name">
+                                            <t t-esc="company.name"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="affiliation-box">
+                                    <div class="affiliation">AFFILIATED TO ICSE BOARD - WB 457</div>
+                                    <div class="address-text">PATILACHANDRA, BASIRHAT, 24 PGS. (N)</div>
+                                </div>
+                            </div>
+
+                            <!-- PHOTO -->
+                            <div class="photo-wrapper">
+                                <img t-if="doc.image_1920"
+                                     t-att-src="image_data_uri(doc.image_1920)"
+                                     class="photo"/>
+                                <div t-else="" class="photo-placeholder"></div>
+                            </div>
+
+                            <!-- STUDENT NAME -->
+                            <div class="student-name">
+                                <t t-esc="doc.name"/>
+                            </div>
+
+                            <!-- DETAILS -->
+                            <div class="details">
+
+                                <div class="detail-row">
+                                    <span class="d-label">PARENT</span>
+                                    <span class="d-sep">·</span>
+                                    <span class="d-value"><t t-esc="doc.father_name"/></span>
+                                </div>
+
+                                <div class="detail-row">
+                                    <span class="d-label">ADDRESS</span>
+                                    <span class="d-sep">·</span>
+                                    <span class="d-value"><t t-esc="doc.street or ''"/>
+                                        <t t-if="doc.city">, <t t-esc="doc.city"/></t>
+                                    </span>
+                                </div>
+
+                                <div class="detail-row">
+                                    <span class="d-label">CLASS</span>
+                                    <span class="d-sep">·</span>
+                                    <span class="d-value"><t t-esc="doc.class_division_id.name"/></span>
+                                    &#160;
+                                    <span class="d-label">SEC.</span>
+                                    <span class="d-sep">·</span>
+                                    <span class="d-value"><t t-esc="doc.class_division_id.name"/></span>
+                                    &#160;
+                                    <span class="d-label">ROLL</span>
+                                    <span class="d-sep">·</span>
+                                    <span class="d-value"><t t-esc="doc.roll_no"/></span>
+                                </div>
+
+                                <div class="detail-row">
+                                    <span class="d-label">GENDER</span>
+                                    <span class="d-sep">·</span>
+                                    <span class="d-value"><t t-esc="doc.gender"/></span>
+                                    &#160;
+                                    <span class="d-label">DOB</span>
+                                    <span class="d-sep">·</span>
+                                    <span class="d-value"><t t-esc="doc.date_of_birth"/></span>
+                                    <t t-if="doc.blood_group and doc.blood_group != 'none'">
+                                        &#160;
+                                        <svg class="blood-drop" viewBox="0 0 24 24">
+                                            <path fill="red" d="M12 2C12 2 5 10 5 15a7 7 0 0 0 14 0c0-5-7-13-7-13z"/>
+                                        </svg>
+                                        <span class="blood-val"><t t-esc="doc.blood_group"/></span>
+                                    </t>
+                                </div>
+
+                                <div class="detail-row">
+                                    <span class="d-label">MOBILE</span>
+                                    <span class="d-sep">·</span>
+                                    <span class="d-mobile"><t t-esc="doc.mobile"/></span>
+                                </div>
+
+                                <div class="detail-row">
+                                    <span class="d-label">REGISTRATION NO</span>
+                                    <span class="d-sep">·</span>
+                                    <span class="d-value"><t t-esc="doc.register_no"/></span>
+                                </div>
+
+                            </div>
+
+                            <!-- BOTTOM STRIPE WITH SESSION + SIGNATURE -->
+                            <div class="bottom-area">
+                                <div class="session">SESSION<br/>2025-26</div>
+                                <div class="signature">
+<!--                                    <t t-if="company.principal_signature">-->
+<!--                                        <img t-att-src="image_data_uri(company.principal_signature)"/>-->
+<!--                                    </t>-->
+                                    <div>Principal</div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                </t>
+            </tr>
+        </table>
+
+    </div>
+</t>
+</template>
+
+
+    <template id="student_id_card_student_template">
+    <t t-call="web.html_container">
+        <div class="page">
+            <div class="id-grid">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="ala_education_core.student_id_card_student_template_document"/>
+                </t>
+            </div>
+        </div>
+    </t>
+</template>
+
+</odoo>

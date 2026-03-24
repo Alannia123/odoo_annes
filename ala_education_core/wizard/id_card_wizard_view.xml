@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="view_id_wizard_form" model="ir.ui.view">
+        <field name="name">ala.id.wizard.form</field>
+        <field name="model">ala.id.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Student ID Card">
+                <group>
+                    <field name="div_individual" widget="radio"/>
+                </group>
+                <group>
+                    <group>
+                        <field name="student_id" options="{'no_create': True, 'no_open': True}" invisible="div_individual == 'division'"
+                                                            required="div_individual == 'individual'"/>
+                        <field name="class_div_id" options="{'no_create': True, 'no_open': True}" invisible="div_individual == 'individual'"
+                                                            required="div_individual == 'division'" />
+                        <field name="id_allowed_class_ids" invisible="1"/>
+                    </group>
+                </group>
+
+                <footer>
+                    <button string="Generate Division ID Card" type="object" name="action_generate_id_division" class="btn-primary" invisible="div_individual == 'individual'"/>
+                    <button string="Generate Student ID Card" type="object" name="action_generate_id_student" class="btn-primary" invisible="div_individual == 'division'"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+
+    <record id="action_open_id_pdf_wizard" model="ir.actions.act_window">
+        <field name="name">Generate Student ID Card</field>
+        <field name="res_model">ala.id.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_open_id_card_wizard" name="ID Card Download" web_icon="mis_education_exam,static/description/id.png"
+             groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"  action="action_open_id_pdf_wizard" sequence="30"/>
+
+</odoo>

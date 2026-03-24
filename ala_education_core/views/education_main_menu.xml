@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main menus of Education-->
+    <menuitem id="menu_education_root" name="School Management"
+              web_icon="ala_education_core,static/description/icon.png"
+              sequence="3" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"/>
+    <menuitem id="menu_education_main_menu" name="Configuration"
+              groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
+              parent="menu_education_root"/>
+    <menuitem id="menu_education_class_conf" name="Class"
+              parent="menu_education_main_menu" sequence="0"/>
+    <menuitem id="menu_education_application_conf" name="Application"
+              parent="menu_education_main_menu" sequence="1"/>
+
+    <menuitem
+        id="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+        name="Dashboards"
+        action="spreadsheet_dashboard.ir_actions_dashboard_action"
+        web_icon="spreadsheet_dashboard,static/description/icon.png"
+        groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
+        sequence="37"/>
+
+    <menuitem
+        id="calendar.mail_menu_calendar"
+        name="Calendar"
+        sequence="10"
+        web_icon="calendar,static/description/icon.png"
+        groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"/>
+
+    <menuitem id="base.menu_management" name="Apps" sequence="500"
+              web_icon="base,static/description/modules.png" groups="ala_education_core.group_education_principal"/>
+
+    <menuitem name="Contacts"
+        id="contacts.menu_contacts"
+        sequence="20"
+        web_icon="contacts,static/description/icon.png"
+        groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"/>
+
+
+     <menuitem
+            id="hr.menu_hr_root"
+            name="Employees"
+            groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
+            web_icon="hr,static/description/icon.png"
+            sequence="185"/>
+
+
+
+
+</odoo>

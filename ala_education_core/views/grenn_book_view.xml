@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Tree View for Listing Files -->
+    <record id="student_green_book_tree" model="ir.ui.view">
+        <field name="name">ala.student.green.book.tree</field>
+        <field name="model">ala.student.green.book</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="register_no"/>
+                <field name="student_id"/>
+                <field name="date"/>
+                <field name="no_of_history"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View for Uploading Files -->
+    <record id="student_green_book_form" model="ir.ui.view">
+        <field name="name">ala.student.green.book.form</field>
+        <field name="model">ala.student.green.book</field>
+        <field name="arch" type="xml">
+            <form string="Student Green Book">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="student_id"/>
+                            <field name="register_no"/>
+                            <field name="date"/>
+                            <field name="no_of_history"/>
+                        </group>
+                        <group>
+                            <field name="photo" widget="image" class="oe_avatar"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page id="green_line" string="History">
+                            <field name="green_line_ids" >
+                                <list editable="bottom">
+                                    <field name="enter_date" />
+                                    <field name="enter_remark" />
+                                    <field name="file_name" column_invisible="0" readonly="1"/>
+                                    <field name="file_data" filename="file_name"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action to Open the File Upload Model -->
+    <record id="action_student_green_book" model="ir.actions.act_window">
+        <field name="name">Student Discipline</field>
+        <field name="res_model">ala.student.green.book</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create New Record.
+            </p>
+        </field>
+    </record>
+
+    <!--Search view of Education Student-->
+<!--    <record id="education_student_search" model="ir.ui.view">-->
+<!--        <field name="name">Students</field>-->
+<!--        <field name="model">ala.education.student</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <search string="Search Students">-->
+<!--                <field name="class_division_id"/>-->
+<!--                <field name="medium_id"/>-->
+<!--                <field name="sec_lang_id"/>-->
+<!--                <field name="gender"/>-->
+<!--                <field name="religion"/>-->
+<!--                <field name="caste"/>-->
+<!--                <field name="mother_tongue"/>-->
+<!--                <group expand='0' string='Group by...'>-->
+<!--                    <filter string='Class' name="class" domain="[]"-->
+<!--                            context="{'group_by' : 'class_division_id'}"/>-->
+<!--                    <filter string='Gender' name="gender" domain="[]"-->
+<!--                            context="{'group_by' : 'gender'}"/>-->
+<!--                    <filter string='Medium' name="medium" domain="[]"-->
+<!--                            context="{'group_by' : 'medium_id'}"/>-->
+<!--                    <filter string='Religion' name="religion" domain="[]"-->
+<!--                            context="{'group_by' : 'religion'}"/>-->
+<!--                    <filter string='Caste' name="caste" domain="[]"-->
+<!--                            context="{'group_by' : 'caste'}"/>-->
+<!--                    <filter string='Mother Tongue' name="language" domain="[]"-->
+<!--                            context="{'group_by' : 'mother_tongue'}"/>-->
+<!--                </group>-->
+<!--            </search>-->
+<!--        </field>-->
+<!--    </record>-->
+
+    <!-- Menu Item -->
+    <menuitem id="menu_student_decipline_root" web_icon="ala_education_core,static/img/decipline.png"
+              name="Green Book" sequence="110" groups="ala_education_core.group_education_principal"/>
+    <menuitem id="menu_student_green_book" name="Green Book" parent="menu_student_decipline_root"
+              action="action_student_green_book" sequence="10"/>
+
+    <menuitem id="menu_internal_chat_root" name="Internal Meeting &amp; Chat"
+              web_icon="ala_education_core,static/description/internal.png" action="mail.action_discuss" sequence="10"/>
+</odoo>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--Tree view of Education Subject-->
+    <record id="education_subject_view_tree" model="ir.ui.view">
+        <field name="name">ala.education.subject.view.tree</field>
+        <field name="model">ala.education.subject</field>
+        <field name="arch" type="xml">
+            <list string="Syllabus Subject" editable="top">
+                <field name="name"/>
+                <field name="type"/>
+                <field name="group_id" options="{'no_create': True, 'no_open': True}"/>
+            </list>
+        </field>
+    </record>
+
+    <!--Menu action of Education Subject-->
+    <record id="education_subject_action" model="ir.actions.act_window">
+        <field name="name">Subject</field>
+        <field name="res_model">ala.education.subject</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">list,form</field>
+<!--        <field name="search_view_id" ref="education_subject_view_search"/>-->
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Create your first subject here.
+            </p>
+        </field>
+    </record>
+    <!--    Subject menu-->
+    <menuitem id="education_subject_menu" action="education_subject_action"
+              parent="menu_education_class_conf"
+              sequence="4"/>
+
+    <record id="education_subject_group_form" model="ir.ui.view">
+        <field name="name">ala.education.subject.group.form</field>
+        <field name="model">ala.education.subject.group</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="ref_name"/>
+                        <field name="code"/>
+                    </group>
+                    <notebook>
+                        <page string="Subjects">
+                            <field name="subject_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="type"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="education_subject_group_tree" model="ir.ui.view">
+        <field name="name">ala.education.subject.group.tree</field>
+        <field name="model">ala.education.subject.group</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="ref_name"/>
+                <field name="code"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="education_subject_group_action" model="ir.actions.act_window">
+        <field name="name">Subject Groups</field>
+        <field name="res_model">ala.education.subject.group</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_subject_group_root"
+              name="Subject Groups"
+              parent="menu_education_class_conf"
+              action="education_subject_group_action"/>
+</odoo>

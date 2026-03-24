@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <template id="student_id_card_division_template_document">
+<t t-call="web.external_layout">
+<div class="page">
+
+<style>
+.id-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8mm;
+}
+
+.id-card {
+    width: 85mm;
+    height: 54mm;
+    border: 1px solid #2c3e50;
+    border-radius: 6px;
+    padding: 5px;
+    font-size: 10px;
+    position: relative;
+}
+
+.id-header {
+    background: linear-gradient(to right, #004aad, #007bff);
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    padding: 3px;
+    font-size: 11px;
+}
+
+.photo {
+    width: 25mm;
+    height: 30mm;
+    border-radius: 4px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+}
+
+.name {
+    font-weight: bold;
+    font-size: 11px;
+    color: #004aad;
+}
+</style>
+
+<div class="id-grid">
+
+    <div class="id-card">
+
+        <div class="id-header">
+            Mary Immaculate English School
+        </div>
+
+        <div style="display:flex; margin-top:4px;">
+<!--            <img t-att-src="image_data_uri(student.image_1920)" class="photo"/>-->
+            <div style="margin-left:5px;">
+                <div class="name">
+                    <t t-esc="doc.name"/>
+                </div>
+                <div>Class: <t t-esc="doc.name"/></div>
+                <div>Class: <t t-esc="doc.name"/></div>
+                <div>Class: <t t-esc="doc.name"/></div>
+                <div>Class: <t t-esc="doc.name"/></div>
+                <div>Class: <t t-esc="doc.name"/></div>
+<!--                <div>Roll: <t t-esc="student.roll_no"/></div>-->
+<!--                <div>DOB: <t t-esc="student.dob"/></div>-->
+<!--                <div>Reg No: <t t-esc="student.registration_no"/></div>-->
+            </div>
+        </div>
+
+        <div style="position:absolute; bottom:5px; width:100%; text-align:center;">
+<!--            <img t-att-src="'/report/barcode/Code128/%s' % student.registration_no"-->
+<!--                 style="height:10mm;"/>-->
+            <div>Session 2025-26</div>
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+</t>
+</template>
+
+
+
+    <template id="student_id_card_division_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="ala_education_core.student_id_card_division_template_document" />
+            </t>
+        </t>
+    </template>
+
+</odoo>

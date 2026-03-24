@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="view_tc_issue_wizard_form" model="ir.ui.view">
+        <field name="name">ala.tc.issue.reason.form</field>
+        <field name="model">ala.tc.issue.reason</field>
+        <field name="arch" type="xml">
+            <form string="TC Issue Reason">
+                <group>
+                    <field name="tc_issue_reason_id"/>
+                </group>
+                <footer>
+                    <button string="Issue TC" type="object" name="action_tc_issue_reason_apply" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="view_student_dropout_wizard_form" model="ir.ui.view">
+        <field name="name">ala.dropout.reason.form</field>
+        <field name="model">ala.dropout.reason</field>
+        <field name="arch" type="xml">
+            <form string="Student Dropout Reason">
+                <group>
+                    <field name="drop_out_reason_id"/>
+                </group>
+                <footer>
+                    <button string="Dropout" type="object" name="action_dropout_reason_apply" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+
+</odoo>

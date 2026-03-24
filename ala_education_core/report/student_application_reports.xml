@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <template id="report_student_application_document">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+
+                <style>
+                    @page {
+                        size: A4;
+                        margin: 18mm 15mm 18mm 15mm;
+                    }
+                    body {
+                        font-family: 'Poppins', sans-serif;
+                        font-size: 19px;
+                        color: #222;
+                    }
+                   /* Forcefully remove all table, row, and cell borders */
+table, tr, th, td {
+    border: 0 !important;
+    border-style: none !important;
+    border-width: 0 !important;
+    border-color: transparent !important;
+    outline: none !important;
+    background-clip: padding-box !important;
+}
+
+table {
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+}
+
+/* Ensure inherited styles from Odoo theme don't override this */
+.o_report_layout_standard table,
+.o_report_layout_standard tr,
+.o_report_layout_standard td,
+.o_report_layout_standard th {
+    border: 0 !important;
+}
+                    .text-center { text-align: center; }
+                    .text-right { text-align: right; }
+
+                    /* Outer Page Border */
+                    .page-border {
+                        border: 2px solid #1d3557;
+                        border-radius: 10px;
+                        padding: 20px;
+                        min-height: 95%;
+                    }
+
+                    /* Header */
+                    .header-title {
+                        font-family: 'Abril Fatface', serif;
+                        font-size: 42px;
+                        color: #2c3e50;
+                        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+                        letter-spacing: 1px;
+                    background: linear-gradient(90deg, #e3f2fd, #f8fafc);
+    padding: 8px 0;
+    border-radius: 8px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.15);
+                    }
+
+                    .header-title::after {
+    content: "";
+    display: block;
+    width: 80px;
+    height: 3px;
+    background-color: #1d3557;
+    margin: 6px auto 0 auto;
+    border-radius: 2px;
+}
+
+                    .school-info {
+                        font-size: 16px;
+                        color: #555;
+                        line-height: 1.4;
+                    }
+
+                    .application-box {
+    margin-top: 4px;
+    display: inline-block;       /* shrink to fit content */
+    padding: 6px 20px;
+    border: 2px solid #1d3557;
+    border-radius: 25px;
+    background: #f8fafc;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    text-align: center;
+    width: auto;                 /* ensure it wraps text only */
+    position: relative;
+<!--    left: 50%;                   /* move to center horizontally */-->
+    transform: translateX(-50%); /* pull back by half width */
+}
+
+                    .application-box h3 {
+                        color: #1d3557;
+                        font-size: 22px;
+                        font-weight: 700;
+                        margin: 0;
+                        white-space: nowrap;         /* 🟢 prevents wrapping of long text */
+                    }
+
+
+                    .app-number {
+                        font-size: 15px;
+                        font-weight: 700;
+                        color: #1d3557;
+                        background: #f1faee;
+                        padding: 4px 12px;
+                        border-left: 5px solid #1d3557;
+                        border-radius: 8px;
+                        display: inline-block;
+                    }
+
+                    .section {
+                        margin-top: 15px;
+                        border:none;
+                    }
+                    .address-lines {
+                        line-height: 22px;
+                        min-height: 80px;
+                    }
+
+                    /* Increase line height for better spacing across the page */
+body, table, td, tr, span, p {
+    line-height: 1.8 !important;   /* Increase vertical spacing */
+}
+
+/* Optional: add extra section spacing between groups */
+.section {
+    margin-top: 25px !important;   /* more vertical separation between groups */
+}
+
+/* Make sure tables stretch gracefully on A4 */
+table {
+    width: 100%;
+    border-collapse: collapse !important;
+}
+                </style>
+
+                <div class="page-border">
+                    <!-- Header -->
+                    <table width="100%" style="border:none;border-collapse:collapse;background-color:#f8fafc;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+        <tr>
+            <td width="15%" style="vertical-align:top;text-align:center;">
+                <img t-if="doc.company_id.logo"
+                     t-att-src="image_data_uri(doc.company_id.logo)"
+                     style="height:110px;width:110px;border-radius:50%;border:2px solid #1d3557;margin:5px;"
+                     alt="Logo"/>
+            </td>
+            <td width="85%" style="text-align:center;padding:5px;">
+                <h2 style="font-family:'Times New Roman',serif;font-size:36px;font-weight:700;color:#1d3557;margin:0;">
+                    <t t-esc="doc.company_id.name"/>
+                </h2>
+                <div style="font-family:'Poppins',sans-serif;font-size:15px;line-height:1.4;color:#333;">
+                    <t t-esc="doc.company_id.street"/> <t t-esc="doc.company_id.street2"/><br/>
+                    <t t-esc="doc.company_id.city"/>, <t t-esc="doc.company_id.state_id.name"/> - <t t-esc="doc.company_id.zip"/><br/>
+                    <b>Website:</b> <t t-esc="doc.company_id.website"/> &#8212;
+                    <b>Phone:</b> <t t-esc="doc.company_id.mobile"/>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+<!-- Decorative underline below header -->
+<hr style="border:1.8px solid #1d3557; margin:10px 0 15px 0; border-radius:2px;"/>
+
+
+
+                    <!-- Application Info -->
+                    <table width="100%">
+                        <tr  style="border-top : 2px solid black; border-bottom : none;">
+                            <td colspan="2" class="no-border">
+                                <span class="app-number">Application No: <t t-esc="doc.name"/></span>
+                            </td>
+                        </tr>
+                        <tr class="no-border" >
+                            <td colspan="2" class="text-center">
+                                <div class="application-box">
+                                    <h3 class="text-center">APPLICATION FORM - SESSION: <t t-esc="doc.academic_year_id.name"/></h3>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Student Info -->
+                    <table width="100%" class="section">
+                        <tr>
+                            <td width="38%"><strong>Name of the Student</strong></td><td width="2%">:</td>
+                            <td width="35%"><span t-field="doc.first_name"/> <span t-field="doc.last_name"/></td>
+                            <td width="25%" rowspan="8" class="text-center">
+                                <img t-if="doc.image" t-attf-src="data:image/png;base64,{{doc.image}}" height="160" width="135" style="border-radius:10px;"/>
+                            </td>
+                        </tr>
+                        <tr><td><strong>Date of Birth</strong></td><td>:</td><td><span t-field="doc.date_of_birth"/></td></tr>
+                        <tr><td><strong>Exact Age</strong> (as on 1st April, <span t-field="doc.academic_year_id.ay_start_date" t-options='{"format":"YYYY"}'/>)</td><td>:</td><td><span t-field="doc.exact_age_april"/></td></tr>
+                        <tr><td><strong>Religion</strong></td><td>:</td><td><span t-field="doc.religion"/></td></tr>
+                        <tr><td><strong>Caste</strong></td><td>:</td><td><span t-field="doc.caste"/></td></tr>
+                        <tr><td><strong>Gender (Male/Female)</strong></td><td>:</td><td><span t-field="doc.gender"/></td></tr>
+                        <tr><td><strong>Class of Admission</strong></td><td>:</td><td><span t-field="doc.admission_class_id.name"/></td></tr>
+                    </table>
+
+                    <!-- Parent Info -->
+                    <table width="100%" class="section">
+                        <tr><td width="38%"><strong>Mother Tongue</strong></td><td width="2%">:</td><td width="60%"><span t-field="doc.mother_tongue"/></td></tr>
+                        <tr><td><strong>Blood Group</strong></td><td>:</td><td><span t-field="doc.blood_group"/></td></tr>
+                        <tr><td><strong>Father's Name</strong></td><td>:</td><td><span t-field="doc.father_name"/></td></tr>
+                        <tr><td><strong>Father's Qualification</strong></td><td>:</td><td><span t-field="doc.father_qualify"/></td></tr>
+                        <tr><td><strong>Father's Occupation</strong></td><td>:</td><td><span t-field="doc.father_occupation"/></td></tr>
+                        <tr><td><strong>Mother's Name</strong></td><td>:</td><td><span t-field="doc.mother_name"/></td></tr>
+                        <tr><td><strong>Mother's Qualification</strong></td><td>:</td><td><span t-field="doc.mother_qualify"/></td></tr>
+                        <tr><td><strong>Mother's Occupation</strong></td><td>:</td><td><span t-field="doc.mother_occupation"/></td></tr>
+                    </table>
+
+                    <!-- Address -->
+                    <table width="100%" class="section">
+                        <tr>
+                            <td width="27%" style="vertical-align: top;"><strong>Present Residential Address (With PIN Code)</strong></td>
+                            <td width="3%">:</td>
+                            <td class="address-lines">
+                                <t t-if="doc.street"><span t-esc="doc.street"/></t><t t-else=""><br/></t>
+                                <t t-if="doc.street2"><br/><span t-esc="doc.street2"/></t><t t-else=""><br/></t>
+                                <t t-if="doc.city"><br/><span t-esc="doc.city"/></t><t t-else=""><br/></t>
+                                <t t-if="doc.state_id or doc.country_id or doc.zip">
+                                    <br/><t t-if="doc.state_id"><span t-esc="doc.state_id.name"/></t>
+                                    <t t-if="doc.country_id">, <span t-esc="doc.country_id.name"/></t>
+                                    <t t-if="doc.zip"> - <span t-esc="doc.zip"/></t>
+                                </t>
+                                <t t-else=""><br/></t>
+                            </td>
+                        </tr>
+                        <tr><td><strong>Phone Number (WhatsApp)</strong></td><td>:</td><td><span t-field="doc.mobile"/> / <span t-field="doc.phone"/></td></tr>
+                        <tr><td><strong>Aadhar No</strong></td><td>:</td><td><span t-field="doc.aadhar_no"/></td></tr>
+                    </table>
+
+                    <!-- Sibling Info -->
+                    <t t-if="exist_sis_bro_info != False">
+                        <div class="section">
+                            <span><b>If the student has a sister/brother in this school (not cousin/relatives)</b></span>
+                            <table width="100%">
+                                <tr>
+                                    <td width="40%"><strong>Name:</strong> <span t-field="doc.exist_name"/></td>
+                                    <td width="30%"><strong>Class:</strong> <span t-field="doc.exist_class.name"/></td>
+                                    <td width="30%"><strong>Section:</strong> <span t-field="doc.exist_section.name"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </t>
+
+                    <!-- Other Info -->
+                    <table width="100%" class="section">
+                        <tr><td width="35%"><strong>Special concern regarding Child</strong></td><td width="3%">:</td><td width="62%"><span t-field="doc.special_concern"/></td></tr>
+                    </table>
+
+                    <br/><br/>
+                    <table width="100%">
+                        <tr>
+                            <td width="75%"><strong>Date of Admission:</strong> <span t-field="doc.admission_date" t-options='{"format":"dd/MM/YYYY"}'/></td>
+                            <td width="25%" class="text-right"><strong>Signature of Parent</strong></td>
+                        </tr>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+
+    <template id="report_student_application">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="ala_education_core.report_student_application_document" />
+            </t>
+        </t>
+    </template>
+</odoo>

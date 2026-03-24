@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Setting the paper format -->
+    <!-- Optional: precise A4 paper format with tight margins -->
+    <record id="paperformat_id_a4" model="report.paperformat">
+        <field name="name">Admit A4 Tight</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">3</field>
+        <field name="margin_bottom">3</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">96</field>
+    </record>
+
+
+    <!--Generate the Admit card Division-->
+    <record id="action_id_card_print_division" model="ir.actions.report">
+        <field name="name">Division ID Card</field>
+        <field name="model">ala.education.class.division</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ala_education_core.student_id_card_division_template</field>
+        <field name="report_file">ala_education_core.student_id_card_division_template</field>
+        <field name="paperformat_id" ref="ala_education_core.paperformat_id_a4"/>
+        <field name="binding_model_id" ref="model_ala_education_class_division"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!--Generate the Admit card Student-->
+    <record id="action_id_card_print_student" model="ir.actions.report">
+        <field name="name">Student ID Card</field>
+        <field name="model">ala.education.student</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">ala_education_core.student_id_card_student_template</field>
+        <field name="report_file">ala_education_core.student_id_card_student_template</field>
+        <field name="paperformat_id" ref="ala_education_core.paperformat_id_a4"/>
+        <field name="binding_model_id" ref="model_ala_education_student"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+</odoo>

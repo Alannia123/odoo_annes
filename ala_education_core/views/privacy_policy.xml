@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="privacy_policy_page" name="Privacy Policy">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <section class="container" style="max-width: 900px; margin: 60px auto; padding: 40px; background: #fff; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                    <h1 style="font-size: 42px; font-weight: 700; margin-bottom: 10px;">Privacy Policy</h1>
+
+                    <p style="color: #666; margin-bottom: 25px;">
+                        <strong>Effective Date:</strong> 24-03-2026
+                    </p>
+
+                    <p style="font-size: 16px; line-height: 1.7; color: #444;">
+                        Alannia Infotechz ("we", "our", or "us") operates this mobile application and related services.
+                    </p>
+
+                    <h2 style="font-size: 26px; margin-top: 30px; margin-bottom: 10px; font-weight: 600;">1. Information We Collect</h2>
+                    <p style="font-size: 16px; line-height: 1.7; color: #444;">
+                        We may collect personal information such as name, email, phone number, login details, and usage information.
+                    </p>
+
+                    <h2 style="font-size: 26px; margin-top: 30px; margin-bottom: 10px; font-weight: 600;">2. How We Use Information</h2>
+                    <p style="font-size: 16px; line-height: 1.7; color: #444;">
+                        We use collected data to provide services, improve user experience, maintain security, and support app features.
+                    </p>
+
+                    <h2 style="font-size: 26px; margin-top: 30px; margin-bottom: 10px; font-weight: 600;">3. Camera Permission</h2>
+                    <p style="font-size: 16px; line-height: 1.7; color: #444;">
+                        Our app may request camera access for profile images, scanning QR codes, document capture, or app-related features.
+                        We do not access or store camera data without user action or consent.
+                    </p>
+
+                    <h2 style="font-size: 26px; margin-top: 30px; margin-bottom: 10px; font-weight: 600;">4. Data Sharing</h2>
+                    <p style="font-size: 16px; line-height: 1.7; color: #444;">
+                        We do not sell or rent personal data. Data may only be shared where legally required or necessary for service operation.
+                    </p>
+
+                    <h2 style="font-size: 26px; margin-top: 30px; margin-bottom: 10px; font-weight: 600;">5. Data Security</h2>
+                    <p style="font-size: 16px; line-height: 1.7; color: #444;">
+                        We take reasonable steps to protect user data, though no system is completely secure.
+                    </p>
+
+                    <h2 style="font-size: 26px; margin-top: 30px; margin-bottom: 10px; font-weight: 600;">6. Contact Us</h2>
+                    <p style="font-size: 16px; line-height: 1.7; color: #444;">
+                        Email: support@alanniainfotechz.online<br/>
+                        Website: https://alanniainfotechz.online
+                    </p>
+                </section>
+            </div>
+        </t>
+    </template>
+</odoo>
