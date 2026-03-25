@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<template>
+    <t t-inherit="web_responsive.AppMenuItem" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('o_app')]" position="inside">
+            <input
+                t-if="props.app.category_id"
+                type="hidden"
+                name="category"
+                t-att-data-value="props.app.category_id[0]"
+            />
+        </xpath>
+    </t>
+    <t t-inherit="web.NavBar.AppsMenu" t-inherit-mode="extension" owl="1">
+        <xpath expr="//AppMenuItem" position="before">
+            <t t-set-slot="menuItems">
+                <t t-foreach="state._ctgs" t-as="c" t-key="c.ctgID">
+                    <div class="categ_ind">
+                        <div class="menu_catg_main">
+                            <h2 t-esc="c.name" />
+                        </div>
+                        <div class="o-app-menu-list p-0" />
+                        <input
+                            type="hidden"
+                            name="category"
+                            t-att-data-value="c.ctgID"
+                        />
+                    </div>
+                </t>
+                <!-- ✅ ADMIN ONLY : Collaborate -->
+<!--                <t t-if="env.services.user.hasGroup('base.group_system')">-->
+                    <div class="other_ctg mt32">
+                        <div class="menu_catg_main">
+                            <h2>Collaborate</h2>
+                        </div>
+                    </div>
+<!--                </t>-->
+            </t>
+        </xpath>
+    </t>
+    <t t-inherit="web_responsive.AppsMenu" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('o-app-menu-list')]" position="before">
+            <t t-slot="menuItems" />
+        </xpath>
+    </t>
+</template>

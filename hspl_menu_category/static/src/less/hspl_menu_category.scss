@@ -1,0 +1,99 @@
+/* ================================
+   APP MENU BACKGROUND
+================================ */
+.o_menu_apps .dropdown-menu.show {
+    background-color: #bbb;
+}
+
+/* ================================
+   CATEGORY HEADER – PREMIUM + COMPACT
+================================ */
+
+.menu_catg_main {
+    width: 100%;
+    padding: 6px 14px;                 /* compact */
+    margin-bottom: 4px;                /* tight spacing */
+    position: relative;
+
+    background: rgba(144, 140, 191, 0.45); /* FIXED */
+    border-radius: 12px;
+
+    backdrop-filter: blur(6px);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+
+/* Category Title */
+.menu_catg_main h2 {
+    font-family: "Poppins", "Inter", "Segoe UI", sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #001a33;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+
+    color: #171317;                   /* readable on light bg */
+    margin: 0;
+    padding-bottom: 2px;
+    line-height: 1.2;
+
+    display: inline-block;
+    position: relative;
+}
+
+/* Gradient underline */
+.menu_catg_main h2::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 55%;
+    height: 2.5px;
+    border-radius: 10px;
+
+    background: linear-gradient(
+        90deg,
+        #ffd36e,
+        #ff9f43,
+        #ff6b6b
+    );
+
+    transition: width 0.35s ease;
+}
+
+/* Hover underline animation */
+.categ_ind:hover .menu_catg_main h2::after,
+.other_ctg:hover .menu_catg_main h2::after {
+    width: 100%;
+}
+
+/* ================================
+   CATEGORY BLOCK SPACING
+================================ */
+
+.categ_ind,
+.other_ctg {
+    width: 100%;
+    margin: 0 0 10px 0 !important;   /* compact spacing */
+}
+
+/* ================================
+   APP LIST COMPACTNESS
+================================ */
+
+.o-app-menu-list {
+    padding: 6px 8px 8px 8px;
+    margin-top: 2px;
+}
+
+/* Individual app card spacing */
+.o_app {
+    margin-top: 6px !important;
+    height: auto !important;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* App hover polish */
+.o_app:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
