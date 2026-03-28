@@ -83,11 +83,15 @@ class EducationStudent(models.Model):
     #     return super(EducationStudent, self).name_search(
     #         name, args=args, operator=operator, limit=limit)
     #
-    @api.model
-    def create(self, vals):
-        vals['register_no'] = self.env['ir.sequence'].next_by_code('ala.education.student')
-        res = super(EducationStudent, self).create(vals)
-        return res
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get('register_no'):
+                vals['register_no'] = self.env['ir.sequence'].next_by_code(
+                    'ala.education.student'
+                ) or '/'
+        return super().create(vals_list)
 
     partner_id = fields.Many2one(
         'res.partner', string='Partner', required=True,
@@ -175,7 +179,8 @@ class EducationStudent(models.Model):
     login = fields.Char('Login', readonly=True)
     hide_result = fields.Boolean('Hide Result', readonly=False)
     promoted = fields.Boolean('Promoted?', readonly=False)
-    student_html = fields.Html('Attendance & Fees',  compute="_compute_student_html", sanitize=False)
+    # student_html = fields.Html('Attendance & Fees',  compute="_compute_student_html", sanitize=False)
+    student_html = fields.Html('Attendance & Fees',  sanitize=False)
     student_html_compute = fields.Boolean('StudentHtmlComp')
     tc_issued = fields.Boolean('TC Issued', copy=False, tracking=True)
     tc_issue_reason_id = fields.Many2one( 'ala.tc.issue.wizard.reason', string="TC Issue Reason", help="Give tc issue reason", required=False)

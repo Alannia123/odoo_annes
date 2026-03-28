@@ -11,16 +11,14 @@ class EducationClassDivision(models.Model):
     _inherit = ['mail.thread']
     _order = "sequence asc"
 
-    @api.model
-    def create(self, vals):
-        """Inherited to add the value for name field"""
-        if 'class_id' in vals and 'division_id' in vals:
-            class_id = self.env['ala.education.class'].browse(vals['class_id'])
-            division_id = self.env['ala.education.division'].browse(
-                vals['division_id'])
-            name = str(class_id.name + '-' + division_id.name)
-            vals['name'] = name
-        return super(EducationClassDivision, self).create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('class_id') and vals.get('division_id'):
+                class_rec = self.env['ala.education.class'].browse(vals['class_id'])
+                division_rec = self.env['ala.education.division'].browse(vals['division_id'])
+                vals['name'] = f"{class_rec.name}-{division_rec.name}"
+        return super().create(vals_list)
 
     def action_view_students(self):
         """Return the list of current students in this class"""

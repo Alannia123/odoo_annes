@@ -38,7 +38,7 @@ class IrUiMenuCategory(models.Model):
 
         domain = [("menu_id", "!=", False)]
 
-        user_allowed_groups = user.groups_id & allowed_groups
+        user_allowed_groups = user.group_ids & allowed_groups
         if user_allowed_groups:
             domain += [
                 "|",
