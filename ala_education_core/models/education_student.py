@@ -83,22 +83,26 @@ class EducationStudent(models.Model):
     #     return super(EducationStudent, self).name_search(
     #         name, args=args, operator=operator, limit=limit)
     #
-    @api.model
-    def create(self, vals):
-        vals['register_no'] = self.env['ir.sequence'].next_by_code('ala.education.student')
-        res = super(EducationStudent, self).create(vals)
-        return res
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get('register_no'):
+                vals['register_no'] = self.env['ir.sequence'].next_by_code(
+                    'ala.education.student'
+                ) or '/'
+        return super().create(vals_list)
 
     partner_id = fields.Many2one(
         'res.partner', string='Partner', required=True,
         ondelete="cascade", help="Related partner of the student")
     last_name = fields.Char(string='Last Name', help="Enter last name")
-    register_no = fields.Char('Registration Number', required=True)
+    register_no = fields.Char('Registration Number', required=False)
     roll_no = fields.Char('Roll Number', required=False)
 
     date_of_birth = fields.Date(string="Date of Birth", required=True,
                                 help="Enter date of birth of student")
-    date_of_addmission = fields.Date(string="Date of Addmission", required=True,
+    date_of_addmission = fields.Date(string="Date of Addmission", required=False,
                                 help="Enter date of addmission of student")
     # guardian_id = fields.Many2one('res.partner', string="Guardian",
     #                               domain=[('is_parent', '=', True)],
@@ -175,7 +179,8 @@ class EducationStudent(models.Model):
     login = fields.Char('Login', readonly=True)
     hide_result = fields.Boolean('Hide Result', readonly=False)
     promoted = fields.Boolean('Promoted?', readonly=False)
-    student_html = fields.Html('Attendance & Fees',  compute="_compute_student_html", sanitize=False)
+    # student_html = fields.Html('Attendance & Fees',  compute="_compute_student_html", sanitize=False)
+    student_html = fields.Html('Attendance & Fees',  sanitize=False)
     student_html_compute = fields.Boolean('StudentHtmlComp')
     tc_issued = fields.Boolean('TC Issued', copy=False, tracking=True)
     tc_issue_reason_id = fields.Many2one( 'ala.tc.issue.wizard.reason', string="TC Issue Reason", help="Give tc issue reason", required=False)
