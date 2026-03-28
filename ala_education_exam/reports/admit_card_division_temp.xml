@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <template id="admit_card_division_report_document">
+        <style>
+            .a4-sheet {
+<!--      width: 210mm;-->
+<!--      height: 180mm;-->
+<!--      padding: 20mm 15mm;-->
+<!--      background: #fff;-->
+      position: relative; /* allows watermark positioning */
+    }
+
+    /* Watermark style */
+    .watermark {
+      position: absolute;
+      top: 40%;
+      left: 35%;
+      transform: translate(-50%, -50%);
+      opacity: 0.08;   /* 🔽 make it lighter (was 0.08) */
+      z-index: 0;
+        }
+    .watermark img {
+      width: 240px;            /* adjust size */
+      height: 210px;
+      mix-blend-mode: multiply; /* blends better with text */
+    }
+
+    .admit-card {
+      border: 1px solid #000;
+      margin-bottom: 20px;
+      padding: 16px;
+      width: 100%;
+      box-sizing: border-box;
+      page-break-inside: avoid;
+      position: relative;
+      z-index: 2;
+    }
+    .school-header {
+      text-align: center;
+<!--      font-family: "Times New Roman", Times, serif;-->
+<!--      font-size: 17px;-->
+      font-weight: bold;
+<!--      margin-bottom: 8px;-->
+    }
+    .sub-header {
+      text-align: center;
+<!--      font-size: 15px;-->
+      text-decoration: underline;
+      font-family: "Times New Roman", Times, serif;
+<!--      margin-bottom: 12px;-->
+    }
+    .info-table, .exam-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 12px;
+    }
+    .info-table td {
+      padding: 2px 8px;
+      vertical-align: top;
+    }
+    .exam-table, .exam-table th, .exam-table td {
+      border: 1px solid #000;
+    }
+    .exam-table th, .exam-table td {
+      padding: 4px 6px;
+      font-size: 13px;
+<!--      text-align: center;-->
+    }
+    .exam-table th {
+      background-color: #f1f1f1;
+    }
+    .signatures {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+<!--    .signature-block {-->
+<!--      text-align: left;-->
+<!--      font-size: 12px;-->
+<!--    }-->
+    .student-photo {
+      float: right;
+      width: 70px;
+      height: 75px;
+      border: 1px solid #ccc;
+      object-fit: cover;
+    }
+    /* Prevent content splitting across pages */
+    .admit-card { page-break-inside: avoid; }
+  </style>
+        <t t-set="members" t-value="doc.get_members()"/>
+       <t t-set="control_exam" t-value="members.member_line_ids.filtered(lambda x: x.designation == 'contol_exam')"/>
+       <t t-set="principal" t-value="members.member_line_ids.filtered(lambda x: x.designation == 'principal')"/>
+
+        <t t-foreach="sorted(class_div.student_ids,
+                                    key=lambda s: int(str(s.roll_no).strip()) if str(s.roll_no).strip().isdigit() else 999999)"
+                                                                        t-as="student">
+          <div class="a4-sheet">
+            <!-- FIRST ADMIT CARD -->
+            <div class="admit-card">
+              <table class="no-border school-header"  >
+                  <td width="15%"><img t-if="student.class_division_id.company_id.logo" t-att-src="image_data_uri(student.class_division_id.company_id.logo)"
+                                                style="height: 70px; width:75 px;padding-top: 5px; padding-left: 5px;padding-bottom: 5px" alt="Logo"/></td>
+                  <td width="85%"><span style="font-size: 24px;font-style: italic;text-align: center">Mary Immaculate English Medium School</span><br/>
+                  <span style="font-size: 13px;text-align: center"> Vill.-Patlichandra, P.O.-Paschim Madhyampur, P.S.-Basirhat, Dist.-North 24 Parganas, PIN-743429</span></td>
+              </table>
+              <table class="info-table" >
+                  <tr>
+                      <td width="18%"></td>
+                      <td width="2%"></td>
+                      <td width="20%"></td>
+                      <td width="18%"></td>
+                      <td width="2%"></td>
+                      <td width="20%"></td>
+                      <td  width="20%" rowspan="5">
+                            <img t-if="student.image_128" t-att-src="image_data_uri(student.image_128)" alt="Student Photo" class="student-photo"/>
+                      </td>
+                  </tr>
+                  <tr class="sub-header">
+<!--                          <td></td>-->
+                      <td></td>
+                      <td colspan="5"><span style="font-size: 18px;padding-left: 20 px;"><b>ADMIT CARD</b></span></td>
+                  </tr>
+                  <tr class="sub-header">
+                      <t t-set="month_str" t-value="doc.subject_line_ids[0].date.strftime('%B')"/>
+                      <td></td>
+                      <td colspan="5"><span style="font-size: 17px;padding-left: 20 px;"><b>SESSION <t t-esc="doc.academic_year_id.name"/> <t t-esc="doc.exam_type_id.name"/>  , <t t-esc="month_str"/> -
+                          <t t-esc="doc.subject_line_ids[0].date.strftime('%Y')"/></b></span></td>
+                  </tr>
+                  <tr>
+                      <td ><b>Student Name</b></td>
+                      <td ><b>:</b></td>
+                      <td ><t t-esc="student.name"></t></td>
+                      <td ><b>Register No.</b></td>
+                      <td ><b>:</b></td>
+                      <td ><t t-esc="student.register_no"></t></td>
+                  </tr>
+                  <tr>
+                      <td><b>Division</b></td>
+                      <td ><b>:</b></td>
+                      <td><t t-esc="student.class_division_id.name"></t></td>
+                      <td><b>Roll No.</b></td>
+                      <td ><b>:</b></td>
+                      <td><t t-esc="student.roll_no"></t></td>
+                  </tr>
+              </table>
+              <table class="exam-table" width="100%">
+                <tr>
+                  <th width="23%">Subject</th>
+                  <th width="15%">Date</th>
+                  <th width="18%">Time</th>
+                  <th width="22%">Student's Signature</th>
+                  <th width="22%">Invigilator's Signature</th>
+                </tr>
+                  <tbody>
+                      <t t-foreach="doc.subject_line_ids.sorted(key=lambda l: l.date)" t-as="line">
+                          <tr>
+                            <td name="td_produc_code" ><span t-field="line.subject_id.name"></span></td>
+                            <td name="desc" ><span t-field="line.date"></span></td>
+                            <td name="desc" ><span t-field="line.time_from"></span> - <span t-field="line.time_to"></span></td>
+                            <td name="td_qty" class="br-right text-center"></td>
+                            <td name="td_qty" class="br-right text-center"></td>
+                          </tr>
+                      </t>
+                  </tbody>
+              </table>
+              <table class="no-border" width="100%">
+                  <tr>
+                    <td style="text-align: center;font-size: 12px;width: 50%">
+                        <t t-if="control_exam.signature">
+                            <img t-att-src="'data:image/png;base64,%s' % (control_exam.signature.decode())"
+                                 style="max-height:50 px; max-width:250 px;"/>
+                        </t><br/>
+                        <b><t t-esc="control_exam.name"/> </b><br/>Controller of Examiner</td>
+                    <td style="text-align: center;font-size: 12px;width: 50%">
+                        <t t-if="principal.signature">
+                            <img t-att-src="'data:image/png;base64,%s' % (principal.signature.decode())"
+                                 style="max-height:50px; max-width:250px;"/>
+                        </t><br/>
+                        <b><t t-esc="principal.name"/></b><br/>Principal</td>
+                  </tr>
+              </table>
+            </div>
+          </div>
+        </t>
+    </template>
+
+
+
+    <template id="admit_card_division">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+<!--                <t t-call="ala_education_exam.report_print_admit_card_document" t-lang="doc.partner_id.lang"/>-->
+                <t t-call="ala_education_exam.admit_card_division_report_document" />
+            </t>
+        </t>
+    </template>
+
+</odoo>

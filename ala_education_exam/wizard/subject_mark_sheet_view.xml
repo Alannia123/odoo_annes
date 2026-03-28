@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="view_subject_marksheet_wizard_form" model="ir.ui.view">
+        <field name="name">ala.subject.marksheet.wizard.form</field>
+        <field name="model">ala.subject.marksheet.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Subject Marksheet">
+                <group>
+                    <group>
+                        <field name="exam_valuation_id" options="{'no_create': True, 'no_open': True}"/>
+                    </group>
+<!--                    <group>-->
+<!--                         <field name="generate_empty" widget="boolean_toggle"/>-->
+<!--                    </group>-->
+                </group>
+                <footer>
+                    <button string="Generate Subject Marksheet" type="object" name="action_generate_subject_marksheet" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+
+    <record id="action_subject_open_rank_marksheet" model="ir.actions.act_window">
+        <field name="name">Generate Subject Marksheet</field>
+        <field name="res_model">ala.subject.marksheet.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_subject_marksheet_wizard" name="Subject Wise Marksheet" web_icon="ala_education_exam,static/description/sub_wise.png"
+               groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin" action="action_subject_open_rank_marksheet" sequence="40"/>
+
+</odoo>

@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <template id="report_student_rank_card_template_document">
+            <t t-call="web.html_container">
+                <t t-call="web.basic_layout">
+                    <style>
+                        table, th, td {
+                            padding-left:10px;
+                            padding: 2px !important;
+                            border : 1.8px solid black;
+                        }
+                        .no-border {
+                            border-right:none;
+                            border-left:none;
+                            border-bottom:none;
+                            border-top:none;
+                        }
+                        .text-right {
+                            text-align: end;
+                        }
+                    </style>
+<!--                    <t t-foreach="doc.student_ids[:3]" t-as="student">-->
+<!--                        <div style="-->
+<!--                            position: fixed;-->
+<!--                            top: 70%;-->
+<!--                            left: 25%;-->
+<!--                            transform: translate(-50%, -50%);-->
+<!--                            opacity: 0.08;-->
+<!--                            z-index: 0;-->
+<!--                            width: 550px;-->
+<!--                            height: auto;-->
+<!--                            pointer-events: none;-->
+<!--                            page-break-inside: avoid; ">-->
+<!--                            <img t-att-src="'/ala_education_exam/static/src/img/logo.png'" style="width: 100%; height: auto;"/>-->
+<!--                        </div>-->
+<!--                    <t t-set="exam_types" t-value="doc._get_exams_type()"/>-->
+<!--                    <t t-set="aca_exams" t-value="doc._get_exams_aca_class()"/>-->
+<!--                    <t t-set="student_aca_exam_results" t-value="doc._get_exam_academic_year()"/>-->
+                    <div class="page" style="page-break-after:always !important;" >
+                        <div id="header">
+<!--                            <div class="row" style="border : 1.8px solid black ;border-bottom: none;">-->
+<!--                                <div style="border: none;" class="col-1">-->
+<!--                                    <img t-if="student.class_division_id.company_id.logo" t-att-src="image_data_uri(student.class_division_id.company_id.logo)"-->
+<!--                                                    style="height: 140px; width: 140px;padding-top: 10px; padding-left: 20px;padding-bottom: 5px" alt="Logo"/>-->
+<!--                                </div>-->
+<!--                                <div style="border: none;" class="col-10">-->
+<!--                                    <h2 class="text-center">MARY IMMACULATE ENGLISH MEDIUM SCHOOL, PATILACHANDRA, BASIRHAT</h2>-->
+<!--                                    <h3 class="text-center">PROGRESS REPORT, ACADEMIC YEAR : <t t-esc="student_aca_exam_results[0].academic_year_id.name"/></h3>-->
+<!--                                </div>-->
+<!--                            </div>-->
+
+<!--                            <t t-foreach="doc.student_ids" t-as="student">-->
+                                <table width="100%" style="padding-top:10px;border : 1.8px solid black;border-bottom: none;">
+                                    <tr class="no-border" style="background-color: #e6ecff;">
+                                        <td width="55%" class="text-center no-border">
+                                            <span >Student Name :<b><t t-esc="doc.name"/></b> </span>
+                                        </td>
+                                        <td width="10%" class="no-border">
+                                            <span>Class :<b><t t-esc="class_div.class_id.name"/></b> </span>
+                                        </td>
+                                        <td width="10%" class="no-border">
+                                            <span>Section :<b><t t-esc="class_div.division_id.name"/></b> </span>
+                                        </td>
+                                        <td width="10%" class="no-border">
+                                            <span>Roll No :<b><t t-esc="doc.roll_no"/></b> </span>
+                                        </td>
+                                        <td width="15%" class="no-border">
+                                            <span>Reg No :<b><t t-esc="doc.register_no"/></b> </span>
+                                        </td>
+                                    </tr>
+                                </table>
+<!--                                <table width="100%" style="padding-top:10px;border : 1.5px solid black;border-bottom: none;position: relative; z-index: 1;">-->
+<!--                                    <tr class="no-border">-->
+<!--                                        <td width="60%" class="no-border">-->
+<!--                                        Table subjects-->
+                                            <table width="100%" style="border: 1.5px solid black;">
+                                                <thead >
+                                                    <tr>
+                                                        <th name="subjects" style="background-color: #d1e0e0;" rowspan="2" class="text-center"><span>SUBJECTS</span></th>
+                                                        <th name="term_1"  style="background-color: #c6d9ec;" class="text-center"><span>1<sup>st</sup> UNIT</span></th>
+                                                        <th name="term_2" style="background-color: #d9f2e6;" colspan="3" class="text-center"><span>Half Yearly</span></th>
+                                                        <th name="term_3"  style="background-color: #ffddcc;" class="text-center"><span>2<sup>nd</sup> UNIT</span></th>
+                                                        <th name="term_3" style="background-color: #ecc6d9;" colspan="3" class="text-center"><span>Annual Exam</span></th>
+                                                    </tr>
+                                                    <tr>
+<!--                                                        <th name="exam_1" class="text-center"><span>Exam</span></th>-->
+<!--                                                        <th name="assign_1" class="text-center"><span>Assign</span></th>-->
+                                                        <th name="total_1" style="background-color: #c6d9ec;" class="text-center"><span>Total<span style="font-weight: normal;">(50)</span></span></th>
+                                                        <th name="exam_2" style="background-color: #d9f2e6;" class="text-center"><span>Exam<span style="font-weight: normal;">(80)</span></span></th>
+                                                        <th name="assign_2" style="background-color: #d9f2e6;" class="text-center"><span>Assign<span style="font-weight: normal;">(20)</span></span></th>
+                                                        <th name="total_2" style="background-color: #d9f2e6;" class="text-center"><span>Total<span style="font-weight: normal;">(100)</span></span></th>
+                                                        <th name="total_1" style="background-color: #ffddcc;" class="text-center"><span>Total<span style="font-weight: normal;">(50)</span></span></th>
+                                                        <th name="exam_3" style="background-color: #ecc6d9;" class="text-center"><span>Exam<span style="font-weight: normal;">(80)</span></span></th>
+                                                        <th name="assign_3" style="background-color: #ecc6d9;" class="text-center"><span>Assign<span style="font-weight: normal;">(20)</span></span></th>
+                                                        <th name="total_3" style="background-color: #ecc6d9;" class="text-center"><span>Total<span style="font-weight: normal;">(100)</span></span></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <t t-set="first_unit" t-value="aca_exams.filtered(lambda aca_exam: aca_exam.exam_type_id.exam_order == 'first')"/>
+                                                    <t t-set="half_year" t-value="aca_exams.filtered(lambda aca_exam: aca_exam.exam_type_id.exam_order == 'half')"/>
+                                                    <t t-set="second_unit" t-value="aca_exams.filtered(lambda aca_exam: aca_exam.exam_type_id.exam_order == 'second')"/>
+                                                    <t t-set="annual" t-value="aca_exams.filtered(lambda aca_exam: aca_exam.exam_type_id.exam_order == 'annual')"/>
+
+                                                    <t t-set="first_unit_result" t-value="student_aca_exam_results.filtered(lambda aca_exam_result: aca_exam_result.exam_id.id == first_unit.id)"/>
+                                                    <t t-set="halfly_result" t-value="student_aca_exam_results.filtered(lambda aca_exam_result: aca_exam_result.exam_id.id == half_year.id)"/>
+                                                    <t t-set="second_unit_result" t-value="student_aca_exam_results.filtered(lambda aca_exam_result: aca_exam_result.exam_id.id == second_unit.id)"/>
+                                                    <t t-set="annual_result" t-value="student_aca_exam_results.filtered(lambda aca_exam_result: aca_exam_result.exam_id.id == annual.id)"/>
+
+                                                    <t t-foreach="class_div.class_id.subject_ids" t-as="subject_line">
+                                                        <tr>
+
+                                                            <t t-set="fir_subject_mark" t-value="first_unit_result.subject_line_ids.filtered(lambda fir_subject: fir_subject.subject_id.id == subject_line.subject_id.id)"/>
+                                                            <t t-set="half_subject_mark" t-value="halfly_result.subject_line_ids.filtered(lambda half_subject: half_subject.subject_id.id == subject_line.subject_id.id)"/>
+                                                            <t t-set="sec_subject_mark" t-value="second_unit_result.subject_line_ids.filtered(lambda sec_subject: sec_subject.subject_id.id == subject_line.subject_id.id)"/>
+                                                            <t t-set="ann_subject_mark" t-value="annual_result.subject_line_ids.filtered(lambda ann_subject: ann_subject.subject_id.id == subject_line.subject_id.id)"/>
+                                                            <td name="subject" style="background-color: #e0ebeb;" class="text-left"><span><t t-esc="subject_line.subject_id.name"></t></span></td>
+                                                            <td class="text-center">
+                                                                <t t-if="first_unit_result">
+                                                                    <t t-if="fir_subject_mark.mark_scored == 0"> -
+<!--                                                                        <t t-esc="int(fir_subject_mark.mark_scored)"/>-->
+                                                                    </t>
+                                                                    <t t-elif="fir_subject_mark.mark_scored &lt; fir_subject_mark.pass_mark">
+                                                                        <span style="color: red;"> <t t-esc="int(fir_subject_mark.mark_scored)"/></span>
+                                                                    </t>
+                                                                    <t t-else="">
+                                                                        <span style="color: green;"> <t t-esc="int(fir_subject_mark.mark_scored)"/></span>
+                                                                    </t>
+                                                                </t>
+                                                                <t t-else=""></t>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <t t-if="halfly_result">
+                                                                    <t t-if="half_subject_mark.exam_mark == 0"> - </t>
+                                                                    <t t-else="" t-esc="int(half_subject_mark.exam_mark)"/>
+                                                                </t>
+                                                                <t t-else=""></t>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <t t-if="halfly_result">
+                                                                    <t t-if="half_subject_mark.assign_mark == 0"> - </t>
+                                                                    <t t-else="" t-esc="int(half_subject_mark.assign_mark)"/>
+                                                                </t>
+                                                                <t t-else=""></t>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <t t-if="halfly_result">
+                                                                    <t t-if="half_subject_mark.mark_scored == 0"> -
+<!--                                                                        <t t-esc="int(half_subject_mark.mark_scored)"/>-->
+                                                                    </t>
+                                                                    <t t-elif="half_subject_mark.mark_scored &lt; half_subject_mark.pass_mark">
+                                                                        <span style="color: red;"> <t t-esc="int(half_subject_mark.mark_scored)"/></span>
+                                                                    </t>
+                                                                    <t t-else="">
+                                                                        <span style="color: green;"> <t t-esc="int(half_subject_mark.mark_scored)"/></span>
+                                                                    </t>
+                                                                </t>
+                                                                <t t-else=""></t>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <t t-if="second_unit_result">
+                                                                    <t t-if="sec_subject_mark.mark_scored == 0"> -
+<!--                                                                        <t t-esc="int(sec_subject_mark.mark_scored)"/>-->
+                                                                    </t>
+                                                                    <t t-elif="sec_subject_mark.mark_scored &lt; sec_subject_mark.pass_mark">
+                                                                        <span style="color: red;"> <t t-esc="int(sec_subject_mark.mark_scored)"/></span>
+                                                                    </t>
+                                                                    <t t-else="">
+                                                                        <span style="color: green;"> <t t-esc="int(sec_subject_mark.mark_scored)"/></span>
+                                                                    </t>
+                                                                </t>
+                                                                <t t-else=""></t>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <t t-if="annual_result">
+                                                                    <t t-if="ann_subject_mark.exam_mark == 0"> - </t>
+                                                                    <t t-else="" t-esc="int(ann_subject_mark.exam_mark)"/>
+                                                                </t>
+                                                                <t t-else=""></t>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <t t-if="annual_result">
+                                                                    <t t-if="ann_subject_mark.assign_mark == 0"> - </t>
+                                                                    <t t-else="" t-esc="int(ann_subject_mark.assign_mark)"/>
+                                                                </t>
+                                                                <t t-else=""></t>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <t t-if="annual_result">
+                                                                    <t t-if="ann_subject_mark.mark_scored == 0"> -
+<!--                                                                        <t t-esc="int(ann_subject_mark.mark_scored)"/>-->
+                                                                    </t>
+                                                                    <t t-elif="ann_subject_mark.mark_scored &lt; ann_subject_mark.pass_mark">
+                                                                        <span style="color: red;"> <t t-esc="int(ann_subject_mark.mark_scored)"/></span>
+                                                                    </t>
+                                                                    <t t-else="">
+                                                                        <span style="color: green;"> <t t-esc="int(ann_subject_mark.mark_scored)"/></span>
+                                                                    </t>
+                                                                </t>
+                                                                <t t-else=""></t>
+                                                            </td>
+                                                        </tr>
+                                                    </t>
+<!--                                                    ADD EMpty lines-->
+                                                    <t t-foreach="range(max(14-len(doc.class_division_id.class_id.subject_ids),0))" t-as="ln">
+                                                        <tr>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td style="color: #ffffff;" >SKU</td>
+                                                        </tr>
+                                                    </t>
+                                                    <tr>
+                                                        <td class="text-right" style="background-color: #e0ebeb;"><span><b>TOTAL</b></span></td>
+                                                        <td class="text-center"><t t-esc="int(first_unit_result.total_mark_scored)"/></td>
+                                                        <td colspan="2" style="color: #ffffff;"></td>
+                                                        <td class="text-center"><t t-esc="int(halfly_result.total_mark_scored)"/></td>
+                                                        <td class="text-center"><t t-esc="int(second_unit_result.total_mark_scored)"/></td>
+                                                        <td colspan="2" style="color: #ffffff;"></td>
+                                                        <td class="text-center"><t t-esc="int(annual_result.total_mark_scored)"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-right" style="background-color: #e0ebeb;"><span><b>PERCENTAGE</b></span></td>
+                                                        <td class="text-center"><t t-esc="round((first_unit_result.total_mark_percentage), 2)"/></td>
+                                                        <td colspan="2" style="color: #ffffff;"></td>
+                                                        <td class="text-center"><t t-esc="round((halfly_result.total_mark_percentage), 2)"/></td>
+                                                        <td class="text-center"><t t-esc="round((second_unit_result.total_mark_percentage), 2)"/></td>
+                                                        <td colspan="2" style="color: #ffffff;"></td>
+                                                        <td class="text-center"><t t-esc="round((annual_result.total_mark_percentage), 2)"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-right" style="background-color: #e0ebeb;"><span><b>GRADE</b></span></td>
+                                                        <td class="text-center"><b><t t-esc="first_unit_result.grade"/></b></td>
+                                                        <td class="text-center" colspan="3" ><b><t t-esc="halfly_result.grade"/></b></td>
+                                                        <td class="text-center" ><b><t t-esc="second_unit_result.grade"/></b></td>
+                                                        <td class="text-center" colspan="3" ><b><t t-esc="annual_result.grade"/></b></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-right" style="background-color: #e0ebeb;"><span><b>ATTENDANCE</b></span></td>
+                                                        <td style="color: #ffffff;"></td>
+                                                        <td colspan="3" style="color: #ffffff;"></td>
+                                                        <td style="color: #ffffff;"></td>
+                                                        <td colspan="3" style="color: #ffffff;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-right" style="background-color: #e0ebeb;" ><span><b>PARENTS SIGNATURE</b></span></td>
+                                                        <td style="color: #ffffff;"></td>
+                                                        <td colspan="3" style="color: #ffffff;"></td>
+                                                        <td style="color: #ffffff;"></td>
+                                                        <td colspan="3" style="color: #ffffff;"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+<!--                                        </td>-->
+<!--                                        <td width="40%" class="no-border">-->
+<!--                                            <table width="100%" class="no-border">-->
+<!--                                                <tr class="no-border">-->
+<!--                                                    <td class="no-border">-->
+<!--&lt;!&ndash;                                            Table Maturity&ndash;&gt;-->
+<!--                                                        <table width="100%" style="border: 1.5px solid black;">-->
+<!--                                                            <thead >-->
+<!--                                                                <tr style="background-color: #e0ebeb;">-->
+<!--                                                                    <th name="maturity" class="text-center"><span>MATURITY DEVELOPMENT</span></th>-->
+<!--                                                                    <th name="term_1" class="text-center"><span>1<sup>st</sup> UNIT</span></th>-->
+<!--                                                                    <th name="term_2" class="text-center"><span>Half Yearly</span></th>-->
+<!--                                                                    <th name="term_3" class="text-center"><span>2<sup>nd</sup> UNIT</span></th>-->
+<!--                                                                    <th name="term_3" class="text-center"><span>Annual</span></th>-->
+<!--                                                                </tr>-->
+<!--                                                            </thead>-->
+<!--                                                            <tbody style="line-height: 10px">-->
+<!--                                                                <tr>-->
+<!--                                                                    <td name="bengali_hindi" style="background-color: #f0f0f5;" class="text-center"><span>DISCIPLINE/INITIATIVE</span></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                </tr>-->
+<!--                                                                <tr>-->
+<!--                                                                    <td name="bengali_hindi" style="background-color: #f0f0f5;" class="text-center"><span>PERSEVERANCE</span></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                </tr>-->
+<!--                                                                <tr>-->
+<!--                                                                    <td name="bengali_hindi" style="background-color: #f0f0f5;" class="text-center"><span>CONCENTRATION</span></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                </tr>-->
+<!--                                                                <tr>-->
+<!--                                                                    <td name="bengali_hindi" style="background-color: #f0f0f5;" class="text-center"><span>POWER OF OBSERVATION</span></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                </tr>-->
+<!--                                                                <tr>-->
+<!--                                                                    <td name="bengali_hindi" style="background-color: #f0f0f5;" class="text-center"><span>CURIOSITY</span></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                </tr>-->
+<!--                                                                <tr>-->
+<!--                                                                    <td name="bengali_hindi" style="background-color: #f0f0f5;" class="text-center"><span>SELF CONFIDENCE</span></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                </tr>-->
+<!--                                                                <tr>-->
+<!--                                                                    <td name="bengali_hindi" style="background-color: #f0f0f5;" class="text-center"><span>RESPONSIBILITY</span></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                </tr>-->
+<!--                                                                <tr>-->
+<!--                                                                    <td name="bengali_hindi" style="background-color: #f0f0f5;" class="text-center"><span>RELATIONSHIP</span></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                </tr>-->
+<!--                                                                <tr>-->
+<!--                                                                    <td name="bengali_hindi" style="background-color: #f0f0f5;" class="text-center"><span>GROUP WORK</span></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                </tr>-->
+<!--                                                                <tr>-->
+<!--                                                                    <td name="bengali_hindi" style="background-color: #f0f0f5;" class="text-center"><span>NEATNESS</span></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                </tr>-->
+<!--                                                                <tr>-->
+<!--                                                                    <td name="bengali_hindi" style="background-color: #f0f0f5;" class="text-center"><span>RESPECT OF RULES</span></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                </tr>-->
+<!--                                                                <tr>-->
+<!--                                                                    <td name="bengali_hindi" style="background-color: #f0f0f5;" class="text-center"><span>RESPECT FOR OTHERS</span></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                </tr>-->
+<!--                                                                <tr>-->
+<!--                                                                    <td name="bengali_hindi" style="background-color: #f0f0f5;" class="text-center"><span>PHYSICAL EDUCATION</span></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                </tr>-->
+<!--                                                                <tr>-->
+<!--                                                                    <td name="bengali_hindi" style="background-color: #f0f0f5;" class="text-center"><span>PUNCTUALITY</span></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                    <td class="text-center"><t t-esc="student.ad_no"/></td>-->
+<!--                                                                </tr>-->
+<!--                                                            </tbody>-->
+<!--                                                        </table>-->
+<!--                                                    </td>-->
+<!--                                                </tr>-->
+<!--                                                <tr class="no-border">-->
+<!--                                                    <td class="no-border">-->
+<!--&lt;!&ndash;                                                        Table Grade&ndash;&gt;-->
+<!--                                                        <table width="100%" style="border: 1.5px solid black;">-->
+<!--                                                            <tr>-->
+<!--                                                                <td class="text-center" colspan="2"><b>GRADE TABLE</b></td>-->
+<!--                                                            </tr>-->
+<!--                                                            <tr>-->
+<!--                                                                <td class="text-center" width="70%"><b>90% to 100%</b></td>-->
+<!--                                                                <td class="text-center" width="30%"><b>AA</b></td>-->
+<!--                                                            </tr>-->
+<!--                                                            <tr>-->
+<!--                                                                <td class="text-center" width="70%"><b>80% to 90%</b></td>-->
+<!--                                                                <td class="text-center" width="30%"><b>A+</b></td>-->
+<!--                                                            </tr>-->
+<!--                                                            <tr>-->
+<!--                                                                <td class="text-center" width="70%"><b>70% to 80%</b></td>-->
+<!--                                                                <td class="text-center" width="30%"><b>A</b></td>-->
+<!--                                                            </tr>-->
+<!--                                                            <tr>-->
+<!--                                                                <td class="text-center" width="70%"><b>60% to 70%</b></td>-->
+<!--                                                                <td class="text-center" width="30%"><b>B</b></td>-->
+<!--                                                            </tr>-->
+<!--                                                            <tr>-->
+<!--                                                                <td class="text-center" width="70%"><b>50% to 60%</b></td>-->
+<!--                                                                <td class="text-center" width="30%"><b>C</b></td>-->
+<!--                                                            </tr>-->
+<!--                                                            <tr>-->
+<!--                                                                <td class="text-center" width="70%"><b>LESS THAN 50%</b></td>-->
+<!--                                                                <td class="text-center" width="30%"><b>D</b></td>-->
+<!--                                                            </tr>-->
+<!--                                                        </table>-->
+<!--                                                    </td>-->
+<!--                                                </tr>-->
+<!--                                            </table>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
+<!--                                    <tr class="no-border">-->
+<!--                                        <table width="100%" style="border: 1.5px solid black;padding-top: 20px;padding-left: 20px;padding-right: 20px">-->
+<!--                                    <tr>-->
+<!--                                        <td class="text-center" rowspan="2">-->
+<!--                                            <span style="padding-top: 50px;"><b>REMARKS</b></span>-->
+<!--                                        </td>-->
+<!--                                        <td><span><b>QUARTERLY</b></span></td>-->
+<!--                                        <td><span><b>OFFERLY</b></span></td>-->
+<!--                                        <td><span><b>PROMOTION</b></span></td>-->
+<!--                                    </tr>-->
+<!--                                    <tr>-->
+<!--                                        <td style="color: #ffffff;">QUARTERLY</td>-->
+<!--                                        <td style="color: #ffffff;">QUARTERLY</td>-->
+<!--                                        <td style="color: #ffffff;">QUARTERLY</td>-->
+<!--                                    </tr>-->
+<!--                                </table>-->
+<!--                                    </tr>-->
+<!--                                </table>-->
+
+<!--                            </t>-->
+                        </div>
+                    </div>
+<!--                    <br/>-->
+<!--                    </t>-->
+                </t>
+            </t>
+        </template>
+
+
+
+
+        <template id="report_student_rank_card_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="ala_education_exam.report_student_rank_card_template_document" />
+                </t>
+            </t>
+        </template>
+
+
+</odoo>

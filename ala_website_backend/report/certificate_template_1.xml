@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+
+<template id="science_certificate_template_document">
+        <t t-call="web.html_container">
+
+            <style>
+                @page {
+                    size: A4 landscape;
+                    margin: 0;
+                }
+
+                html, body {
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    width: 100%;
+                    height: 100%;
+                    font-family: 'DejaVu Sans', Arial, sans-serif;
+                }
+
+                .article,
+                .o_report_layout,
+                .page {
+                    margin: 0 !important;
+                    padding: 0 !important;
+                }
+
+                .certificate-page {
+                    position: relative;
+                    width: 297mm;
+                    height: 210mm;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    overflow: hidden;
+                    page-break-after: always;
+                    page-break-inside: avoid;
+                    box-sizing: border-box;
+                    background: #f7f8f8;
+                }
+
+                /* OUTER TEAL BORDER */
+                .border-outer {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 297mm;
+                    height: 210mm;
+                    background: #6fc3be;
+                    z-index: 1;
+                }
+
+                /* INNER WHITE PANEL */
+                .border-inner {
+                    position: absolute;
+                    top: 7mm;
+                    left: 7mm;
+                    right: 7mm;
+                    bottom: 7mm;
+                    background: #ffffff;
+                    z-index: 2;
+                    overflow: hidden;
+                }
+
+                /* LIGHT GEOMETRIC BACKGROUND */
+                .watermark-bg {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    z-index: 2;
+                    opacity: 0.16;
+                    background-image: url('/ala_website_backend/static/src/img/certificate_bg_light.jpg');
+                    background-size: cover;
+                    background-position: center center;
+                    background-repeat: no-repeat;
+                }
+
+                /* GOLD DOUBLE BORDER */
+                .gold-border-1 {
+                    position: absolute;
+                    top: 11mm;
+                    left: 11mm;
+                    right: 11mm;
+                    bottom: 11mm;
+                    border: 0.8mm solid #c9a24a;
+                    z-index: 3;
+                    box-sizing: border-box;
+                }
+
+                .gold-border-2 {
+                    position: absolute;
+                    top: 14mm;
+                    left: 14mm;
+                    right: 14mm;
+                    bottom: 14mm;
+                    border: 0.35mm solid #e0c98a;
+                    z-index: 3;
+                    box-sizing: border-box;
+                }
+
+                /* CURVED TOP BANNER */
+                .top-banner {
+                    position: absolute;
+                    top: 0;
+                    left: 18mm;
+                    right: 18mm;
+                    height: 34mm;
+                    background: #79c8c3;
+                    z-index: 4;
+                    border-bottom-left-radius: 40% 80%;
+                    border-bottom-right-radius: 40% 80%;
+                }
+
+                .top-banner-shadow {
+                    position: absolute;
+                    top: -6mm;
+                    left: 105mm;
+                    width: 95mm;
+                    height: 25mm;
+                    background: rgba(61, 138, 133, 0.18);
+                    border-radius: 50%;
+                    z-index: 4;
+                }
+
+                .bottom-wave {
+                    position: absolute;
+                    left: 18mm;
+                    right: 18mm;
+                    bottom: 0;
+                    height: 30mm;
+                    background: #79c8c3;
+                    z-index: 4;
+                    border-top-left-radius: 40% 80%;
+                    border-top-right-radius: 40% 80%;
+                }
+
+                /* DOT DECORATION */
+                .dots-top-left,
+                .dots-bottom-right {
+                    position: absolute;
+                    width: 17mm;
+                    z-index: 5;
+                    font-size: 0;
+                    line-height: 0;
+                }
+
+                .dots-top-left {
+                    top: 16mm;
+                    left: 24mm;
+                }
+
+                .dots-bottom-right {
+                    bottom: 16mm;
+                    right: 24mm;
+                }
+
+                .dots-top-left span,
+                .dots-bottom-right span {
+                    display: inline-block;
+                    width: 1.4mm;
+                    height: 1.4mm;
+                    margin: 0.5mm;
+                    background: #ffffff;
+                    border-radius: 50%;
+                }
+
+                /* DECORATIVE LINES */
+                .curve-top-right {
+                    position: absolute;
+                    top: 4mm;
+                    right: 10mm;
+                    width: 65mm;
+                    height: 46mm;
+                    z-index: 5;
+                }
+
+                .curve-top-right:before {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    width: 52mm;
+                    height: 30mm;
+                    border-top: 0.55mm solid #17384a;
+                    border-left: 0.55mm solid transparent;
+                    border-radius: 0 0 0 100%;
+                    transform: rotate(8deg);
+                }
+
+                .curve-bottom-left {
+                    position: absolute;
+                    left: 8mm;
+                    bottom: 8mm;
+                    width: 55mm;
+                    height: 40mm;
+                    z-index: 5;
+                }
+
+                .curve-bottom-left:before {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    bottom: 0;
+                    width: 42mm;
+                    height: 28mm;
+                    border-bottom: 0.55mm solid #17384a;
+                    border-right: 0.55mm solid transparent;
+                    border-radius: 0 100% 0 0;
+                    transform: rotate(-8deg);
+                }
+
+                /* MAIN CONTENT */
+                .inner-content {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    z-index: 10;
+                }
+
+                .school-logo {
+                    position: absolute;
+                    top: 20mm;
+                    left: 50%;
+                    width: 16mm;
+                    height: 16mm;
+                    margin-left: -8mm;
+                    object-fit: contain;
+                    z-index: 11;
+                }
+
+                .school-name {
+                    position: absolute;
+                    top: 38mm;
+                    left: 26mm;
+                    right: 26mm;
+                    text-align: center;
+                    font-size: 7.2mm;
+                    font-weight: 700;
+                    color: #1c2e6c;
+                    letter-spacing: 0.3mm;
+                    text-transform: uppercase;
+                    z-index: 11;
+                }
+
+                .school-sub {
+                    position: absolute;
+                    top: 48mm;
+                    left: 32mm;
+                    right: 32mm;
+                    text-align: center;
+                    font-size: 3.4mm;
+                    color: #6c6c6c;
+                    z-index: 11;
+                }
+
+                .cert-title {
+                    position: absolute;
+                    top: 66mm;
+                    left: 25mm;
+                    right: 25mm;
+                    text-align: center;
+                    z-index: 11;
+                    color: #162766;
+                    text-transform: uppercase;
+                    font-weight: 800;
+                    line-height: 1.15;
+                }
+
+                .cert-title .l1,
+                .cert-title .l2 {
+                    font-size: 12.5mm;
+                    letter-spacing: 0.6mm;
+                }
+
+                .presented-label {
+                    position: absolute;
+                    top: 102mm;
+                    left: 25mm;
+                    right: 25mm;
+                    text-align: center;
+                    font-size: 5.4mm;
+                    font-weight: 700;
+                    color: #28375e;
+                    text-transform: uppercase;
+                    z-index: 11;
+                }
+
+                .student-name {
+                    position: absolute;
+                    top: 116mm;
+                    left: 34mm;
+                    right: 34mm;
+                    text-align: center;
+                    font-size: 19mm;
+                    font-weight: 300;
+                    color: #69b8b2;
+                    letter-spacing: 0.8mm;
+                    border-bottom: 0.5mm solid #69b8b2;
+                    padding-bottom: 3mm;
+                    z-index: 11;
+                }
+
+                .description {
+                    position: absolute;
+                    top: 142mm;
+                    left: 40mm;
+                    right: 40mm;
+                    text-align: center;
+                    font-size: 4.9mm;
+                    line-height: 6.5mm;
+                    color: #3f3f3f;
+                    z-index: 11;
+                }
+
+                .certificate-info {
+                    position: absolute;
+                    top: 165mm;
+                    left: 0;
+                    right: 0;
+                    text-align: center;
+                    font-size: 5mm;
+                    font-weight: 700;
+                    color: #202020;
+                    line-height: 7.5mm;
+                    z-index: 11;
+                }
+
+                .signature-left,
+                .signature-right {
+                    position: absolute;
+                    bottom: 22mm;
+                    width: 70mm;
+                    text-align: center;
+                    z-index: 11;
+                }
+
+                .signature-left {
+                    left: 28mm;
+                }
+
+                .signature-right {
+                    right: 28mm;
+                }
+
+                .signature-img {
+                    width: 26mm;
+                    max-height: 12mm;
+                    object-fit: contain;
+                    margin-bottom: 1.5mm;
+                }
+
+                .signature-line {
+                    width: 46mm;
+                    margin: 0 auto 2mm auto;
+                    border-top: 0.45mm solid #69b8b2;
+                }
+
+                .signature-name {
+                    font-size: 5mm;
+                    font-weight: 700;
+                    color: #1d2b5f;
+                    text-transform: uppercase;
+                    line-height: 5.2mm;
+                }
+
+                .signature-role {
+                    margin-top: 1mm;
+                    font-size: 4.2mm;
+                    color: #69b8b2;
+                }
+
+                .qr-wrapper {
+                    position: absolute;
+                    left: 50%;
+                    bottom: 21mm;
+                    width: 28mm;
+                    height: 28mm;
+                    margin-left: -14mm;
+                    text-align: center;
+                    z-index: 11;
+                }
+
+                .qr-image {
+                    width: 22mm;
+                    height: 22mm;
+                    object-fit: contain;
+                    border: 0.35mm solid #6bb9b4;
+                    padding: 1.2mm;
+                    border-radius: 1.2mm;
+                    background: #ffffff;
+                    box-sizing: border-box;
+                }
+
+                .qr-label {
+                    margin-top: 1mm;
+                    font-size: 3.2mm;
+                    color: #6bb9b4;
+                }
+            </style>
+
+            <t t-foreach="doc.student_line_ids" t-as="student">
+                <div class="certificate-page">
+
+                    <div class="border-outer"></div>
+
+                    <div class="border-inner">
+                        <div class="watermark-bg"></div>
+                    </div>
+
+                    <div class="gold-border-1"></div>
+                    <div class="gold-border-2"></div>
+
+                    <div class="top-banner"></div>
+                    <div class="top-banner-shadow"></div>
+                    <div class="bottom-wave"></div>
+
+                    <div class="dots-top-left">
+                        <span></span><span></span><span></span><span></span><span></span><span></span>
+                        <span></span><span></span><span></span><span></span><span></span><span></span>
+                        <span></span><span></span><span></span><span></span><span></span><span></span>
+                        <span></span><span></span><span></span><span></span><span></span><span></span>
+                        <span></span><span></span><span></span><span></span><span></span><span></span>
+                    </div>
+
+                    <div class="dots-bottom-right">
+                        <span></span><span></span><span></span><span></span><span></span><span></span>
+                        <span></span><span></span><span></span><span></span><span></span><span></span>
+                        <span></span><span></span><span></span><span></span><span></span><span></span>
+                        <span></span><span></span><span></span><span></span><span></span><span></span>
+                        <span></span><span></span><span></span><span></span><span></span><span></span>
+                    </div>
+
+                    <div class="curve-top-right"></div>
+                    <div class="curve-bottom-left"></div>
+
+                    <div class="inner-content">
+
+                        <!-- School logo -->
+                        <img src="/ala_website_backend/static/src/img/school_logo.png" class="school-logo"/>
+
+                        <div class="school-name">MARY IMMACULATE ENGLISH MEDIUM SCHOOL</div>
+                        <div class="school-sub">
+                            Patilachandra, Basirhat, PIN 743429 | Affiliated to I.C.S.E (WB457)
+                        </div>
+
+                        <div class="cert-title">
+                            <div class="l1">Certificate</div>
+                            <div class="l2">of Excellence</div>
+                        </div>
+
+                        <div class="presented-label">This Certificate is Presented To</div>
+
+                        <div class="student-name">
+                            <t t-esc="student.student_id.name"/>
+                        </div>
+
+                        <div class="description">
+                            In recognition of outstanding performance, creativity, and active participation
+                            in the Science Expo 2025 conducted by Mary Immaculate English Medium School.
+                        </div>
+
+                        <div class="certificate-info">
+                            CERTIFICATE ID:
+                            <span><t t-esc="student.id"/></span><br/>
+                            ISSUED DATE:
+                            <span><t t-esc="doc.date if doc.date else ''"/></span>
+                        </div>
+
+                        <!-- Left signature -->
+                        <div class="signature-left">
+                            <img src="/ala_website_backend/static/src/img/sig_principal.png" class="signature-img"/>
+                            <div class="signature-line"></div>
+                            <div class="signature-name">REV. FR. AROCKIA DOSS</div>
+                            <div class="signature-role">Principal</div>
+                        </div>
+
+                        <!-- QR -->
+                        <div class="qr-wrapper">
+                            <img src="/ala_website_backend/static/src/img/qr_code.png" class="qr-image"/>
+                            <div class="qr-label">Verify</div>
+                        </div>
+
+                        <!-- Right signature -->
+                        <div class="signature-right">
+                            <img src="/ala_website_backend/static/src/img/sig_correspondent.png" class="signature-img"/>
+                            <div class="signature-line"></div>
+                            <div class="signature-name">REV. FR. JAMES MICHEAL PRABU</div>
+                            <div class="signature-role">Correspondent</div>
+                        </div>
+
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="science_certificate_template">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="doc">
+            <t t-call="ala_website_backend.science_certificate_template_document">
+<!--                <t t-set="doc" t-value="doc"/>-->
+            </t>
+        </t>
+    </t>
+</template>
+
+
+</odoo>

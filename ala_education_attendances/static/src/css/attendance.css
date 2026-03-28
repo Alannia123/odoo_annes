@@ -1,0 +1,192 @@
+.table_header_box{
+    border: 1px solid #dcdcdc !important;
+    font-size: 10px;
+}
+.table_header_box .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #ffffff;
+}
+.table_header_box tfoot {
+    display: none;
+}
+.table_header_box .o_form_view .o_field_widget {
+    margin-bottom: 0px !important;
+}
+.table_header_box table.o_list_view.table.table-condensed.table-striped.o_list_view_ungrouped {
+    margin: 0px !important;
+}
+
+
+/* ===============================
+   ATTENDANCE TABLE WRAPPER
+   (SCROLL AREA)
+================================ */
+
+.attendance {
+    max-height: 65vh;          /* controls body scroll */
+    overflow-y: auto;
+    overflow-x: auto;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    background: #ffffff;
+}
+
+/* ===============================
+   TABLE BASE
+================================ */
+
+#attendance_table_nm {
+    width: 100%;
+    min-width: 1300px;         /* important for date columns */
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+/* ===============================
+   STICKY HEADER
+================================ */
+
+#attendance_table_nm thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+
+    background: #f4f4f4;
+    color: #555;
+
+    text-align: center;
+    font-weight: 600;
+    padding: 10px 6px;
+    white-space: nowrap;
+
+    border-bottom: 2px solid #d0d0d0;
+}
+
+/* ===============================
+   BODY CELLS
+================================ */
+
+#attendance_table_nm tbody td {
+    padding: 8px 6px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+
+    border-bottom: 1px solid #e6e6e6;
+}
+
+/* Student name left aligned */
+#attendance_table_nm tbody td:first-child {
+    text-align: left;
+    font-weight: 600;
+}
+
+/* ===============================
+   ROW HOVER (SUBTLE)
+================================ */
+
+#attendance_table_nm tbody tr:hover {
+    background-color: #fafafa;
+}
+
+/* ===============================
+   TOTAL COLUMN
+================================ */
+
+#attendance_table_nm tbody td:last-child {
+    font-weight: 700;
+    background: #fcfcfc;
+}
+
+/* ===============================
+   SCROLLBAR (OPTIONAL, LIGHT)
+================================ */
+
+.attendance::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+}
+
+.attendance::-webkit-scrollbar-thumb {
+    background: #c5c5c5;
+    border-radius: 4px;
+}
+
+.attendance::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+
+/* =====================================================
+   FIX FLOAT COLLISION (CRITICAL)
+===================================================== */
+
+.attendance {
+    clear: both;
+    width: 100%;
+    box-sizing: border-box;
+
+    margin-top: 15px;
+    max-height: 65vh;
+    overflow-y: auto;
+    overflow-x: auto;
+
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    background: #ffffff;
+}
+
+/* =====================================================
+   TABLE WIDTH FIX
+===================================================== */
+
+#attendance_table_nm {
+    width: 100%;
+    min-width: 1300px;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+/* =====================================================
+   STICKY HEADER
+===================================================== */
+
+#attendance_table_nm thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+
+    background: #f4f4f4;
+    color: #555;
+
+    padding: 10px 6px;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+
+    border-bottom: 2px solid #d0d0d0;
+}
+
+/* =====================================================
+   BODY CELLS
+===================================================== */
+
+#attendance_table_nm tbody td {
+    padding: 8px 6px;
+    text-align: center;
+    border-bottom: 1px solid #e6e6e6;
+    white-space: nowrap;
+}
+
+/* Student name column */
+#attendance_table_nm tbody td:first-child {
+    text-align: left;
+    font-weight: 600;
+}
+
+/* =====================================================
+   ROW HOVER
+===================================================== */
+
+#attendance_table_nm tbody tr:hover {
+    background-color: #fafafa;
+}

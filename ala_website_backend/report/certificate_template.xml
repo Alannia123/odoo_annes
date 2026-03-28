@@ -1,0 +1,991 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+   <template id="science_certificate_template_document">
+    <t t-call="web.html_container">
+        <style>
+            @page {
+                size: A4 landscape;
+                margin: 0;
+            }
+
+            html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .article,
+            .o_report_layout,
+            .page {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .certificate-page {
+                position: relative;
+                width: 297mm;
+                height: 210mm;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: hidden;
+                page-break-after: always;
+                page-break-inside: avoid;
+                box-sizing: border-box;
+                background: #f4f4f4;
+            }
+
+            .page-bg {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 297mm;
+                height: 210mm;
+                z-index: 0;
+                overflow: hidden;
+            }
+
+            .page-bg-img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.certificate-inner {
+    position: absolute;
+    top: 5mm;
+    left: 5mm;
+    right: 5mm;
+    bottom: 5mm;
+    overflow: hidden;
+    box-sizing: border-box;
+    z-index: 1;
+}
+
+/* removed wave style, added smooth top/bottom panels */
+.top-panel {
+    position: absolute;
+    top: 0;
+    left: 5mm;
+    right: 5mm;
+    height: 24mm;
+    border-bottom-left-radius: 45mm 16mm;
+    border-bottom-right-radius: 45mm 16mm;
+    opacity: 0.92;
+    z-index: 1;
+}
+
+.bottom-panel {
+    position: absolute;
+    left: 5mm;
+    right: 5mm;
+    bottom: 0;
+    height: 21mm;
+    border-top-left-radius: 38mm 14mm;
+    border-top-right-radius: 38mm 14mm;
+    opacity: 0.92;
+    z-index: 1;
+}
+
+.top-line {
+    position: absolute;
+    top: 5mm;
+    left: 24mm;
+    right: 8mm;
+    border-top: 0.35mm solid;
+    z-index: 2;
+    opacity: 0.55;
+}
+
+.bottom-line {
+    position: absolute;
+    bottom: 8mm;
+    left: 8mm;
+    right: 24mm;
+    border-top: 0.35mm solid;
+    z-index: 2;
+    opacity: 0.45;
+}
+
+.dots-top-left,
+.dots-bottom-right {
+    position: absolute;
+    width: 11mm;
+    z-index: 2;
+    font-size: 0;
+    line-height: 0;
+}
+
+.dots-top-left {
+    top: 8mm;
+    left: 9mm;
+}
+
+.dots-bottom-right {
+    bottom: 8mm;
+    right: 9mm;
+}
+
+.dots-top-left span,
+.dots-bottom-right span {
+    display: inline-block;
+    width: 0.9mm;
+    height: 0.9mm;
+    margin: 0.35mm;
+    background: #ffffff;
+    border-radius: 50%;
+    opacity: 0.95;
+}
+
+.logo-area {
+    position: absolute;
+    top: 16mm;
+    left: 16mm;
+    right: 16mm;
+    z-index: 5;
+    min-height: 22mm;
+}
+
+.logo-box{
+    position:absolute;
+    top:2mm;     /* slightly down */
+    left:4mm;    /* move inside */
+    width:24mm;
+    height:24mm;
+    background:rgba(255,255,255,0.85);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 0 2mm rgba(0,0,0,0.08); /* subtle glow */
+}
+
+
+.school-logo {
+    width: 20mm;
+    height: 20mm;
+    object-fit: contain;
+    display: block;
+}
+
+.logo-circle {
+    width: 8mm;
+    height: 8mm;
+    border-radius: 50%;
+    box-sizing: border-box;
+}
+
+.school-text-wrap{
+    margin-left: 32mm;
+    margin-right: 32mm;
+    text-align: center;
+    padding-top: 4mm;   /* NEW */
+}
+
+.school-name{
+    font-size:7.2mm;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:0.6mm;
+    line-height:1.05;
+
+    text-shadow:
+        0 0 0.2mm rgba(0,0,0,0.2),
+        0 0 0.6mm rgba(0,0,0,0.08);
+
+    position:relative;
+    display:inline-block;
+    padding-bottom:2mm;
+}
+.school-name:after{
+    content:"";
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    bottom:0;
+    width:70mm;
+    height:0.5mm;
+    background:linear-gradient(
+        to right,
+        transparent,
+        #1d2b5f,
+        transparent
+    );
+    opacity:0.6;
+}
+
+
+.school-sub{
+    margin-top:1.8mm;
+    font-size:3.4mm;
+    color:#666;
+    letter-spacing:0.05mm;
+}
+
+
+.school-medal-box{
+    position:absolute;
+    top:3mm;     /* push down */
+    right:4mm;   /* move inside */
+    width:19mm;
+    height:19mm;
+    background:rgba(255,255,255,0.92);
+    border-radius:3mm;
+    padding:1mm;
+    box-shadow:0 0 1.5mm rgba(0,0,0,0.08);
+}
+
+
+.school-medal-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.school-photo-box {
+    border-radius: 2.5mm;
+    overflow: hidden;
+}
+
+.title-row {
+    position: absolute;
+    top: 48mm;
+    left: 20mm;
+    right: 20mm;
+    min-height: 24mm;
+    z-index: 5;
+}
+
+.certificate-title {
+    text-align: center;
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 1.06;
+    padding-right: 0;
+}
+
+.certificate-title .line1,
+.certificate-title .line2 {
+    font-size: 9.2mm;
+    letter-spacing: 0.25mm;
+}
+
+.title-side-badge,
+.title-side-photo {
+    position: absolute;
+    top: 2mm;
+    right: 0;
+    width: 18mm;
+    height: 18mm;
+    background: rgba(255,255,255,0.88);
+    border-radius: 2mm;
+    padding: 1mm;
+    box-sizing: border-box;
+}
+
+.title-side-badge img,
+.title-side-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.title-side-photo {
+    border-radius: 2.5mm;
+    overflow: hidden;
+}
+
+.presented-text {
+    position: absolute;
+    top: 78mm;
+    left: 22mm;
+    right: 22mm;
+    text-align: center;
+    font-size: 4.8mm;
+    font-weight: 700;
+    text-transform: uppercase;
+    z-index: 5;
+}
+
+.student-name {
+    position: absolute;
+    top: 91mm;
+    left: 34mm;
+    right: 34mm;
+    text-align: center;
+    font-size: 14.5mm;
+    font-weight: 400;
+    border-bottom: 0.4mm solid;
+    padding-bottom: 2mm;
+    letter-spacing: 0.3mm;
+    line-height: 1.06;
+    z-index: 5;
+}
+
+.description {
+    position: absolute;
+    top: 114mm;
+    left: 32mm;
+    right: 32mm;
+    text-align: center;
+    font-size: 4.4mm;
+    line-height: 5.5mm;
+    color: #404040;
+    z-index: 5;
+}
+
+.certificate-info {
+    position: absolute;
+    top: 141mm;
+    left: 22mm;
+    right: 22mm;
+    text-align: center;
+    z-index: 5;
+    color: #222222;
+    font-size: 4.7mm;
+    font-weight: 700;
+    line-height: 6.6mm;
+}
+
+.signature-zone {
+    position: absolute;
+    left: 14mm;
+    right: 14mm;
+    bottom: 9mm;
+    height: 28mm;
+    z-index: 5;
+}
+
+.signature-panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 5mm;
+    background: rgba(255,255,255,0.80);
+    border-radius: 8mm 8mm 3mm 3mm;
+    z-index: 0;
+}
+
+.sign-left,
+.sign-right {
+    position: absolute;
+    bottom: 2mm;
+    width: 70mm;
+    text-align: center;
+    z-index: 1;
+}
+
+.sign-left {
+    left: 10mm;
+}
+
+.sign-right {
+    right: 10mm;
+}
+
+.sign-img {
+    width: 22mm;
+    max-height: 8mm;
+    display: block;
+    margin: 0 auto 0.8mm auto;
+    object-fit: contain;
+    background: rgba(255,255,255,0.75);
+}
+
+.sign-line {
+    width: 42mm;
+    margin: 0 auto 1mm auto;
+    border-top: 0.35mm solid;
+}
+
+.sign-name {
+    font-size: 4.6mm;
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 4.6mm;
+}
+
+.sign-role {
+    font-size: 3.5mm;
+    margin-top: 0.6mm;
+}
+
+.qr-box {
+    position: absolute;
+    left: 50%;
+    bottom: 4mm;
+    width: 15mm;
+    height: 15mm;
+    margin-left: -7.5mm;
+    border: 0.7mm solid;
+    border-radius: 1.6mm;
+    box-sizing: border-box;
+    background: rgba(255,255,255,0.96);
+    overflow: hidden;
+    padding: 1mm;
+    z-index: 1;
+}
+
+.qr-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+            /* =========================
+   NEW PROFESSIONAL DECOR
+========================= */
+
+.top-band {
+    position: absolute;
+    top: 6mm;
+    left: 14mm;
+    right: 14mm;
+    height: 10mm;
+    border-radius: 8mm;
+    opacity: 0.38;
+    z-index: 1;
+}
+
+.bottom-band {
+    position: absolute;
+    bottom: 6mm;
+    left: 14mm;
+    right: 14mm;
+    height: 10mm;
+    border-radius: 8mm;
+    opacity: 0.28;
+    z-index: 1;
+}
+
+.left-accent {
+    position: absolute;
+    top: 28mm;
+    left: 6mm;
+    width: 8mm;
+    bottom: 28mm;
+    border-radius: 8mm;
+    opacity: 0.18;
+    z-index: 1;
+}
+
+.right-accent {
+    position: absolute;
+    top: 28mm;
+    right: 6mm;
+    width: 8mm;
+    bottom: 28mm;
+    border-radius: 8mm;
+    opacity: 0.12;
+    z-index: 1;
+}
+
+.corner-top-left,
+.corner-bottom-right {
+    position: absolute;
+    width: 22mm;
+    height: 22mm;
+    z-index: 2;
+}
+
+.corner-top-left {
+    top: 8mm;
+    left: 8mm;
+}
+
+.corner-bottom-right {
+    right: 8mm;
+    bottom: 8mm;
+    transform: rotate(180deg);
+}
+
+.corner-line {
+    position: absolute;
+    border-top: 0.5mm solid;
+    border-left: 0.5mm solid;
+    border-top-left-radius: 2mm;
+    box-sizing: border-box;
+}
+
+.corner-line.l1 {
+    top: 0;
+    left: 0;
+    width: 22mm;
+    height: 22mm;
+    opacity: 0.85;
+}
+
+.corner-line.l2 {
+    top: 3mm;
+    left: 3mm;
+    width: 16mm;
+    height: 16mm;
+    opacity: 0.65;
+}
+
+.corner-line.l3 {
+    top: 6mm;
+    left: 6mm;
+    width: 10mm;
+    height: 10mm;
+    opacity: 0.45;
+}
+
+.soft-circle {
+    position: absolute;
+    border-radius: 50%;
+    z-index: 1;
+    opacity: 0.16;
+}
+
+.soft-circle-1 {
+    width: 24mm;
+    height: 24mm;
+    top: 18mm;
+    right: 28mm;
+}
+
+.soft-circle-2 {
+    width: 18mm;
+    height: 18mm;
+    bottom: 20mm;
+    left: 30mm;
+}
+
+.dot-grid-top-right,
+.dot-grid-bottom-left {
+    position: absolute;
+    width: 10mm;
+    z-index: 2;
+    font-size: 0;
+    line-height: 0;
+}
+
+.dot-grid-top-right {
+    top: 12mm;
+    right: 18mm;
+}
+
+.dot-grid-bottom-left {
+    bottom: 12mm;
+    left: 18mm;
+}
+
+.dot-grid-top-right span,
+.dot-grid-bottom-left span {
+    display: inline-block;
+    width: 0.85mm;
+    height: 0.85mm;
+    margin: 0.3mm;
+    background: rgba(255,255,255,0.95);
+    border-radius: 50%;
+}
+
+/* Remove old styles if still present */
+.top-panel,
+.bottom-panel,
+.top-line,
+.bottom-line,
+.dots-top-left,
+.dots-bottom-right {
+    display: none !important;
+}
+
+            .gold-frame-outer{
+    position:absolute;
+    top:6mm;
+    left:6mm;
+    right:6mm;
+    bottom:6mm;
+    border:0.45mm solid #c8a24d;
+    border-radius:3mm;
+    z-index:1;
+    opacity:0.9;
+}
+
+.gold-frame-inner{
+    position:absolute;
+    top:8.5mm;
+    left:8.5mm;
+    right:8.5mm;
+    bottom:8.5mm;
+    border:0.2mm solid #e3c980;
+    border-radius:2.4mm;
+    z-index:1;
+    opacity:0.8;
+}
+.name-glow{
+    position:absolute;
+    top:78mm;
+    left:50%;
+    width:120mm;
+    height:42mm;
+    margin-left:-60mm;
+    border-radius:50%;
+    z-index:2;
+    background:radial-gradient(
+        ellipse at center,
+        rgba(255,255,255,0.82) 0%,
+        rgba(255,255,255,0.45) 45%,
+        rgba(255,255,255,0) 100%
+    );
+}
+.academic-corner{
+    position:absolute;
+    width:18mm;
+    height:18mm;
+    z-index:2;
+    opacity:0.55;
+}
+
+.academic-corner:before,
+.academic-corner:after{
+    content:"";
+    position:absolute;
+    border-color:#c8a24d;
+    box-sizing:border-box;
+}
+
+.academic-corner:before{
+    top:0;
+    left:0;
+    width:18mm;
+    height:18mm;
+    border-top:0.35mm solid #c8a24d;
+    border-left:0.35mm solid #c8a24d;
+    border-top-left-radius:2mm;
+}
+
+.academic-corner:after{
+    top:3mm;
+    left:3mm;
+    width:11mm;
+    height:11mm;
+    border-top:0.25mm solid #69b8b2;
+    border-left:0.25mm solid #69b8b2;
+    border-top-left-radius:1.5mm;
+}
+
+.academic-corner-tl{
+    top:10mm;
+    left:10mm;
+}
+
+.academic-corner-tr{
+    top:10mm;
+    right:10mm;
+    transform:rotate(90deg);
+}
+
+.academic-corner-bl{
+    bottom:10mm;
+    left:10mm;
+    transform:rotate(-90deg);
+}
+
+.academic-corner-br{
+    bottom:10mm;
+    right:10mm;
+    transform:rotate(180deg);
+}
+.logo-box{
+    position:absolute;
+    top:2mm;
+    left:4mm;
+    width:24mm;
+    height:24mm;
+    background:rgba(255,255,255,0.88);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 0 2mm rgba(0,0,0,0.08);
+    border:0.2mm solid rgba(200,162,77,0.45);
+}
+
+.school-medal-box{
+    position:absolute;
+    top:3mm;
+    right:4mm;
+    width:19mm;
+    height:19mm;
+    background:rgba(255,255,255,0.92);
+    border-radius:3mm;
+    padding:1mm;
+    box-shadow:0 0 1.5mm rgba(0,0,0,0.08);
+    border:0.2mm solid rgba(200,162,77,0.35);
+}
+
+.school-text-wrap{
+    margin-left:32mm;
+    margin-right:32mm;
+    text-align:center;
+    padding-top:4mm;
+}
+
+.school-name{
+    font-size:7.2mm;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:0.6mm;
+    line-height:1.05;
+    text-shadow:
+        0 0 0.2mm rgba(0,0,0,0.2),
+        0 0 0.6mm rgba(0,0,0,0.08);
+    position:relative;
+    display:inline-block;
+    padding-bottom:2mm;
+}
+
+.school-name:after{
+    content:"";
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    bottom:0;
+    width:70mm;
+    height:0.45mm;
+    background:linear-gradient(to right, transparent, #1d2b5f, transparent);
+    opacity:0.6;
+}
+
+.school-sub{
+    margin-top:1.8mm;
+    font-size:3.4mm;
+    color:#666666;
+    letter-spacing:0.05mm;
+}
+
+
+
+
+        </style>
+
+        <t t-foreach="doc.student_line_ids" t-as="student">
+            <div class="certificate-page"
+                 t-attf-style="font-family: #{doc.font_family or 'Arial, sans-serif'};">
+
+                <div class="page-bg" t-if="doc.template_background">
+                    <img t-att-src="image_data_uri(doc.template_background)"
+     class="page-bg-img"
+     t-attf-style="opacity: #{doc.background_opacity or 0.12};"/>
+
+                </div>
+
+                <div class="certificate-inner">
+
+                    <div class="gold-frame-outer"></div>
+<div class="gold-frame-inner"></div>
+
+                    <div class="academic-corner academic-corner-tl"></div>
+<div class="academic-corner academic-corner-tr"></div>
+<div class="academic-corner academic-corner-bl"></div>
+<div class="academic-corner academic-corner-br"></div>
+
+
+
+<!--    <div class="top-panel"-->
+<!--         t-attf-style="background: #{doc.wave_color or '#dff3f1'};"></div>-->
+
+<!--    <div class="bottom-panel"-->
+<!--         t-attf-style="background: #{doc.wave_color or '#dff3f1'};"></div>-->
+
+    <div class="top-line"
+         t-attf-style="border-top-color: #{doc.primary_color or '#1d2b5f'};"></div>
+
+    <div class="bottom-line"
+         t-attf-style="border-top-color: #{doc.primary_color or '#1d2b5f'};"></div>
+
+    <!-- Elegant top band -->
+<div class="top-band"
+     t-attf-style="background: #{doc.wave_color or '#dff3f1'};"></div>
+
+<!-- Elegant bottom band -->
+<div class="bottom-band"
+     t-attf-style="background: #{doc.wave_color or '#dff3f1'};"></div>
+
+<!-- Left side accent -->
+<div class="left-accent"
+     t-attf-style="background: #{doc.wave_color or '#dff3f1'};"></div>
+
+<!-- Right side accent -->
+<div class="right-accent"
+     t-attf-style="background: #{doc.wave_color or '#dff3f1'};"></div>
+
+<!-- Top left corner ornament -->
+<div class="corner-top-left">
+    <div class="corner-line l1"
+         t-attf-style="border-color: #{doc.primary_color or '#1d2b5f'};"></div>
+    <div class="corner-line l2"
+         t-attf-style="border-color: #{doc.secondary_color or '#69b8b2'};"></div>
+    <div class="corner-line l3"
+         t-attf-style="border-color: #{doc.primary_color or '#1d2b5f'};"></div>
+</div>
+
+<!-- Bottom right corner ornament -->
+<div class="corner-bottom-right">
+    <div class="corner-line l1"
+         t-attf-style="border-color: #{doc.primary_color or '#1d2b5f'};"></div>
+    <div class="corner-line l2"
+         t-attf-style="border-color: #{doc.secondary_color or '#69b8b2'};"></div>
+    <div class="corner-line l3"
+         t-attf-style="border-color: #{doc.primary_color or '#1d2b5f'};"></div>
+</div>
+
+<!-- Decorative soft circles -->
+<div class="soft-circle soft-circle-1"
+     t-attf-style="background: #{doc.wave_color or '#dff3f1'};"></div>
+<div class="soft-circle soft-circle-2"
+     t-attf-style="background: #{doc.wave_color or '#dff3f1'};"></div>
+
+<!-- Fine dots top right -->
+<div class="dot-grid-top-right">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+</div>
+
+<!-- Fine dots bottom left -->
+<div class="dot-grid-bottom-left">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+</div>
+
+
+    <div class="logo-area">
+
+    <div class="logo-box">
+        <img t-if="doc.school_logo"
+             t-att-src="image_data_uri(doc.school_logo)"
+             class="school-logo"/>
+
+        <div t-if="not doc.school_logo"
+             class="logo-circle"
+             t-attf-style="border: 0.8mm solid #{doc.secondary_color or '#69b8b2'};"></div>
+    </div>
+
+    <div class="school-text-wrap">
+        <div class="school-name"
+             t-attf-style="color: #{doc.primary_color or '#1d2b5f'};">
+            <t t-esc="doc.school_name or ''"/>
+        </div>
+
+        <div class="school-sub">
+            <t t-esc="doc.school_subtitle or ''"/>
+        </div>
+    </div>
+
+    <div class="school-medal-box"
+         t-if="doc.certificate_type != 'photo' and doc.get_selected_medal_image()">
+        <img t-att-src="image_data_uri(doc.get_selected_medal_image())"/>
+    </div>
+
+    <div class="school-medal-box school-photo-box"
+         t-if="doc.certificate_type == 'photo' and student.student_id.image_1920">
+        <img t-att-src="image_data_uri(student.student_id.image_1920)"/>
+    </div>
+
+</div>
+
+
+    <div class="title-row">
+        <div class="certificate-title"
+             t-attf-style="color: #{doc.primary_color or '#1d2b5f'};">
+            <div class="line1">
+                <t t-esc="doc.certificate_title_line1 or ''"/>
+            </div>
+            <div class="line2">
+                <t t-esc="doc.certificate_title_line2 or ''"/>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="presented-text"
+         t-attf-style="color: #{doc.primary_color or '#29304f'};">
+        <t t-esc="doc.presented_text or ''"/>
+    </div>
+                    <div class="name-glow"></div>
+
+
+    <div class="student-name"
+         t-attf-style="color: #{doc.secondary_color or '#69b8b2'}; border-bottom-color: #{doc.secondary_color or '#69b8b2'};">
+        <t t-esc="student.student_id.name"/>
+    </div>
+
+    <div class="description">
+        <t t-esc="doc.description_text or ''"/>
+    </div>
+
+    <div class="certificate-info">
+        CERTIFICATE ID: <span><t t-esc="student.id"/></span><br/>
+        ISSUED DATE: <span><t t-esc="doc.issued_date or ''"/></span>
+    </div>
+
+    <div class="signature-zone">
+        <div class="signature-panel"></div>
+
+        <div class="sign-left">
+            <img t-if="doc.left_sign_image" t-att-src="image_data_uri(doc.left_sign_image)" class="sign-img"/>
+            <div class="sign-line"
+                 t-attf-style="border-top-color: #{doc.secondary_color or '#69b8b2'};"></div>
+            <div class="sign-name"
+                 t-attf-style="color: #{doc.primary_color or '#1d2b5f'};">
+                <t t-esc="doc.left_sign_name or ''"/>
+            </div>
+            <div class="sign-role"
+                 t-attf-style="color: #{doc.secondary_color or '#69b8b2'};">
+                <t t-esc="doc.left_sign_role or ''"/>
+            </div>
+        </div>
+
+        <div class="qr-box"
+             t-attf-style="border-color: #{doc.secondary_color or '#69b8b2'};">
+            <img t-if="doc.qr_code_image" t-att-src="image_data_uri(doc.qr_code_image)"/>
+        </div>
+
+        <div class="sign-right">
+            <img t-if="doc.right_sign_image" t-att-src="image_data_uri(doc.right_sign_image)" class="sign-img"/>
+            <div class="sign-line"
+                 t-attf-style="border-top-color: #{doc.secondary_color or '#69b8b2'};"></div>
+            <div class="sign-name"
+                 t-attf-style="color: #{doc.primary_color or '#1d2b5f'};">
+                <t t-esc="doc.right_sign_name or ''"/>
+            </div>
+            <div class="sign-role"
+                 t-attf-style="color: #{doc.secondary_color or '#69b8b2'};">
+                <t t-esc="doc.right_sign_role or ''"/>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+            </div>
+        </t>
+    </t>
+</template>
+
+
+
+
+
+
+
+
+
+    <template id="science_certificate_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="ala_website_backend.science_certificate_template_document"/>
+            </t>
+        </t>
+    </template>
+
+</odoo>

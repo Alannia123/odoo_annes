@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_fcm_token_user,fcm.token user,model_ala_fcm_token,base.group_user,1,0,0,0
+access_fcm_token_manager,fcm.token manager,model_ala_fcm_token,ala_firebase_notification.group_fcm_manager,1,1,1,1
+access_firebase_notification,firebase.notification,model_ala_firebase_notification,base.group_user,1,1,1,1

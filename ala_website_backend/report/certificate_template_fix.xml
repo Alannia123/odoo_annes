@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+   <template id="science_certificate_template_document">
+    <t t-call="web.html_container">
+        <style>
+            @page {
+                size: A4 landscape;
+                margin: 0;
+            }
+
+            html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .article,
+            .o_report_layout,
+            .page {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .certificate-page {
+                position: relative;
+                width: 325mm;
+                height: 220mm;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: hidden;
+                page-break-after: always;
+                page-break-inside: avoid;
+                box-sizing: border-box;
+                font-family: Arial, sans-serif;
+                background: #f4f4f4;
+            }
+
+            .page-bg {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 325mm;
+                height: 220mm;
+                z-index: 0;
+                overflow: hidden;
+            }
+
+            .page-bg-img {
+                width: 100%;
+                height: 100%;
+                display: block;
+                object-fit: cover;
+                opacity: 1;
+            }
+
+            .certificate-inner {
+                position: absolute;
+                top: 10mm;
+                left: 10mm;
+                right: 10mm;
+                bottom: 10mm;
+                overflow: hidden;
+                box-sizing: border-box;
+                background: rgba(255, 255, 255, 0.88);
+                border-radius: 2mm;
+                z-index: 1;
+            }
+
+            .top-wave {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 34mm;
+                background: #7cc8c3;
+                border-bottom-left-radius: 42% 80%;
+                border-bottom-right-radius: 42% 80%;
+                z-index: 1;
+            }
+
+            .bottom-wave {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 30mm;
+                background: #7cc8c3;
+                border-top-left-radius: 42% 80%;
+                border-top-right-radius: 42% 80%;
+                z-index: 1;
+            }
+
+            .curve-top-right {
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 70mm;
+                height: 42mm;
+                border-top: 0.5mm solid #183b4d;
+                border-left: 0.5mm solid transparent;
+                border-radius: 0 0 0 100%;
+                transform: rotate(8deg);
+                z-index: 2;
+            }
+
+            .curve-bottom-left {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 55mm;
+                height: 36mm;
+                border-bottom: 0.5mm solid #183b4d;
+                border-right: 0.5mm solid transparent;
+                border-radius: 0 100% 0 0;
+                transform: rotate(-8deg);
+                z-index: 2;
+            }
+
+            .dots-top-left,
+            .dots-bottom-right {
+                position: absolute;
+                width: 14mm;
+                z-index: 2;
+                font-size: 0;
+                line-height: 0;
+            }
+
+            .dots-top-left {
+                top: 8mm;
+                left: 8mm;
+            }
+
+            .dots-bottom-right {
+                bottom: 8mm;
+                right: 8mm;
+            }
+
+            .dots-top-left span,
+            .dots-bottom-right span {
+                display: inline-block;
+                width: 1.2mm;
+                height: 1.2mm;
+                margin: 0.45mm;
+                background: #ffffff;
+                border-radius: 50%;
+                opacity: 0.95;
+            }
+
+            .logo-area {
+                position: absolute;
+                top: 24mm;
+                left: 18mm;
+                right: 18mm;
+                text-align: center;
+                z-index: 5;
+            }
+
+            .logo-circle {
+                width: 4.5mm;
+                height: 4.5mm;
+                border: 0.8mm solid #69b8b2;
+                border-radius: 50%;
+                margin: 0 auto 1.8mm auto;
+                box-sizing: border-box;
+            }
+
+            .school-name {
+                font-size: 5.8mm;
+                font-weight: 700;
+                color: #1d2b5f;
+                text-transform: uppercase;
+                letter-spacing: 0.3mm;
+            }
+
+            .school-sub {
+                margin-top: 1.2mm;
+                font-size: 3mm;
+                color: #666666;
+            }
+
+            .certificate-title {
+                position: absolute;
+                top: 52mm;
+                left: 18mm;
+                right: 18mm;
+                text-align: center;
+                z-index: 5;
+                color: #141f58;
+                font-weight: 800;
+                text-transform: uppercase;
+                line-height: 1.15;
+            }
+
+            .certificate-title .line1,
+            .certificate-title .line2 {
+                font-size: 10.5mm;
+                letter-spacing: 0.45mm;
+            }
+
+            .presented-text {
+                position: absolute;
+                top: 83mm;
+                left: 18mm;
+                right: 18mm;
+                text-align: center;
+                font-size: 4.8mm;
+                font-weight: 700;
+                color: #29304f;
+                text-transform: uppercase;
+                z-index: 5;
+            }
+
+            .student-name {
+                position: absolute;
+                top: 97mm;
+                left: 32mm;
+                right: 32mm;
+                text-align: center;
+                font-size: 16mm;
+                font-weight: 300;
+                color: #69b8b2;
+                border-bottom: 0.5mm solid #69b8b2;
+                padding-bottom: 2.5mm;
+                letter-spacing: 0.6mm;
+                z-index: 5;
+            }
+
+            .description {
+                position: absolute;
+                top: 123mm;
+                left: 36mm;
+                right: 36mm;
+                text-align: center;
+                font-size: 4.5mm;
+                line-height: 5.8mm;
+                color: #404040;
+                z-index: 5;
+            }
+
+            .certificate-info {
+                position: absolute;
+                top: 150mm;
+                left: 18mm;
+                right: 18mm;
+                text-align: center;
+                z-index: 5;
+                color: #222222;
+                font-size: 4.8mm;
+                font-weight: 700;
+                line-height: 7mm;
+            }
+
+            .sign-left,
+            .sign-right {
+                position: absolute;
+                bottom: 12mm;
+                width: 60mm;
+                text-align: center;
+                z-index: 5;
+            }
+
+            .sign-left { left: 22mm; }
+            .sign-right { right: 22mm; }
+
+            .sign-line {
+                width: 42mm;
+                margin: 0 auto 1.8mm auto;
+                border-top: 0.45mm solid #69b8b2;
+            }
+
+            .sign-name {
+                font-size: 4.6mm;
+                font-weight: 700;
+                color: #1d2b5f;
+                text-transform: uppercase;
+                line-height: 4.8mm;
+            }
+
+            .sign-role {
+                font-size: 3.8mm;
+                color: #69b8b2;
+                margin-top: 0.8mm;
+            }
+
+            .qr-box {
+                position: absolute;
+                bottom: 12mm;
+                left: 50%;
+                width: 18mm;
+                height: 18mm;
+                margin-left: -9mm;
+                border: 0.8mm solid #69b8b2;
+                border-radius: 2mm;
+                text-align: center;
+                line-height: 18mm;
+                font-size: 3mm;
+                color: #69b8b2;
+                z-index: 5;
+                box-sizing: border-box;
+                background: #ffffff;
+            }
+        </style>
+
+        <t t-foreach="doc.student_line_ids" t-as="student">
+            <div class="certificate-page">
+
+                <div class="page-bg" t-if="doc.template_background">
+                    <img t-att-src="image_data_uri(doc.template_background)" class="page-bg-img"/>
+                </div>
+
+                <div class="certificate-inner">
+                    <div class="top-wave"></div>
+                    <div class="bottom-wave"></div>
+                    <div class="curve-top-right"></div>
+                    <div class="curve-bottom-left"></div>
+
+                    <div class="dots-top-left">
+                        <span></span><span></span><span></span><span></span><span></span><span></span>
+                        <span></span><span></span><span></span><span></span><span></span><span></span>
+                        <span></span><span></span><span></span><span></span><span></span><span></span>
+                        <span></span><span></span><span></span><span></span><span></span><span></span>
+                    </div>
+
+                    <div class="dots-bottom-right">
+                        <span></span><span></span><span></span><span></span><span></span><span></span>
+                        <span></span><span></span><span></span><span></span><span></span><span></span>
+                        <span></span><span></span><span></span><span></span><span></span><span></span>
+                        <span></span><span></span><span></span><span></span><span></span><span></span>
+                    </div>
+
+                    <div class="logo-area">
+                        <div class="logo-circle"></div>
+                        <div class="school-name">MARY IMMACULATE ENGLISH MEDIUM SCHOOL</div>
+                        <div class="school-sub">
+                            Patilachandra, Basirhat, PIN 743429 | Affiliated to I.C.S.E (WB457)
+                        </div>
+                    </div>
+
+                    <div class="certificate-title">
+                        <div class="line1">CERTIFICATE</div>
+                        <div class="line2">OF EXCELLENCE</div>
+                    </div>
+
+                    <div class="presented-text">This certificate is presented to</div>
+
+                    <div class="student-name">
+                        <t t-esc="student.student_id.name"/>
+                    </div>
+
+                    <div class="description">
+                        In recognition of outstanding performance, creativity, and active participation
+                        in the Science Expo 2025 conducted by Mary Immaculate English Medium School.
+                    </div>
+
+                    <div class="certificate-info">
+                        CERTIFICATE ID:
+                        <span><t t-esc="student.id"/></span><br/>
+                        ISSUED DATE:
+                        <span>03/03/2026</span>
+                    </div>
+
+                    <div class="sign-left">
+                        <div class="sign-line"></div>
+                        <div class="sign-name">REV. FR. AROCKIA DOSS</div>
+                        <div class="sign-role">Principal</div>
+                    </div>
+
+                    <div class="qr-box">QR</div>
+
+                    <div class="sign-right">
+                        <div class="sign-line"></div>
+                        <div class="sign-name">REV. FR. JAMES MICHEAL PRABU</div>
+                        <div class="sign-role">Correspondent</div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </t>
+</template>
+
+
+
+
+
+
+
+
+    <template id="science_certificate_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="ala_website_backend.science_certificate_template_document"/>
+            </t>
+        </t>
+    </template>
+
+</odoo>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+<record id="paperformat_science_certificate" model="report.paperformat">
+    <field name="name">Science Certificate</field>
+    <field name="default" eval="False"/>
+    <field name="format">A4</field>
+    <field name="orientation">Landscape</field>
+    <field name="margin_top">10</field>
+    <field name="margin_bottom">10</field>
+    <field name="margin_left">10</field>
+    <field name="margin_right">10</field>
+    <field name="header_line" eval="False"/>
+    <field name="header_spacing">0</field>
+    <field name="dpi">90</field>
+</record>
+
+
+
+    <record id="print_e_certificate_pdf" model="ir.actions.report">
+    <field name="name">Science Certificate</field>
+    <field name="model">ala.certificate</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">ala_website_backend.science_certificate_template</field>
+    <field name="report_file">ala_website_backend.science_certificate_template</field>
+    <field name="print_report_name">'Certificate_%s' % (object.name)</field>
+    <field name="paperformat_id" ref="ala_website_backend.paperformat_science_certificate"/>
+        <field name="binding_model_id" ref="model_ala_certificate"/>
+</record>
+
+
+</odoo>

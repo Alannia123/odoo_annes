@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="view_student_marksheet_wizard_form" model="ir.ui.view">
+    <field name="name">ala.student.marksheet.wizard.form</field>
+    <field name="model">ala.student.marksheet.wizard</field>
+    <field name="arch" type="xml">
+        <form string="Select Academic Year">
+            <group>
+                <field name="student_id" readonly="1"/>
+                <field name="academic_year_id"/>
+            </group>
+            <footer>
+                <button name="action_print_marksheet"
+                        string="Print"
+                        type="object"
+                        class="btn-primary"/>
+                <button string="Cancel"
+                        class="btn-secondary"
+                        special="cancel"/>
+            </footer>
+        </form>
+    </field>
+</record>
+
+</odoo>

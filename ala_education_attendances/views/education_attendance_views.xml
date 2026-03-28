@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!--Form view of the Education attendance-->
+    <record id="education_attendance_view_form" model="ir.ui.view">
+        <field name="name">ala.education.attendance.view.form</field>
+        <field name="model">ala.education.attendance</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_attendance_done" type="object"
+                            invisible="state != 'draft'"
+                            class="oe_highlight" string="Done"/>
+                    <button name="action_set_to_draft" type="object"
+                            invisible="state == 'draft'"
+                            string="Set to Draft"/>
+
+                    <field name="state" readonly="1" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+
+                    <!-- ✅ Present -->
+                    <button type="object"
+                            name="action_view_present_students"
+                            class="oe_stat_button" invisible="state != 'done'"
+                            icon="fa-check-circle">
+                        <field name="present_count" widget="statinfo"/>
+<!--                        <span class="o_stat_text">Present</span>-->
+                    </button>
+
+                    <!-- ❌ Absent -->
+                    <button type="object"
+                            name="action_view_absent_students"
+                            class="oe_stat_button"
+                            icon="fa-times-circle" invisible="state != 'done'">
+                        <field name="absent_count" widget="statinfo"/>
+<!--                        <span class="o_stat_text">Absent</span>-->
+                    </button>
+
+                </div>
+                    <h1>
+                        <field name="name" readonly="1"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="division_id"
+                                   readonly="attendance_created == True" options="{'no_create':True,'no_open':True}"/>
+                            <field name="absent_roll_nos" readonly="state != 'draft'" widget="voice_to_number"/>
+                            <field name="academic_year_id" readonly="1" options="{'no_create':True,'no_open':True}"/>
+
+                        </group>
+                        <group>
+                            <field name="date" readonly="0" groups="ala_education_core.group_education_principal"/>
+                            <field name="date" readonly="1" />
+                            <field name="attendance_created" invisible="1"/>
+                            <field name="all_marked_morning" invisible="1"/>
+                            <field name="all_marked_afternoon" invisible="1"/>
+                            <field name="faculty_id" invisible="faculty_id == False"
+                                           options="{'no_create':True,'no_open':True}"/>
+                            <field name="class_id" invisible="1"/>
+<!--                            <field name="attendance_image"-->
+<!--                                   filename="attendance_image_name"-->
+<!--                                   widget="camera_image"-->
+<!--                                   options="{'preview_image': 'attendance_image'}"/>-->
+
+<!--                            <button name="action_extract_absent_from_image"-->
+<!--                                type="object"-->
+<!--                                string="Extract Absent Rolls from Image"-->
+<!--                                class="btn-primary" invisible="attendance_image == False"/>-->
+                        </group>
+                    </group>
+<!--                    <div style="padding-bottom: 10px;">-->
+<!--                        <button style="padding: 1px 5px;background: #5fb18e !important;border-color: #63b892 !important;"-->
+<!--                                string="Create Attendance Table" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"-->
+<!--                                name="action_create_attendance_line"-->
+<!--                                type="object"-->
+<!--                                invisible="1"-->
+<!--                                class="oe_highlight"/>-->
+<!--                    </div>-->
+                    <notebook>
+                        <page string="Attendance Entry" invisible="attendance_created == False">
+                            <button
+                                    string="Mark All" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
+                                    name="action_mark_all_present_morning"
+                                    type="object" invisible="1"
+                                    class="oe_highlight btn-success"/>
+                            <button
+                                    string="Un Mark" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
+                                    name="action_un_mark_all_present_morning" class="oe_highlight btn-danger"
+                                    type="object" invisible="1"/>
+<!--                    <div class="table_header_box"-->
+<!--                         invisible="attendance_created == False">-->
+                        <field name="attendance_line_ids"
+                               readonly="1">
+                            <list editable="bottom" create="false" decoration-danger="present_morning == False" decoration-success="present_morning != False" delete="false">
+                                <field name="student_name" readonly="1"
+                                       style=" width: 500px; "/>
+                                <field name="register_no"/>
+                                <field name="roll_no"/>
+                                <field name="present_morning" />
+                                <field name="attendance_status" decoration-danger="attendance_status == 'absent'" decoration-success="attendance_status == 'present'" widget="badge"/>
+                                <field name="state" optional="hide" decoration-warning="state == 'draft'" decoration-success="state == 'done'" widget="badge"/>
+<!--                                <field name="present_afternoon"/>-->
+                            </list>
+                        </field>
+<!--                    </div>-->
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"
+                           widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!--Tree view of the Education attendance-->
+    <record id="education_attendance_view_tree" model="ir.ui.view">
+        <field name="name">ala.education.attendance.view.tree</field>
+        <field name="model">ala.education.attendance</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="division_id"/>
+                <field name="class_id" column_invisible="1"/>
+                <field name="absent_roll_nos"/>
+                <field name="state" decoration-warning="state == 'draft'" decoration-success="state == 'done'" widget="badge" optional="show"/>
+                <field name="create_uid" />
+            </list>
+        </field>
+    </record>
+
+    <!--Search view of the Education attendance-->
+<record id="education_attendance_view_search" model="ir.ui.view">
+    <field name="name">ala.education.attendance.view.search</field>
+    <field name="model">ala.education.attendance</field>
+    <field name="arch" type="xml">
+        <search string="Students Attendance">
+            <field name="faculty_id"/>
+            <field name="division_id"/>
+
+            <filter string="Today"
+                    name="today"
+                    domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+
+            <separator/>
+
+            <filter string="Done"
+                    name="done_state"
+                    domain="[('state', '!=', 'draft')]"/>
+<!--            <filter string="Current Academic Year" name='current_academic_year'-->
+<!--                    domain="[('academic_year_id.ay_start_date', '&lt;=', context_today().strftime('%Y-%m-%d')),-->
+<!--                     ('academic_year_id.ay_end_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>-->
+
+<!--            <group expand="1" string="Group By">-->
+<!--                <filter string="Class"-->
+<!--                        name="group_class_id"-->
+<!--                        context="{'group_by': 'class_id'}"/>-->
+<!--                <filter string="Division"-->
+<!--                        name="group_division_id"-->
+<!--                        context="{'group_by': 'division_id'}"/>-->
+<!--                <filter string="Faculty"-->
+<!--                        name="group_by_faculty"-->
+<!--                        context="{'group_by': 'faculty_id'}"/>-->
+<!--            </group>-->
+        </search>
+    </field>
+</record>
+    <!--Menu action of the Education attendance-->
+    <record id="education_attendance_action" model="ir.actions.act_window">
+        <field name="name">Attendance</field>
+        <field name="res_model">ala.education.attendance</field>
+        <field name="view_mode">list,form</field>
+        <field name="target">current</field>
+        <field name="context">{'search_default_today': 1,
+            'search_default_group_class_id': 1}
+        </field>
+    </record>
+
+    <!-- Definition of an action client for the Attendance Dashboard -->
+    <record id="action_dashboard_attendance" model="ir.actions.client">
+        <field name="name">Attendance Dashboard</field>
+        <field name="tag">attendance_dashboard</field>
+    </record>
+
+    <menuitem id="education_attendance_root_menu" name="MIS Attendance"
+              sequence="12"
+              web_icon="ala_education_attendances,static/description/icon.png"/>
+
+    <menuitem id="menu_attendance_dashboard" name="Dashboard"
+              parent="ala_education_attendances.education_attendance_root_menu"
+              sequence="0" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
+              action="action_dashboard_attendance"/>
+
+    <menuitem id="education_attendance_main_menu"
+              parent="ala_education_attendances.education_attendance_root_menu"
+              name="Attendance"
+              sequence="3"/>
+    <menuitem id="education_attendance_sub_menu"
+              web_icon="ala_education_attendances,static/description/att_icon.png"
+              action="education_attendance_action" name="Student Daily Attendance"
+              sequence="10"/>
+    <menuitem id="education_attendance_report_menu"
+              parent="ala_education_attendances.education_attendance_main_menu"
+              name="Reports" sequence="11"/>
+    <menuitem id="education_attendance_report_sub_menu"
+              parent="ala_education_attendances.education_attendance_report_menu"
+              action="education_attendance_line_report_action" name="Report"
+              sequence="0"/>
+</odoo>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+
+		<record id="website_announcements_form" model="ir.ui.view">
+			<field name="name">ala.web.info.form</field>
+			<field name="model">ala.web.info</field>
+			<field name="arch" type="xml">
+				<form string="Announcements">
+					<header>
+						<button name="publish_announce" type="object" string="Publish" class="btn btn-success" invisible="enable != False"/>
+						<button name="unpublish_announce" type="object" string="UnPublish" class="btn btn-danger" invisible="enable == False"/>
+					</header>
+					<sheet>
+						<h1>
+							<field name="name" readonly="0" />
+						</h1>
+						<group>
+							<group>
+								<field name="date"/>
+							</group>
+							<group>
+								<field name="color" />
+								<field name="enable" readonly="1"/>
+							</group>
+						</group>
+                        <group>
+                            <field name="anounce"/>
+                        </group>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids"/>
+						<field name="activity_ids"/>
+						<field name="message_ids"/>
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record id="website_announcements_tree" model="ir.ui.view">
+			<field name="name">ala.web.info.tree</field>
+			<field name="model">ala.web.info</field>
+			<field name="arch" type="xml">
+				<list string="Announcements" >
+					<field name="name" />
+					<field name="date" />
+					<field name="anounce" />
+                    <field name="enable" />
+                    <field name="color" />
+					<button name="publish_announce" type="object" string="Publish" class="btn btn-success" invisible="enable != False"/>
+					<button name="unpublish_announce" type="object" string="UnPublish" class="btn btn-danger" invisible="enable == False"/>
+				</list>
+			</field>
+		</record>
+
+
+		<record id="website_announcements_action" model="ir.actions.act_window">
+			<field name="name">Announcements</field>
+			<field name="res_model">ala.web.info</field>
+<!--			<field name="context">{'search_default_state':1}</field>-->
+			<field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No data yet!
+                </p><p>
+                    Start scheduling activities on your opportunities
+                </p>
+            </field>
+		</record>
+
+
+        <record id="website_banner_announcements_tree" model="ir.ui.view">
+			<field name="name">ala.banner.info.tree</field>
+			<field name="model">ala.banner.info</field>
+			<field name="arch" type="xml">
+				<list string="Banner" editable="top">
+					<field name="name" />
+					<field name="date" />
+					<field name="info" />
+                    <field name="enable" widget="boolean_toggle"/>
+				</list>
+			</field>
+		</record>
+
+
+		<record id="website_banner_announcements_action" model="ir.actions.act_window">
+			<field name="name">Banner</field>
+			<field name="res_model">ala.banner.info</field>
+			<field name="view_mode">list</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No data yet!
+                </p><p>
+                    Start scheduling activities on your opportunities
+                </p>
+            </field>
+		</record>
+
+
+
+
+	</data>
+</odoo>

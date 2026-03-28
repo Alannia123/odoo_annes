@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+
+        <record id="view_student_exam_tree" model="ir.ui.view">
+            <field name="name">ala.student.exam.record.tree</field>
+            <field name="model">ala.student.exam.record</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="student_id"/>
+                    <field name="division"/>
+                    <field name="academic_year"/>
+                    <field name="register_number"/>
+                    <field name="roll_number"/>
+                </list>
+            </field>
+        </record>
+
+
+
+        <record id="view_student_exam_form" model="ir.ui.view">
+            <field name="name">ala.student.exam.record.form</field>
+            <field name="model">ala.student.exam.record</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="student_id"/>
+                            <field name="division"/>
+                            <field name="academic_year"/>
+                            <field name="register_number"/>
+                            <field name="roll_number"/>
+                        </group>
+                        <notebook>
+                            <page string="Exam Lines">
+                                <field name="exam_line_ids">
+                                    <list editable="bottom">
+                                        <field name="exam"/>
+                                        <field name="term1_total"/>
+                                        <field name="half_assign_mark"/>
+                                        <field name="half_exam_mark"/>
+                                        <field name="half_total_mark" readonly="1"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="action_student_exam_record" model="ir.actions.act_window">
+            <field name="name">Student Exam Records</field>
+            <field name="res_model">ala.student.exam.record</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+
+<!--        <menuitem id="menu_student_exam" name="Student Exams" parent="ala_education_exam.examination_main_menu" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"/>-->
+<!--        <menuitem id="menu_student_exam_records" name="Exam Records" parent="menu_student_exam" action="action_student_exam_record"/>-->
+
+
+</odoo>

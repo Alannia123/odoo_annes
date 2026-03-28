@@ -1,0 +1,52 @@
+# -*- coding: utf-8 -*-
+
+{
+    'name': 'Educational Exam Management ALA',
+    'version': '19.0.1.0.0',
+    'category': 'Industries',
+    'summary': """Sneak the Examination Management in Educational ERP""",
+    'description': """An easy way to handle the examinations in an educational 
+     system with better reports and exam valuation and exam result facilities""",
+    'author': 'Alanniainfotechz',
+    'company': 'Alanniainfotechz',
+    'maintainer': 'Alanniainfotechz',
+    'depends': ['ala_education_core', 'ala_website_backend'],
+    'data': [
+        'data/activity.xml',
+        'security/security.xml',
+        'security/ir.model.access.csv',
+        'reports/ir_actions_report.xml',
+        'reports/admit_card_template.xml',
+        'reports/admit_card_division_temp.xml',
+        'reports/admit_card_student_temp.xml',
+        'reports/rank_card_action.xml',
+        'reports/rank_card_template.xml',
+        'reports/subject_marksheet_template.xml',
+        'reports/exam_marksheet_template.xml',
+        'reports/student_ir_action.xml',
+        'reports/student_rank_card_temp.xml',
+        'views/education_exam_views.xml',
+        'views/education_exam_valuation_views.xml',
+        'views/education_exam_results_views.xml',
+        'views/education_student_views.xml',
+        'views/evaluation_view.xml',
+        # 'views/student_exam_record_view.xml',
+        'wizard/admit_card_view.xml',
+        'wizard/rank_card_wizard_view.xml',
+        'wizard/generate_mark_view.xml',
+        'wizard/subject_mark_sheet_view.xml',
+        'wizard/student_marksheet_wizard_view.xml',
+    ],
+
+    # 'assets': {
+    #         'web.assets_backend': [
+    #             "/ala_education_exam/static/src/xml/voice_to_marks_templates.xml",
+    #             "/ala_education_exam/static/src/js/voice_to_number_widget.js",
+    #         ],
+    #     },
+    'images': ['static/description/banner.jpg'],
+    'license': 'AGPL-3',
+    'installable': True,
+    'auto_install': False,
+    'application': True,
+}

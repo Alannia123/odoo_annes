@@ -1,0 +1,17 @@
+<odoo>
+    <record id="view_attendance_duplicate_wizard_form" model="ir.ui.view">
+        <field name="name">attendance.duplicate.wizard.form</field>
+        <field name="model">attendance.duplicate.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Duplicate Attendance" >
+                <group>
+                    <field name="message" nolabel="1" readonly="1"/>
+                </group>
+                <footer>
+                    <button name="action_open_existing" type="object" string="Open Existing Record" class="btn-primary"/>
+                    <button name="action_cancel" string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

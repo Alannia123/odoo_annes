@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="view_rank_wizard_form" model="ir.ui.view">
+        <field name="name">ala.rank.wizard.form</field>
+        <field name="model">ala.rank.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Wizard Form">
+                <group>
+                    <group>
+                        <field name="class_div_id" options="{'no_create': True, 'no_open': True}"/>
+                    </group>
+                    <group>
+                        <field name="academic_year_id" options="{'no_create': True, 'no_open': True}"/>
+                    </group>
+                </group>
+
+                <footer>
+                    <button string="Generate PDF" type="object" name="action_generate_pdf" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+
+    <record id="action_open_rank_pdf_wizard" model="ir.actions.act_window">
+        <field name="name">Generate Rank Card</field>
+        <field name="res_model">ala.rank.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+<!--    <menuitem id="menu_generate_excel_report" name="PDF Reports" parent="ala_education_exam.examination_root_menu"-->
+<!--              groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin" sequence="40"/>-->
+    <menuitem id="menu_open_rank_wizard" name="Exam Report Card" web_icon="ala_education_exam,static/description/report.png"
+              groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin" action="action_open_rank_pdf_wizard" sequence="50"/>
+
+</odoo>

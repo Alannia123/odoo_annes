@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="view_admit_wizard_form" model="ir.ui.view">
+        <field name="name">ala.admit.wizard.form</field>
+        <field name="model">ala.admit.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Admit Card">
+                <group>
+                    <field name="div_individual" widget="radio"/>
+                </group>
+                <group>
+                    <group>
+                        <field name="exam_id" options="{'no_create': True, 'no_open': True}"/>
+
+                        <field name="student_id" options="{'no_create': True, 'no_open': True}" invisible="div_individual == 'division'"
+                                                            required="div_individual == 'individual'"/>
+                    </group>
+                    <group>
+                        <field name="class_div_id" options="{'no_create': True, 'no_open': True}" invisible="div_individual == 'individual'"
+                                                            required="div_individual == 'division'" />
+                        <field name="allowed_class_ids" invisible="1"/>
+                    </group>
+                </group>
+
+                <footer>
+                    <button string="Generate Admit Card" type="object" name="action_generate_pdf_divisions" class="btn-primary" invisible="div_individual == 'individual'"/>
+                    <button string="Generate Admit Card" type="object" name="action_generate_pdf_student" class="btn-primary" invisible="div_individual == 'division'"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+
+    <record id="action_open_admit_pdf_wizard" model="ir.actions.act_window">
+        <field name="name">Generate Admit Card</field>
+        <field name="res_model">ala.admit.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_open_admit_card_wizard" name="Exam Admit Card" web_icon="ala_education_exam,static/description/admit.png"
+             groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"  action="action_open_admit_pdf_wizard" sequence="30"/>
+
+</odoo>

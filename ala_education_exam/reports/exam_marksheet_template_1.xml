@@ -1,0 +1,281 @@
+<odoo>
+    <template id="exam_marksheet_template_document">
+        <t t-call="web.basic_layout">
+<!--                        <style>-->
+<!--                          /* table basics */-->
+<!--&lt;!&ndash;                          .marksheet-table { border-collapse: collapse; width:100%; font-size:10px; }&ndash;&gt;-->
+<!--                          .marksheet-table { border-collapse: collapse; width:100%; font-size:10px; }-->
+<!--                          .marksheet-table th, .marksheet-table td {-->
+<!--                            border: 1px solid #333;-->
+<!--&lt;!&ndash;                            padding: 4px;&ndash;&gt;-->
+<!--&lt;!&ndash;                            text-align: center;&ndash;&gt;-->
+<!--                            vertical-align: middle;-->
+<!--                          }-->
+
+<!--                          /* rotated header container: make cell taller and align the rotated text */-->
+<!--                          .rot-header {-->
+<!--                            width: 2px;            /* final visible width of the header column */-->
+<!--                            height: 150px;          /* make taller so rotated text fits */-->
+<!--&lt;!&ndash;                            padding: 0;&ndash;&gt;-->
+<!--&lt;!&ndash;                            position: relative;&ndash;&gt;-->
+<!--&lt;!&ndash;                            overflow: visible;&ndash;&gt;-->
+<!--&lt;!&ndash;                            white-space: nowrap;&ndash;&gt;-->
+<!--                          }-->
+
+
+
+<!--                          /* inner element we actually rotate */-->
+<!--                          .rot-header .rot {-->
+<!--&lt;!&ndash;                            display: inline-block;&ndash;&gt;-->
+<!--&lt;!&ndash;                            position: absolute;&ndash;&gt;-->
+<!--&lt;!&ndash;                            left: 50%;              /* move to center &#45;&#45; tune as needed */&ndash;&gt;-->
+<!--&lt;!&ndash;                            top: 100%;              /* anchor at bottom of cell */&ndash;&gt;-->
+<!--&lt;!&ndash;                            transform-origin: center bottom;&ndash;&gt;-->
+<!--&lt;!&ndash;                            -webkit-transform-origin: center bottom;&ndash;&gt;-->
+<!--                            transform: rotate(-90deg);-->
+<!--                            -webkit-transform: rotate(-90deg);-->
+<!--                            white-space: nowrap;-->
+<!--&lt;!&ndash;                            padding: 2px 6px;&ndash;&gt;-->
+<!--                            line-height: 1;-->
+<!--                          }-->
+
+<!--                          /* optional smaller text, wrap control */-->
+<!--                          .rot-header .rot .line { display:block; }-->
+
+<!--                          /* alternative: writing-mode (works if wkhtmltopdf supports it) */-->
+<!--                          .vertical-rl {-->
+<!--                            writing-mode: vertical-rl;-->
+<!--                            text-orientation: mixed;-->
+<!--                          }-->
+
+<!--                          /* header highlights */-->
+<!--                          .group-head { background:#f7d9b3; }-->
+<!--                          .name-head { background:#ffd966; }-->
+
+<!--                          .rot-header-name {-->
+<!--                            width: 5px;            /* final visible width of the header column */-->
+<!--                            height: 150px;          /* make taller so rotated text fits */-->
+<!--                            padding: 0;-->
+<!--                            position: relative;-->
+<!--                            overflow: visible;-->
+<!--                            white-space: nowrap;-->
+<!--                          }-->
+
+<!--                          /* inner element we actually rotate */-->
+<!--                          .rot-header-name .rot {-->
+<!--&lt;!&ndash;                            display: inline-block;&ndash;&gt;-->
+<!--&lt;!&ndash;                            position: absolute;&ndash;&gt;-->
+<!--&lt;!&ndash;                            left: 50%;              /* move to center &#45;&#45; tune as needed */&ndash;&gt;-->
+<!--&lt;!&ndash;                            top: 100%;              /* anchor at bottom of cell */&ndash;&gt;-->
+<!--                            transform-origin: right bottom;-->
+<!--                            -webkit-transform-origin: right bottom;-->
+<!--                            transform: rotate(-90deg);-->
+<!--                            -webkit-transform: rotate(-90deg);-->
+<!--                            white-space: nowrap;-->
+<!--&lt;!&ndash;                            padding: 2px 6px;&ndash;&gt;-->
+<!--                            line-height: 1;-->
+<!--                          }-->
+
+<!--                          .rot-header-laname {-->
+<!--                            width: 2px;            /* final visible width of the header column */-->
+<!--                            height: 150px;          /* make taller so rotated text fits */-->
+<!--                            padding: 0;-->
+<!--                            position: relative;-->
+<!--                            overflow: visible;-->
+<!--                            white-space: nowrap;-->
+<!--                          }-->
+
+<!--                          /* inner element we actually rotate */-->
+<!--                          .rot-header-laname .rot {-->
+<!--                            display: inline-block;-->
+<!--                            position: absolute;-->
+<!--&lt;!&ndash;                            left: 50%;              /* move to center &#45;&#45; tune as needed */&ndash;&gt;-->
+<!--&lt;!&ndash;                            top: 100%;              /* anchor at bottom of cell */&ndash;&gt;-->
+<!--                            transform-origin: center bottom;-->
+<!--                            -webkit-transform-origin: center bottom;-->
+<!--                            transform: rotate(-90deg);-->
+<!--                            -webkit-transform: rotate(-90deg);-->
+<!--                            white-space: nowrap;-->
+<!--&lt;!&ndash;                            padding: 2px 6px;&ndash;&gt;-->
+<!--                            line-height: 1;-->
+<!--                          }-->
+
+<!--                          .rot-header-total {-->
+<!--                            width: 4px;            /* final visible width of the header column */-->
+<!--                            height: 150px;          /* make taller so rotated text fits */-->
+<!--                            padding: 0;-->
+<!--                            position: relative;-->
+<!--                            overflow: visible;-->
+<!--                            white-space: nowrap;-->
+<!--                          }-->
+
+<!--                          /* inner element we actually rotate */-->
+<!--                          .rot-header-total .rot {-->
+<!--                            display: inline-block;-->
+<!--                            position: absolute;-->
+<!--&lt;!&ndash;                            left: 50%;              /* move to center &#45;&#45; tune as needed */&ndash;&gt;-->
+<!--&lt;!&ndash;                            top: 100%;              /* anchor at bottom of cell */&ndash;&gt;-->
+<!--                            transform-origin: center bottom;-->
+<!--                            -webkit-transform-origin: center bottom;-->
+<!--                            transform: rotate(-90deg);-->
+<!--                            -webkit-transform: rotate(-90deg);-->
+<!--                            white-space: nowrap;-->
+<!--                            padding: 2px 6px;-->
+<!--                            line-height: 1;-->
+<!--                          }-->
+
+<!--                        .rot-header-percen {-->
+<!--                            width: 3px;            /* final visible width of the header column */-->
+<!--                            height: 150px;          /* make taller so rotated text fits */-->
+<!--                            padding: 0;-->
+<!--                            position: relative;-->
+<!--                            overflow: visible;-->
+<!--                            white-space: nowrap;-->
+<!--                          }-->
+
+<!--                          /* inner element we actually rotate */-->
+<!--                          .rot-header-percen .rot {-->
+<!--                            display: inline-block;-->
+<!--                            position: absolute;-->
+<!--&lt;!&ndash;                            left: 50%;              /* move to center &#45;&#45; tune as needed */&ndash;&gt;-->
+<!--&lt;!&ndash;                            top: 100%;              /* anchor at bottom of cell */&ndash;&gt;-->
+<!--                            transform-origin: center bottom;-->
+<!--                            -webkit-transform-origin: center bottom;-->
+<!--                            transform: rotate(-90deg);-->
+<!--                            -webkit-transform: rotate(-90deg);-->
+<!--                            white-space: nowrap;-->
+<!--                            padding: 2px 6px;-->
+<!--                            line-height: 1;-->
+<!--                          }-->
+
+
+<!--                        </style>-->
+
+
+<!--            <style>-->
+<!--    table, th, td {-->
+<!--        border: 1px solid black;-->
+<!--        border-collapse: collapse;-->
+<!--    }-->
+<!--    th {-->
+<!--        height: 150px;-->
+<!--        vertical-align: bottom; /* So rotated text aligns nicely */-->
+<!--        padding: 0;-->
+<!--    }-->
+<!--    .vertical-text {-->
+<!--        transform: rotate(-90deg);-->
+<!--        transform-origin: bottom left;-->
+<!--        white-space: nowrap;-->
+<!--        display: inline-block;-->
+<!--    }-->
+<!--</style>-->
+
+            <div class="page">
+              <h3>Marksheet - <t t-esc="doc.name"/></h3>
+                <t t-set="marksheet_exam" t-value="doc.get_current_exam()"/>
+                <t t-set="exam_lines" t-value="doc.get_current_exam_lines(marksheet_exam)"/>
+
+<!--              <table >-->
+<!--&lt;!&ndash;              <table >&ndash;&gt;-->
+<!--                <thead>-->
+<!--                  <tr>-->
+<!--                    <th class="rot-header group-head" ><div class="rot">Class Name</div></th>-->
+<!--                    <th class="rot-header group-head" ><div class="rot">Section</div></th>-->
+<!--                    <th class="rot-header group-head" ><div class="rot">Roll No</div></th>-->
+<!--                    <th class="rot-header-name group-head" ><div class="rot">First Name</div></th>-->
+<!--                    <th class="rot-header-laname group-head" ><div class="rot">Last Name</div></th>-->
+<!--                    <t t-foreach="marksheet_exam.subject_line_ids" t-as="subject">-->
+<!--                      <th class="rot-header group-head" ><div class="rot"><t t-esc="subject.subject_id.name"></t></div></th>-->
+<!--                    </t>-->
+<!--                    <th class="rot-header-total group-head" ><div class="rot">Total</div></th>-->
+<!--                    <th class="rot-header-percen group-head" ><div class="rot">Percentage</div></th>-->
+<!--                  </tr>-->
+<!--                </thead>-->
+<!--              </table>-->
+
+<!--          <table >-->
+<!--&lt;!&ndash;              <table >&ndash;&gt;-->
+<!--                <thead>-->
+<!--                  <tr>-->
+<!--                    <th width="8%" ><div class="vertical-text">Class Name</div></th>-->
+<!--                    <th width="8%" ><div class="vertical-text">Section</div></th>-->
+<!--                    <th width="8%" ><div class="vertical-text">Roll No</div></th>-->
+<!--                    <th width="8%" ><div class="vertical-text">First Name</div></th>-->
+<!--                    <th width="8%" ><div class="vertical-text">Last Name</div></th>-->
+<!--                    <t t-foreach="marksheet_exam.subject_line_ids" t-as="subject">-->
+<!--                        <th width="8%" ><div class="vertical-text"><t t-esc="subject.subject_id.name"></t></div></th>-->
+<!--                    </t>-->
+<!--                    <th width="8%" ><div class="vertical-text">Tottal</div></th>-->
+<!--                    <th width="8%" ><div class="vertical-text">Percentage</div></th>-->
+<!--                  </tr>-->
+<!--                </thead>-->
+
+<!--&lt;!&ndash;                <tbody>&ndash;&gt;-->
+<!--&lt;!&ndash;                  <t t-foreach="exam_lines" t-as="line">&ndash;&gt;-->
+<!--&lt;!&ndash;                  <t t-foreach="line.subject_line_ids" t-as="subject">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                      <td><t t-esc="subject.subject_id.name"/></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                      <td><t t-esc="subject.exam_mark"/></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                      <td style="text-align:left"><t t-esc="line.student_id.name"/></td>&ndash;&gt;-->
+
+<!--&lt;!&ndash;                      <td></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                      <td></td>&ndash;&gt;-->
+
+<!--&lt;!&ndash;                      <td></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                      <td></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                    </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                  </t>&ndash;&gt;-->
+<!--&lt;!&ndash;                  </t>&ndash;&gt;-->
+<!--&lt;!&ndash;                </tbody>&ndash;&gt;-->
+<!--              </table>-->
+
+                <style>
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    th {
+        height: 150px;
+        width: 30px;
+        text-align: center;
+        vertical-align: middle;
+        padding: 0;
+    }
+    .vertical-text {
+        display: block;
+        transform: rotate(-90deg);
+        transform-origin: center center;
+        white-space: nowrap;
+        width: 0px; /* Helps centering in PDF */
+    }
+</style>
+
+<table>
+    <tr>
+        <th>
+            <span class="vertical-text">Class Name</span>
+        </th>
+        <th>
+            <span class="vertical-text">Section</span>
+        </th>
+        <th>
+            <span class="vertical-text">Roll No</span>
+        </th>
+        <!-- repeat for others -->
+    </tr>
+</table>
+
+            </div>
+          </t>
+    </template>
+
+
+
+        <template id="exam_marksheet_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="ala_education_exam.exam_marksheet_template_document" />
+                </t>
+            </t>
+        </template>
+</odoo>

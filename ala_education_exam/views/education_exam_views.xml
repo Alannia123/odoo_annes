@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--   Form view for education exam   -->
+    <record id="education_exam_view_form" model="ir.ui.view">
+        <field name="name">ala.education.exam.view.form</field>
+        <field name="model">ala.education.exam</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+<!--                    <button name="send_notify_to_teachers" type="object"-->
+<!--                            invisible="state != 'draft'"-->
+<!--                            confirm="After sending notify to teachers , you can't do any changes. Make sure the exam dates and subjects everything is correct. Do you want to proceed?"-->
+<!--                            class="oe_highlight" string="Notify to Teachers"/>-->
+                    <button name="action_confirm_exam" type="object"
+                            invisible="state != 'draft'"
+                            class="oe_highlight" string="Confirm"/>
+                    <button name="action_close_exam" type="object"
+                            string="Close" invisible="state != 'ongoing'"
+                            confirm="After closing the exam, you can't do valuation. You can close the exam only after the completion of valuation process. Do you want to proceed?"/>
+                    <button name="action_cancel_exam" type="object"
+                            invisible="state != 'draft'"
+                            string="Cancel"/>
+                    <button name="action_reset_exam" type="object"
+                            string="Reset to draft"/>
+                    <field name="state" readonly="1" widget="statusbar"
+                           statusbar_visible="draft,waiting_syllabus,ongoing,close"/>
+                </header>
+                <sheet>
+                    <h1>
+                        <field name="name" readonly="1"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="exam_type_id" options="{'no_create': True, 'no_open':True}"
+                                   readonly="state != 'draft'"/>
+                            <field name="class_id" readonly="state != 'draft'" options="{'no_create': True, 'no_open':True}"
+                                   invisible="school_class_division_wise not in ['class', 'final']"
+                                   required="school_class_division_wise in ['class', 'final']"/>
+                            <field name="division_id"
+                                   readonly="state != 'draft'"
+                                   invisible="school_class_division_wise not in ['division']"
+                                   required="school_class_division_wise in ['division']"/>
+
+                            <field name="school_class_division_wise"
+                                   invisible="1"/>
+                            <field name="class_division_hider" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="academic_year_id" options="{'no_create': True, 'no_open':True}"/>
+                            <field name="mark" force_save="1" readonly="1"/>
+                            <field name="pass_mark" force_save="1" readonly="1"/>
+                            <field name="is_assign_mark" />
+                            <field name="no_of_subjects" readonly="state != 'draft'" required="1"/>
+
+
+<!--                            <field name="start_date"-->
+<!--                                   readonly="state != 'draft'"/>-->
+<!--                            <field name="end_date" readonly="state != 'draft'"/>-->
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Subjects">
+                            <field name="subject_line_ids"  readonly="state != 'draft'">
+                                <list editable="bottom" create="0" delete="0">
+                                    <field name="subject_id" force_save="1"/>
+                                    <field name="date"/>
+                                    <field name="time_from"   column_invisible=""/>
+                                    <field name="time_to"  column_invisible=""/>
+                                    <field name="mark" column_invisible="1"/>
+                                    <field name="exam_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Division Exams">
+                            <field name="valuation_line_ids"  readonly="state != 'draft'">
+                                <list editable="bottom" create="0" delete="0" edit="0">
+                                    <field name="name" />
+                                    <field name="division_id"/>
+                                    <field name="subject_id"   />
+                                    <field name="faculty_ids"   widget="many2many_tags"/>
+                                    <field name="state"  decoration-warning="state == 'draft'" decoration-success="state == 'completed' " widget="badge"/>
+                                    <field name="exam_id" column_invisible="1"/>
+                                    <button type="object" string="View" name="view_subject_entry" class="oe_highlight"/>
+                                </list>
+                            </field>
+                        </page>
+<!--                        <page string="Syllabus">-->
+<!--                            <field name="sylabus_line_ids"-->
+<!--                                   >-->
+<!--                                <list editable="bottom" create="0">-->
+<!--                                    <field name="subject_id" force_save="1" readonly="1"/>-->
+<!--                                    <field name="file_name" column_invisible="True"/>-->
+<!--                                    <field name="attachment" filename="file_name" widget="binary"/>-->
+<!--                                    <field name="exam_id" column_invisible="1"/>-->
+<!--                                </list>-->
+<!--                            </field>-->
+<!--                        </page>-->
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <!--   Tree view for education exam   -->
+    <record id="education_exam_view_tree" model="ir.ui.view">
+        <field name="name">ala.education.exam.view.tree</field>
+        <field name="model">ala.education.exam</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="exam_type_id"/>
+                <field name="class_id"/>
+                <field name="division_id"/>
+<!--                <field name="start_date"/>-->
+<!--                <field name="end_date"/>-->
+                <field name="state" widget="badge" decoration-success="state == 'close'" decoration-info="state == 'draft'" decoration-muted="state == 'cancel'" decoration-warning="state == 'ongoing'"/>
+                <field name="academic_year_id"/>
+            </list>
+        </field>
+    </record>
+    <!--   Action for education exam   -->
+    <record id="education_exam_action" model="ir.actions.act_window">
+        <field name="name">Exam</field>
+        <field name="res_model">ala.education.exam</field>
+        <field name="view_mode">list,form</field>
+        <field name="target">current</field>
+    </record>
+    <!--   Form view for education exam type  -->
+    <record id="education_exam_type_view_form" model="ir.ui.view">
+        <field name="name">ala.education.exam.type.view.form</field>
+        <field name="model">ala.education.exam.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <h1>
+                        <field name="name" placeholder="Eg: Annual Exam"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="school_class_division_wise" widget="radio"/>
+                            <field name="exam_order" widget="radio"/>
+                        </group>
+                        <group>
+                            <field name="is_assign_mark" widget="boolean_toggle"/>
+                            <field name="mark"/>
+                            <field name="pass_mark"/>
+                            <field name="image_1920"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!--   Tree view for education exam type  -->
+    <record id="education_exam_type_view_tree" model="ir.ui.view">
+        <field name="name">ala.education.exam.type.view.tree</field>
+        <field name="model">ala.education.exam.type</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="is_assign_mark"/>
+                <field name="exam_order"/>
+                <field name="prepare_marksheet" widget="boolean_toggle"/>
+                <field name="mark"/>
+                <field name="pass_mark"/>
+            </list>
+        </field>
+    </record>
+    <!--   Action for education exam type  -->
+    <record id="education_exam_type_action" model="ir.actions.act_window">
+        <field name="name">Exam Type</field>
+        <field name="res_model">ala.education.exam.type</field>
+        <field name="view_mode">list,form</field>
+        <field name="target">current</field>
+    </record>
+    <!--  Menu Items for education exam   -->
+    <menuitem id="examination_root_menu" name="MIS Exam" sequence="11"
+              groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
+              web_icon="ala_education_exam,static/description/icon.png"/>
+    <menuitem id="examination_main_menu"
+              parent="ala_education_exam.examination_root_menu" name="Exam"
+              sequence="3"/>
+    <menuitem id="examination_sub_menu"
+              parent="ala_education_exam.examination_main_menu"
+              groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
+              action="education_exam_action"
+              name="Exam" sequence="12"/>
+    <menuitem id="examination_reporting_menu"
+              groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
+              parent="ala_education_exam.examination_root_menu"
+              name="Reporting" sequence="30"/>
+    <menuitem id="examination_configuration_menu"
+              groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
+              parent="ala_education_exam.examination_root_menu"
+              name="Configuration" sequence="35"/>
+    <menuitem id="examination_type_menu"
+              parent="ala_education_exam.examination_configuration_menu"
+              action="education_exam_type_action" name="Exam Types" sequence="15"/>
+</odoo>

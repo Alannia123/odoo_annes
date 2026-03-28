@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!--Form view of the Education attendance-->
+    <record id="education_evaluation_view_form" model="ir.ui.view">
+        <field name="name">ala.education.evaluation.view.form</field>
+        <field name="model">ala.education.evaluation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_eveluation_done" type="object"
+                            invisible="evaluation_created == False or state != 'draft'"
+                            class="oe_highlight" string="Done"/>
+                    <button name="action_set_to_draft" type="object"
+                            invisible="state == 'draft'"
+                            string="Set to Draft"
+                            groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin,ala_education_core.group_education_faculty"/>
+                    <field name="state" readonly="1" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <h1>
+                        <field name="name" readonly="1"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="division_id"
+                                   readonly="evaluation_created == True" options="{'no_create':True,'no_open':True}"/>
+                            <field name="faculty_id" options="{'no_create':True,'no_open':True}"/>
+                            <field name="class_id" invisible="1"/>
+                            <field name="academic_year_id" invisible="0" options="{'no_create':True,'no_open':True}"/>
+                        </group>
+                        <group>
+                            <field name="date" readonly="1" groups="ala_education_core.group_education_faculty"/>
+                            <field name="evaluation_created" invisible="1"/>
+                        </group>
+                    </group>
+                    <div style="padding-bottom: 10px;">
+                        <button style="padding: 1px 5px;background: #5fb18e !important;border-color: #63b892 !important;"
+                                string="Create Evaluation Table"
+                                name="action_create_evaluation_line"
+                                type="object"
+                                invisible="evaluation_created == True"
+                                class="oe_highlight"/>
+                    </div>
+                    <notebook>
+                        <page string="Half Yearly" invisible="evaluation_created == False">
+                            <field name="half_evaluation_line_ids"  readonly="state != 'draft'">
+                                <list editable="bottom" create="false" delete="false" >
+                                    <field name="roll_no" readonly="1" />
+                                    <field name="student_name" readonly="1"  style=" width: 500px; "/>
+                                    <field name="emotional_maturity" decoration-success="emotional_maturity == 'high_mature'" decoration-warning="emotional_maturity == 'need_guide'" decoration-info="emotional_maturity == 'develop'"
+                                           decoration-primary="emotional_maturity == 'mature'" decoration-danger="emotional_maturity == 'immature'" optional="show"/>
+                                    <field name="social_maturity" decoration-success="social_maturity == 'high_mature'" decoration-warning="social_maturity == 'need_guide'" decoration-info="social_maturity == 'develop'"
+                                           decoration-primary="social_maturity == 'mature'" decoration-danger="social_maturity == 'immature'" optional="show"/>
+                                    <field name="intellectual_maturity" decoration-success="intellectual_maturity == 'high_mature'" decoration-warning="intellectual_maturity == 'need_guide'" decoration-info="intellectual_maturity == 'develop'"
+                                           decoration-primary="intellectual_maturity == 'mature'" decoration-danger="intellectual_maturity == 'immature'" optional="show"/>
+                                    <field name="moral_maturity" decoration-success="moral_maturity == 'high_mature'" decoration-warning="moral_maturity == 'need_guide'" decoration-info="moral_maturity == 'develop'"
+                                           decoration-primary="moral_maturity == 'mature'" decoration-danger="moral_maturity == 'immature'" optional="show"/>
+                                    <field name="personal_resp" decoration-success="personal_resp == 'high_mature'" decoration-warning="personal_resp == 'need_guide'"
+                                           decoration-info="personal_resp == 'develop'"
+                                           decoration-primary="personal_resp == 'mature'" decoration-danger="personal_resp == 'immature'" optional="show"/>
+                                    <field name="adaptobilty_resilience" decoration-success="adaptobilty_resilience == 'high_mature'" decoration-warning="adaptobilty_resilience == 'need_guide'"
+                                           decoration-info="adaptobilty_resilience == 'develop'"
+                                           decoration-primary="adaptobilty_resilience == 'mature'" decoration-danger="adaptobilty_resilience == 'immature'" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Annual Yearly" invisible="evaluation_created == False">
+                            <field name="annual_evaluation_line_ids"  readonly="state != 'draft'">
+                                <list editable="bottom" create="false" delete="false">
+                                    <field name="roll_no" readonly="1" />
+                                    <field name="student_name" readonly="1"  style=" width: 500px; "/>
+                                    <field name="emotional_maturity" decoration-success="emotional_maturity == 'high_mature'"
+                                           decoration-warning="emotional_maturity == 'need_guide'" decoration-info="emotional_maturity == 'develop'"
+                                           decoration-primary="emotional_maturity == 'mature'" decoration-danger="emotional_maturity == 'immature'" optional="show" />
+                                    <field name="social_maturity" decoration-success="social_maturity == 'high_mature'"
+                                           decoration-warning="social_maturity == 'need_guide'" decoration-info="social_maturity == 'develop'"
+                                           decoration-primary="social_maturity == 'mature'" decoration-danger="social_maturity == 'immature'" optional="show"/>
+                                    <field name="intellectual_maturity" decoration-success="intellectual_maturity == 'high_mature'"
+                                           decoration-warning="intellectual_maturity == 'need_guide'" decoration-info="intellectual_maturity == 'develop'"
+                                           decoration-primary="intellectual_maturity == 'mature'" decoration-danger="intellectual_maturity == 'immature'" optional="show"/>
+                                    <field name="moral_maturity" decoration-success="moral_maturity == 'high_mature'"
+                                           decoration-warning="moral_maturity == 'need_guide'" decoration-info="moral_maturity == 'develop'"
+                                           decoration-primary="moral_maturity == 'mature'" decoration-danger="moral_maturity == 'immature'" optional="show"/>
+                                    <field name="personal_resp" decoration-success="personal_resp == 'high_mature'"
+                                           decoration-warning="personal_resp == 'need_guide'" decoration-info="personal_resp == 'develop'"
+                                           decoration-primary="personal_resp == 'mature'" decoration-danger="personal_resp == 'immature'" optional="show"/>
+                                    <field name="adaptobilty_resilience" decoration-success="adaptobilty_resilience == 'high_mature'"
+                                           decoration-warning="adaptobilty_resilience == 'need_guide'" decoration-info="adaptobilty_resilience == 'develop'"
+                                           decoration-primary="adaptobilty_resilience == 'mature'" decoration-danger="adaptobilty_resilience == 'immature'" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"
+                           widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <!--Tree view of the Education attendance-->
+    <record id="education_evaluation_view_tree" model="ir.ui.view">
+        <field name="name">ala.education.evaluation.view.tree</field>
+        <field name="model">ala.education.evaluation</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="division_id"/>
+                <field name="class_id"/>
+                <field name="date"/>
+                <field name="faculty_id"/>
+                <field name="state" decoration-warning="state == 'draft'" decoration-success="state == 'done'" widget="badge" optional="show"/>
+                <field name="create_uid" />
+            </list>
+        </field>
+    </record>
+
+
+    <!--Menu action of the Education attendance-->
+    <record id="education_evaluation_action" model="ir.actions.act_window">
+        <field name="name">Evaluation</field>
+        <field name="res_model">ala.education.evaluation</field>
+        <field name="view_mode">list,form</field>
+        <field name="target">current</field>
+        <field name="context">{'search_current_academic_year': 1,
+            'search_default_group_class_id': 1}
+        </field>
+    </record>
+
+    <!--Search view of the Education attendance-->
+    <record id="education_evaluation_view_search" model="ir.ui.view">
+        <field name="name">ala.education.evaluation.view.search</field>
+        <field name="model">ala.education.evaluation</field>
+        <field name="arch" type="xml">
+            <search string="Students Evaluations">
+                <field name="faculty_id"/>
+                <field name="division_id"/>
+                <separator/>
+                <filter string="Done" name="done_state"
+                        domain="[('state','!=','draft')]"/>
+                <separator/>
+                <filter string="Current Academic Year"
+                        name='current_academic_year'
+                        domain="[('academic_year_id.ay_start_date', '&lt;=', context_today().strftime('%Y-%m-%d')),
+                            ('academic_year_id.ay_end_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <group expand="1" string="Group By">
+                    <filter string="Class" name="group_class_id"
+                            context="{'group_by':'class_id'}"/>
+                    <filter string="Division" name="group_division_id"
+                            context="{'group_by':'division_id'}"/>
+                </group>
+                <filter name="group_by_faculty" string="Faculty" context="{'group_by': 'faculty_id'}"/>
+
+            </search>
+        </field>
+    </record>
+
+
+    <menuitem id="education_student_main_menu"
+              groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin,ala_education_core.group_education_faculty"
+              web_icon="ala_education_exam,static/description/eval.png" action="education_evaluation_action"
+              name="Evaluation" sequence="21"/>
+
+</odoo>

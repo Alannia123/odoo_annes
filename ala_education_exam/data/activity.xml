@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+<!--Syllabus entry notification to techers-->
+    <record id="syllabus_entry_teachers_notification" model="mail.activity.type">
+        <field name="name">Syllabus entry for Teachers</field>
+        <field name="res_model">ala.education.exam</field>
+    </record>
+
+
+<!--     &lt;!&ndash; Sequences for res.partner &ndash;&gt;-->
+<!--    <record id="seq_stu_evaluation" model="ir.sequence">-->
+<!--        <field name="name">Student Evaluation</field>-->
+<!--        <field name="code">ala.education.evaluation</field>-->
+<!--        <field name="prefix">EVA</field>-->
+<!--        <field name="padding">5</field>-->
+<!--        <field name="company_id"></field>-->
+<!--    </record>-->
+
+
+
+</odoo>
+

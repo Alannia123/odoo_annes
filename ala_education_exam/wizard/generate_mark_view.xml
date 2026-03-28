@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="view_marksheet_wizard_form" model="ir.ui.view">
+        <field name="name">ala.marksheet.wizard.form</field>
+        <field name="model">ala.marksheet.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Marksheet">
+                <group>
+<!--                    <field name="exam_id"/>-->
+                    <field name="class_div_id" options="{'no_create': True, 'no_open': True}"/>
+                </group>
+                <footer>
+                    <button string="Generate Marksheet" type="object" name="action_generate_marksheet_xlsx" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+
+    <record id="action_open_rank_marksheet" model="ir.actions.act_window">
+        <field name="name">Generate Marksheet</field>
+        <field name="res_model">ala.marksheet.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_marksheet_wizard" name="Exam Div Marksheet" web_icon="ala_education_exam,static/description/mark.png"
+              groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin" action="action_open_rank_marksheet" sequence="20"/>
+
+</odoo>

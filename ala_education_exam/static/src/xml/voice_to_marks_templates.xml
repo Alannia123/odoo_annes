@@ -1,0 +1,41 @@
+<odoo>
+
+    <!-- =========================================================
+         🎤 Voice To Marks Button
+         ========================================================= -->
+    <t t-name="ala_education_exam.VoiceToMarksButton">
+        <button type="button"
+                class="btn"
+                t-att-class="state.isListening ? 'btn-danger' : 'btn-secondary'"
+                t-on-click="toggleRecording"
+                title="Voice to Marks">
+            <i t-att-class="state.isListening
+                ? 'fa fa-microphone-slash'
+                : 'fa fa-microphone'"/>
+        </button>
+    </t>
+
+    <!-- =========================================================
+         🧾 Voice To Marks Field (Char + Button)
+         ========================================================= -->
+    <t t-name="ala_education_exam.VoiceToMarksField">
+        <div class="d-flex align-items-center gap-1">
+
+            <CharField t-props="props"/>
+
+            <VoiceToMarksButton
+                t-props="{
+                    record: props.record,
+                    fieldName: props.name
+                }"/>
+
+            <button type="button"
+                    class="btn btn-light"
+                    t-on-click="clearText"
+                    title="Clear Marks">
+                <i class="fa fa-times"/>
+            </button>
+        </div>
+    </t>
+
+</odoo>

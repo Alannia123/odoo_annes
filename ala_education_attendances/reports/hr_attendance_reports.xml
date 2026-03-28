@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!--
+   This XML snippet defines an action for generating the Attendance Report in PDF format.
+   It associates the report with the 'hr.employee' model and specifies the QWeb PDF report type.
+   The 'report_name' and 'report_file' fields provide the technical names of the report to be used.
+   -->
+
+    <record id="paperformat_student_att_summary" model="report.paperformat">
+            <field name="name">Student Attendances Summary</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">297</field>
+            <field name="page_width">210</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">30</field>
+            <field name="margin_bottom">23</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">20</field>
+            <field name="dpi">90</field>
+        </record>
+
+
+    <record id="action_report_hr_attendance" model="ir.actions.report">
+        <field name="name">Attendance Report</field>
+        <field name="model">ala.education.attendance</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ala_education_attendances.report_student_attendance</field>
+        <field name="report_file">ala_education_attendances.report_student_attendance</field>
+        <field name="paperformat_id" ref="ala_education_attendances.paperformat_student_att_summary"/>
+    </record>
+</odoo>
