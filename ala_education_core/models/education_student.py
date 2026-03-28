@@ -97,12 +97,12 @@ class EducationStudent(models.Model):
         'res.partner', string='Partner', required=True,
         ondelete="cascade", help="Related partner of the student")
     last_name = fields.Char(string='Last Name', help="Enter last name")
-    register_no = fields.Char('Registration Number', required=True)
+    register_no = fields.Char('Registration Number', required=False)
     roll_no = fields.Char('Roll Number', required=False)
 
     date_of_birth = fields.Date(string="Date of Birth", required=True,
                                 help="Enter date of birth of student")
-    date_of_addmission = fields.Date(string="Date of Addmission", required=True,
+    date_of_addmission = fields.Date(string="Date of Addmission", required=False,
                                 help="Enter date of addmission of student")
     # guardian_id = fields.Many2one('res.partner', string="Guardian",
     #                               domain=[('is_parent', '=', True)],

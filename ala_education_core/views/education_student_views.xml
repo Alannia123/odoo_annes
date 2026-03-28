@@ -148,7 +148,7 @@
                     <group col="3">
                         <group>
                             <field name="ad_no" invisible="1"/>
-                            <field name="register_no" placeholder="Student Register Number" required="1" readonly="1"/>
+                            <field name="register_no" placeholder="Student Register Number" readonly="1"/>
                             <field name="student_new_old" readonly="1"/>
                             <field name="no_of_discipline_history" invisible="1"/>
                             <field name="company_id" invisible="1"/>
