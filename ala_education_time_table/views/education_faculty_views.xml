@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="ala_education_faculty_view_form_timetable" model="ir.ui.view">
+        <field name="name">ala.education.faculty.view.form.inherit.education.time.table</field>
+        <field name="model">ala.education.faculty</field>
+        <field name="inherit_id" ref="ala_education_core.education_faculty_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='image']" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="%(ala_education_time_table.action_education_time_table_view_faculty_wise)d"
+                            type="action" class="oe_stat_button" icon="fa-calendar" string="Timetable"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -92,11 +92,12 @@
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"
-                           widget="mail_followers"/>
-                    <field name="message_ids" widget="mail_thread"/>
-                </div>
+                <chatter
+                    open_attachments="True"
+                    reload_on_attachment="True"
+                    reload_on_follower="True"
+                    reload_on_post="True"
+                />
             </form>
         </field>
     </record>
@@ -129,32 +130,32 @@
     </record>
 
     <!--Search view of the Education attendance-->
-    <record id="education_evaluation_view_search" model="ir.ui.view">
-        <field name="name">ala.education.evaluation.view.search</field>
-        <field name="model">ala.education.evaluation</field>
-        <field name="arch" type="xml">
-            <search string="Students Evaluations">
-                <field name="faculty_id"/>
-                <field name="division_id"/>
-                <separator/>
-                <filter string="Done" name="done_state"
-                        domain="[('state','!=','draft')]"/>
-                <separator/>
-                <filter string="Current Academic Year"
-                        name='current_academic_year'
-                        domain="[('academic_year_id.ay_start_date', '&lt;=', context_today().strftime('%Y-%m-%d')),
-                            ('academic_year_id.ay_end_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
-                <group expand="1" string="Group By">
-                    <filter string="Class" name="group_class_id"
-                            context="{'group_by':'class_id'}"/>
-                    <filter string="Division" name="group_division_id"
-                            context="{'group_by':'division_id'}"/>
-                </group>
-                <filter name="group_by_faculty" string="Faculty" context="{'group_by': 'faculty_id'}"/>
+<!--    <record id="education_evaluation_view_search" model="ir.ui.view">-->
+<!--        <field name="name">ala.education.evaluation.view.search</field>-->
+<!--        <field name="model">ala.education.evaluation</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <search string="Students Evaluations">-->
+<!--                <field name="faculty_id"/>-->
+<!--                <field name="division_id"/>-->
+<!--                <separator/>-->
+<!--                <filter string="Done" name="done_state"-->
+<!--                        domain="[('state','!=','draft')]"/>-->
+<!--                <separator/>-->
+<!--                <filter string="Current Academic Year"-->
+<!--                        name='current_academic_year'-->
+<!--                        domain="[('academic_year_id.ay_start_date', '&lt;=', context_today().strftime('%Y-%m-%d')),-->
+<!--                            ('academic_year_id.ay_end_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>-->
+<!--                <group expand="1" string="Group By">-->
+<!--                    <filter string="Class" name="group_class_id"-->
+<!--                            context="{'group_by':'class_id'}"/>-->
+<!--                    <filter string="Division" name="group_division_id"-->
+<!--                            context="{'group_by':'division_id'}"/>-->
+<!--                </group>-->
+<!--                <filter name="group_by_faculty" string="Faculty" context="{'group_by': 'faculty_id'}"/>-->
 
-            </search>
-        </field>
-    </record>
+<!--            </search>-->
+<!--        </field>-->
+<!--    </record>-->
 
 
     <menuitem id="education_student_main_menu"

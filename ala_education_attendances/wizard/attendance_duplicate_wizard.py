@@ -6,7 +6,7 @@ class AttendanceDuplicateWizard(models.TransientModel):
 
     message = fields.Text(string="Message", readonly=True)
     existing_id = fields.Many2one('ala.education.attendance', string="Existing Attendance", readonly=True)
-    division_id = fields.Many2one('ala.education.class.division',
+    division_id = fields.Many2one('ala.education.class.division', domain=[('current_year', '=', True)],
                                   string='Division', required=True,
                                   help="Class division for attendance")
     date = fields.Date(string='Date', default=fields.Date.today, required=True,

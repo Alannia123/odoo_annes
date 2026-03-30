@@ -12,7 +12,7 @@ class EducationClassHistory(models.Model):
     academic_year_id = fields.Many2one('ala.education.academic.year',
                                        string='Academic Year',
                                        help="Select the Academic Year")
-    class_id = fields.Many2one('ala.education.class.division',
+    class_id = fields.Many2one('ala.education.class.division', domain=[('current_year', '=', True)],
                                string='Class', help="Select the class")
     student_id = fields.Many2one('ala.education.student',
                                  string='Students',

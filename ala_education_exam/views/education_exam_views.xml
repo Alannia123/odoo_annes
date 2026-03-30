@@ -97,10 +97,12 @@
 <!--                        </page>-->
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" widget="mail_followers"/>
-                    <field name="message_ids" widget="mail_thread"/>
-                </div>
+                <chatter
+                    open_attachments="True"
+                    reload_on_attachment="True"
+                    reload_on_follower="True"
+                    reload_on_post="True"
+                />
             </form>
         </field>
     </record>
@@ -177,23 +179,20 @@
         <field name="target">current</field>
     </record>
     <!--  Menu Items for education exam   -->
-    <menuitem id="examination_root_menu" name="MIS Exam" sequence="11"
+    <menuitem id="examination_root_menu" name="Exam Management" sequence="11"
               groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
               web_icon="ala_education_exam,static/description/icon.png"/>
     <menuitem id="examination_main_menu"
-              parent="ala_education_exam.examination_root_menu" name="Exam"
+              parent="ala_education_exam.examination_root_menu" name="Main Exams"
               sequence="3"/>
     <menuitem id="examination_sub_menu"
               parent="ala_education_exam.examination_main_menu"
-              groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
               action="education_exam_action"
               name="Exam" sequence="12"/>
     <menuitem id="examination_reporting_menu"
-              groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
               parent="ala_education_exam.examination_root_menu"
               name="Reporting" sequence="30"/>
     <menuitem id="examination_configuration_menu"
-              groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
               parent="ala_education_exam.examination_root_menu"
               name="Configuration" sequence="35"/>
     <menuitem id="examination_type_menu"

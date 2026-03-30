@@ -33,13 +33,16 @@ class DailyAttendanceStudentRemark(models.TransientModel):
     )
     division_id = fields.Many2one(
         "ala.education.class.division",
-        string="Division",
+        string="Division", domain=[('current_year', '=', True)],
         ondelete="restrict",
     )
     user = fields.Char(default=lambda self: self.env.user)
     user_id = fields.Many2one("ala.education.faculty", string="Faculty")
     standard_name = fields.Char(related="division_id.name", store=True)
-    year = fields.Char('Year', default='2025')
+    year = fields.Char(
+        'Year',
+        default=lambda self: str(fields.Date.today().year)
+    )
     month = fields.Selection(
         selection=[
             ("1", "January"),
@@ -107,12 +110,12 @@ class DailyAttendanceStudentRemark(models.TransientModel):
                 int(rec.year), int(month)
             )[1]
             start_date_str = (
-                str(int(rec.year)) + "-" + str(int(month)) + "-01"
+                str(int(rec.year)) + "-" + str(month) + "-01"
             )
             end_date_str = (
                 str(int(rec.year))
                 + "-"
-                + str(int(month))
+                + str(month)
                 + "-"
                 + str(last_day_month)
                 + " 23:00:00"
@@ -129,7 +132,7 @@ class DailyAttendanceStudentRemark(models.TransientModel):
                         SELECT
                             id
                         FROM
-                            education_attendance
+                            ala_education_attendance
                         WHERE
                             state = 'done' and
                             division_id = %s and

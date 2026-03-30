@@ -417,8 +417,8 @@
 <!--              parent="education_application_menu_report"-->
 <!--              action="education_application_action" sequence="10"-->
 <!--    />-->
-    <menuitem id="menu_education_admission" name="School"
-              parent="menu_education_root" sequence="5"/>
+<!--    <menuitem id="education_class_division_menu" name="School" action="education_class_division_action"-->
+<!--              parent="menu_education_root" sequence="10"/>-->
 <!--    <menuitem id="education_application_menu" name="Application"-->
 <!--              parent="menu_education_admission"-->
 <!--              action="education_application_action" sequence="10"/>-->

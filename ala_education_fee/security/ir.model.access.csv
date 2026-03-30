@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_fee_structure_account_user,ala.education.fee.structure.account.user,ala_education_fee.model_ala_education_fee_structure,account.group_account_user,1,1,1,0
+access_fee_structure_account_manager,product.fee.structure.account.manager,ala_education_fee.model_ala_education_fee_structure,account.group_account_manager,1,1,1,1
+access_fee_structure_line_account_user,ala.education.fee.structure.line.account.user,ala_education_fee.model_ala_education_fee_structure_lines,account.group_account_user,1,1,1,0
+access_fee_structure_line_account_manager,ala.education.fee.structure.line.account.manager,ala_education_fee.model_ala_education_fee_structure_lines,account.group_account_manager,1,1,1,1
+
+access_student_fees,access.ala.student.fees,model_ala_student_fees,,1,1,1,1
+access_student_fee_line,access.ala.student.fee.line,model_ala_student_fee_line,,1,1,1,1
+
+
+access_application_fee_receipt,access.ala.application.fee.receipte,model_ala_application_fee_receipt,,1,1,1,0
+access_student_fee_concession,access.ala.student.fee.concession,model_ala_student_fee_concession,,1,1,1,0
+access_student_fee_concession_line,access.ala.student.fee.concession.line,model_ala_student_fee_concession_line,,1,1,1,0
+access_fine_remove_wizard,access.ala.fine.remove.wizard,model_ala_fine_remove_wizard,,1,1,1,0
+access_student_fine_log,access.ala.student.fine.log,model_ala_student_fine_log,,1,1,1,0
+

@@ -14,7 +14,7 @@ class GenerateMArk(models.TransientModel):
 
 
     # exam_id = fields.Many2one('ala.education.exam.type', string='Select Exam', required=True)
-    class_div_id = fields.Many2one('ala.education.class.division', string='Select Class', required=True)
+    class_div_id = fields.Many2one('ala.education.class.division', domain=[('current_year', '=', True)], string='Select Class', required=True)
 
     def action_generate_marksheet_xlsx(self):
         pre_marksheet = self.env['ala.education.exam.type'].search([('prepare_marksheet', '=', True)])

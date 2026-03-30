@@ -1,0 +1,296 @@
+<odoo>
+        <record id="view_student_form" model="ir.ui.view">
+            <field name="name">ala.student.fees.form</field>
+            <field name="model">ala.student.fees</field>
+            <field name="arch" type="xml">
+              <form>
+                  <header>
+                      <div class="alert alert-warning"  style="margin-bottom:0; font-weight:bold; color:red;" invisible="payment_status != 'overdue'">
+                        ⚠ <field name="overdue_fee_len"/> getting Overdue.
+                      </div>
+                      <div class="alert alert-warning"  style="margin-bottom:0; font-weight:bold;" invisible="payment_status != 'unpaid'">
+                        ⚠ There is pending Fees for this month.
+                      </div>
+                      <field name="payment_status" widget="statusbar"/>
+                  </header>
+                  <sheet>
+                  <div class="oe_button_box" name="button_box">
+                    <button type="object"
+                            class="oe_stat_button"
+                            name="action_view_fee_invoice"
+                            icon="fa-pencil-square-o">
+                        <field name="invoice_count" widget="statinfo" string="Payments"/>
+                    </button>
+                      <button name="action_open_fee_lines_kanban"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-money">
+                        <field name="fee_line_count" widget="statinfo" string="All Fees"/>
+                    </button>
+                      <button name="action_open_concession"
+                            type="object" string="Consession"
+                            class="oe_stat_button" invisible="not conseesion_id"
+                            icon="fa-inr">
+                    </button>
+                </div>
+                      <div class="oe_title">
+                            <h1>
+                                <field name="name"  readonly="1" placeholder="Draft" force_save="1"/>
+                            </h1>
+                          <div class="oe_avatar">
+                          </div>
+                <field name="image_1920" widget="image" class="oe_avatar"
+                        style="height:80px; width:90px;" options="{'preview_image': 'image_1920'}"/>
+                    </div>
+<!--                           <field name="image_1920" widget="image" class="oe_avatar"-->
+<!--                                        options="{&quot;preview_image&quot;: &quot;image_128&quot;}"/>-->
+<!--                          <field name="image_1920" widget="image" style="height:80px; width:90px;" options="{'preview_image': 'image_1920'}"/>-->
+                    <group>
+                        <group>
+                          <field name="student_id" options="{'no_create': True, 'no_open': True}" readonly="non_edit != False"/>
+                          <field name="overdue_fee_len" invisible="1"/>
+                          <field name="non_edit" invisible="1"/>
+                          <field name="conseesion_id" invisible="1"/>
+                          <field name="register_number" force_save="1"/>
+                          <field name="student_division_id" options="{'no_create': True, 'no_open': True}" force_save="1"/>
+                            <field name="image_1920" invisible="1" readonly="1" force_save="1" />
+                        </group>
+                      <group>
+                          <field name="academic_year_id" options="{'no_create': True, 'no_open': True}" force_save="1"/>
+                          <field name="edu_start_date" force_save="1"/>
+                          <field name="edu_end_date" force_save="1"/>
+                          <field name="fee_structure_id" force_save="1" options="{'no_create': True, 'no_open': True}"/>
+                        </group>
+                    </group>
+                      <group string="Fees Summary">
+                          <group >
+                                <field name="amount_total" readonly="1" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="amount_concession" readonly="1" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="amount_fine" readonly="1" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                              <field name="amount_due" readonly="1" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+
+                            </group>
+                          <group>
+
+                                <field name="final_amount_total"
+                                   string="Final Amount (Includes Concession + Fine)"
+                                   readonly="1"
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"/>
+                              <field name="amount_unpaid" readonly="1" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                              <field name="amount_paid" readonly="1" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                              <field name="amount_upcoming" readonly="1" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            </group>
+                          </group>
+                    <notebook>
+                      <page name="Academic Fees Details">
+<!--                        <field name="fee_line_ids" widget="one2many_delete">-->
+                          <button name="action_create_invoice_and_payment"
+                                                        string="Create Payment"
+                                                        type="object"
+                                                        class="btn-primary"/>
+                        <field name="fee_line_ids" >
+                            <list editable="bottom" create="0" delete="0">
+                                <field name="select_for_invoice" widget="boolean_button"/>
+                                <field name="product_id" options="{'no_create': True, 'no_open': True}" readonly="payment_status == 'paid'"/>
+                                <field name="fee_description" readonly="payment_status == 'paid'" optional="hide"/>
+                                <field name="student_id" options="{'no_create':True,'no_open':True}" column_invisible="1"/>
+                                <field name="register_number" column_invisible="1"/>
+                                <field name="student_division_id" column_invisible="1"/>
+                                <field name="academic_year_id" column_invisible="1"/>
+                                <field name="monthly_fee" column_invisible="1"/>
+                                <field name="fee_type" column_invisible="1"/>
+                                <field name="amount"  sum="Total"/>
+                                <field name="concession_amount"  sum="Total"/>
+                                <field name="fine_amount"  sum="Total"/>
+
+                                <button name="action_open_fine_wizard"
+                                        type="object"
+                                        icon="fa-pencil" groups="ala_education_core.group_education_principal"
+                                        class="btn-link"
+                                        title="Edit Fine"/>
+                                <field name="amount_to_paid"  sum="Total"/>
+                                <field name="journal_id" column_invisible="1"/>
+                                <field name="payment_mode" readonly="payment_status == 'paid'"/>
+                                <field name="pay_status" column_invisible="1"/>
+                                <field name="payment_status" widget="badge" decoration-danger="payment_status == 'over_due'" decoration-success="payment_status == 'paid'"
+                                                                            decoration-warning="payment_status == 'unpaid'" decoration-info="payment_status == 'upcoming'"/>
+                                <field name="reminder_date"  force_save="1" readonly="1" optional="hide"/>
+                                <field name="overdue_date" readonly="1" widget="remaining_days" invisible="payment_status == 'paid'" force_save="1"/>
+                                <field name="invoice_id" options="{'no_create': True, 'no_open': True}" readonly="1" optional="hide"/>
+                                <field name="overdue_days" readonly="1" column_invisible="1" />
+                                <button name="print_invoice" class="oe_highlight" string="Print" type="object"></button>
+                            </list>
+                          </field>
+
+                            <field name="comment"
+                                   placeholder="Terms and conditions..."/>
+                      </page>
+                    </notebook>
+
+                  </sheet>
+                  <chatter
+                    open_attachments="True"
+                    reload_on_attachment="True"
+                    reload_on_follower="True"
+                    reload_on_post="True"
+                />
+              </form>
+            </field>
+        </record>
+
+  <record id="view_student_tree" model="ir.ui.view">
+    <field name="name">ala.student.fees.tree</field>
+    <field name="model">ala.student.fees</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="register_number"/>
+        <field name="student_id"/>
+        <field name="student_division_id"/>
+        <field name="academic_year_id"/>
+        <field name="amount_total"/>
+        <field name="payment_status" decoration-danger="payment_status == 'over_due'" decoration-success="payment_status == 'paid'"
+                                                        decoration-warning="payment_status == 'unpaid'" decoration-info="payment_status == 'upcoming'" widget="badge"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="action_student_fees" model="ir.actions.act_window">
+        <field name="name">Students Fees</field>
+        <field name="res_model">ala.student.fees</field>
+        <field name="view_mode">list,form</field>
+  </record>
+
+  <record id="view_fee_line_tree" model="ir.ui.view">
+    <field name="name">ala.student.fee.line.tree</field>
+    <field name="model">ala.student.fee.line</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="product_id"/>
+        <field name="student_id"/>
+        <field name="register_number" column_invisible="1"/>
+        <field name="student_division_id" column_invisible="1"/>
+        <field name="academic_year_id" column_invisible="0"/>
+        <field name="amount" optional="hide"/>
+        <field name="concession_amount" optional="hide"/>
+        <field name="fine_amount" optional="hide"/>
+        <field name="amount_to_paid" />
+        <field name="payment_mode" optional="hide"/>
+        <field name="reminder_date" />
+        <field name="overdue_date" optional="hide"/>
+        <field name="invoice_id" optional="hide"/>
+        <field name="payment_status" widget="badge" decoration-danger="payment_status == 'over_due'" decoration-success="payment_status == 'paid'"
+                                                                            decoration-warning="payment_status == 'unpaid'" decoration-info="payment_status == 'upcoming'"/>
+      </list>
+    </field>
+  </record>
+
+        <record id="view_fee_line_kanban" model="ir.ui.view">
+            <field name="name">ala.student.fee.line.kanban</field>
+            <field name="model">ala.student.fee.line</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_small_column">
+                    <field name="payment_status"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_global_click o_kanban_record">
+                                <div class="o_kanban_details">
+                                    <strong><field name="product_id"/></strong>
+                                    <div><strong>Student:</strong> <field name="student_id"/></div>
+                                    <div><strong>Amount:</strong> ₹<field name="amount"/></div>
+                                    <div>
+                                        <t t-if="record.payment_status.raw_value == 'paid'">
+                                            <strong>Mode:</strong> <field name="payment_mode"/>
+                                        </t>
+                                    </div>
+                                    <div>
+                                        <t t-if="record.payment_status.raw_value == 'over_due'">
+                                            <span style="color:red"><strong>Overdue:</strong> <field name="overdue_date"/></span>
+                                        </t>
+                                    </div>
+                                    <div>
+                                        <t t-if="record.payment_status.raw_value == 'paid'">
+                                            <span class="badge rounded-pill bg-success">Paid</span>
+                                        </t>
+                                        <t t-if="record.payment_status.raw_value == 'unpaid'">
+                                            <span class="badge rounded-pill bg-warning">Unpaid</span>
+                                        </t>
+                                        <t t-if="record.payment_status.raw_value == 'upcoming'">
+                                            <span class="badge rounded-pill bg-info">Upcoming</span>
+                                        </t>
+                                        <t t-if="record.payment_status.raw_value == 'over_due'">
+                                            <span class="badge rounded-pill bg-danger text-dark">Due</span>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+
+  <record id="action_fee_lines" model="ir.actions.act_window">
+        <field name="name">Students Fees</field>
+        <field name="res_model">ala.student.fee.line</field>
+        <field name="view_mode">kanban,list</field>
+      <field name="context">{'create': False}</field>
+  </record>
+
+<!--    <record id="view_fee_line_search" model="ir.ui.view">-->
+<!--          <field name="name">ala.student.fee.line.search</field>-->
+<!--          <field name="model">ala.student.fee.line</field>-->
+<!--          <field name="arch" type="xml">-->
+<!--            <search string="Search Fee Lines">-->
+<!--              &lt;!&ndash; Quick search by student or register number &ndash;&gt;-->
+
+<!--              <field name="register_number"/>-->
+<!--                <field name="student_id"/>-->
+
+<!--              &lt;!&ndash; Filters &ndash;&gt;-->
+<!--              <filter string="This Academic Year" name="current_year"-->
+<!--                      domain="[('academic_year', '=', context.get('current_academic_year'))]"/>-->
+
+<!--              &lt;!&ndash; Group by options &ndash;&gt;-->
+<!--              <group expand="0" string="Group By">-->
+<!--                <filter string="Class Division" name="group_by_division" context="{'group_by': 'student_division_id'}"/>-->
+<!--                <filter string="Academic Year" name="group_by_academic_year" context="{'group_by': 'academic_year'}"/>-->
+<!--              </group>-->
+<!--            </search>-->
+<!--          </field>-->
+<!--        </record>-->
+
+<!--        <record id="view_student_fee_search" model="ir.ui.view">-->
+<!--          <field name="name">ala.student.fees.search</field>-->
+<!--          <field name="model">ala.student.fees</field>-->
+<!--          <field name="arch" type="xml">-->
+<!--            <search string="Search Fees">-->
+<!--              &lt;!&ndash; Quick search by student or register number &ndash;&gt;-->
+
+<!--              <field name="register_number"/>-->
+<!--                <field name="student_id"/>-->
+
+<!--              &lt;!&ndash; Filters &ndash;&gt;-->
+<!--              <filter string="This Academic Year" name="current_year"-->
+<!--                      domain="[('academic_year', '=', context.get('current_academic_year'))]"/>-->
+
+<!--              &lt;!&ndash; Group by options &ndash;&gt;-->
+<!--              <group expand="0" string="Group By">-->
+<!--                <filter string="Class Division" name="group_by_division" context="{'group_by': 'student_division_id'}"/>-->
+<!--                <filter string="Academic Year" name="group_by_academic_year" context="{'group_by': 'academic_year'}"/>-->
+<!--              </group>-->
+<!--            </search>-->
+<!--          </field>-->
+<!--        </record>-->
+
+
+<!--  <menuitem id="menu_student_fees_root" name="Student Fees" parent="education_fee_menu_root" sequence="2" groups="">-->
+<!--        <menuitem id="menu_student_fees" name="Fees"  action="action_student_fees" sequence="1"/>-->
+<!--        <menuitem id="menu_fee_lines" name="Fee Lines" action="action_fee_lines" sequence="2"/>-->
+<!--  </menuitem>-->
+
+<!--     <menuitem id="menu_student_fees_collection_root" name="Fees Collection" web_icon="ala_education_fee,static/description/overview.png"-->
+<!--               groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin" action="action_student_fees" sequence="1"/>-->
+
+</odoo>

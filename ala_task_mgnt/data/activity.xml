@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+<!--Picking Validate-->
+    <record id="task_assign_to_faculty_notification" model="mail.activity.type">
+        <field name="name">Assign To Faculty</field>
+        <field name="res_model">ala.task.management</field>
+    </record>
+
+    <record id="task_accepted_by_faculty_notification" model="mail.activity.type">
+        <field name="name">Faculty Accepted</field>
+        <field name="res_model">ala.task.management</field>
+    </record>
+
+    <record id="task_completed_by_faculty_notification" model="mail.activity.type">
+        <field name="name">Task Completed</field>
+        <field name="res_model">ala.task.management</field>
+    </record>
+
+
+</odoo>
+

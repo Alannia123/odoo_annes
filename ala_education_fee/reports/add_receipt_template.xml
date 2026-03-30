@@ -1,0 +1,96 @@
+<odoo>
+  <template id="receipt_template">
+
+    <t t-call="web.external_layout">
+
+      <!-- Entire A4 page divided into two half receipts -->
+      <div style="width:100%; display:flex;">
+
+        <!-- LEFT RECEIPT -->
+        <div style="width:50%; border-right:2px dashed #000; padding-right:8px;">
+          <t t-call="mis_school_receipt.receipt_single_template"/>
+        </div>
+
+        <!-- RIGHT RECEIPT -->
+        <div style="width:50%; padding-left:8px;">
+          <t t-call="mis_school_receipt.receipt_single_template"/>
+        </div>
+
+      </div>
+
+    </t>
+
+  </template>
+
+  <!-- SINGLE RECEIPT TEMPLATE -->
+  <template id="receipt_single_template">
+
+    <div style="border:2px solid black; padding:10px; height:720px; margin-bottom:10px;">
+
+      <div style="text-align:center; font-size:18px; font-weight:600;">
+          MARY IMMACULATE ENGLISH MEDIUM SCHOOL
+      </div>
+
+      <div style="text-align:center; font-size:13px;">
+        Vill.- Patilachandra, P.O.-Paschim Madhyampur <br/>
+        P.S.-Basirhat, Dist.-North 24 Parganas, Pin-743429
+      </div>
+
+      <div style="text-align:center; margin-top:8px;">
+        <img t-att-src="'/mis_school_receipt/static/img/logo.png'"
+             style="width:70px;"/>
+      </div>
+
+      <table style="width:100%; margin-top:10px; font-size:13px;">
+          <tr>
+              <td><b>Receipt No.</b>: <t t-esc="doc.name"/></td>
+              <td><b>Date</b>: <t t-esc="doc.date"/></td>
+          </tr>
+          <tr>
+              <td colspan="2"><b>Received From</b>: <t t-esc="doc.student_name"/></td>
+          </tr>
+          <tr>
+              <td><b>Class</b>: <t t-esc="doc.student_class"/></td>
+              <td><b>Session</b>: <t t-esc="doc.session"/></td>
+          </tr>
+      </table>
+
+      <table style="width:100%; margin-top:20px; border:1px solid black;
+              border-collapse:collapse; font-size:14px;">
+    <tr>
+        <th style="border:1px solid black; padding:5px;">Description</th>
+        <th style="border:1px solid black; padding:5px;">Rs.</th>
+        <th style="border:1px solid black; padding:5px;">Paisa</th>
+    </tr>
+
+    <!-- LOOP FEE LINES -->
+    <t t-foreach="doc.line_ids" t-as="l">
+        <tr>
+            <td style="border:1px solid black; padding:5px;"><t t-esc="l.description"/></td>
+            <td style="border:1px solid black; padding:5px;"><t t-esc="l.amount"/></td>
+            <td style="border:1px solid black; padding:5px;">00</td>
+        </tr>
+    </t>
+
+    <!-- TOTAL -->
+    <tr>
+        <td style="border:1px solid black; padding:5px;"><b>Total</b></td>
+        <td style="border:1px solid black; padding:5px;"><t t-esc="doc.total_amount"/></td>
+        <td style="border:1px solid black; padding:5px;">00</td>
+    </tr>
+</table>
+
+
+      <div style="margin-top:20px; font-size:14px;">
+        <b>Rupees (in words)</b>: <t t-esc="doc.amount_words"/>
+      </div>
+
+      <div style="text-align:right; margin-top:60px; font-size:14px;">
+          <b>Sig. Of the Receiving Clerk</b>
+      </div>
+
+    </div>
+
+  </template>
+
+</odoo>

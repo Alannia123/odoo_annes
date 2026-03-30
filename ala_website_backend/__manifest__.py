@@ -26,15 +26,15 @@
         'views/res_config_settings_views.xml',
         'views/menu.xml',
     ],
-     'assets': {
-        'web.assets_backend': [
-            'ala_website_backend/static/src/js/document_multi_upload.js',
-            'ala_website_backend/static/src/xml/document_multi_upload.xml',
-            'ala_website_backend/static/src/js/slide_images.js',
-            'ala_website_backend/static/src/xml/slide_image_view.xml',
-            'ala_website_backend/static/src/xml/report_action_inherit.xml',
-        ],
-    },
+    #  'assets': {
+    #     'web.assets_backend': [
+    #         'ala_website_backend/static/src/js/document_multi_upload.js',
+    #         'ala_website_backend/static/src/xml/document_multi_upload.xml',
+    #         'ala_website_backend/static/src/js/slide_images.js',
+    #         'ala_website_backend/static/src/xml/slide_image_view.xml',
+    #         'ala_website_backend/static/src/xml/report_action_inherit.xml',
+    #     ],
+    # },
 
     'images': ['static/description/banner.png'],
     'license': 'AGPL-3',

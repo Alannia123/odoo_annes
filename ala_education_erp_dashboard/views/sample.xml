@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="Educational_dashboard_template" xml:space="preserve">
+    <t t-name="ala_education_erp_dashboard.EducationalDashboard">
+        <div class="edu-dashboard p-4">
+            <!-- Header Section -->
+            <div class="dashboard-header mb-4">
+                <h2 class="text-center mb-2" style="font-weight:700;color:#2c3e50;">🎓 Educational Dashboard</h2>
+                <p class="text-center text-muted">Comprehensive overview of your institution's performance</p>
+            </div>
+
+            <!-- Main Stats Cards -->
+            <div class="row g-3 justify-content-center mb-4">
+                <!-- Faculties Card -->
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="dashboard-card card-gradient-blue">
+                        <div class="card-icon"><i class="fa fa-chalkboard-teacher"></i></div>
+                        <div class="card-content">
+                            <div class="card-title">Faculties</div>
+                            <div class="card-value" id="all_faculties">--</div>
+                            <div class="card-change positive">+2 this month</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Students Card -->
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="dashboard-card card-gradient-green">
+                        <div class="card-icon"><i class="fa fa-user-graduate"></i></div>
+                        <div class="card-content">
+                            <div class="card-title">Students</div>
+                            <div class="card-value" id="all_students">--</div>
+                            <div class="card-change positive">+12 this month</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exams Card -->
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="dashboard-card card-gradient-purple" t-on-click="onclick_exam_result">
+                        <div class="card-icon"><i class="fa fa-file-alt"></i></div>
+                        <div class="card-content">
+                            <div class="card-title">Exams</div>
+                            <div class="card-value" id="all_exams">--</div>
+                            <div class="card-change">3 upcoming</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Amenities Card -->
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="dashboard-card card-gradient-orange">
+                        <div class="card-icon"><i class="fa fa-school"></i></div>
+                        <div class="card-content">
+                            <div class="card-title">Amenities</div>
+                            <div class="card-value" id="all_amenities">--</div>
+                            <div class="card-change">All active</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Today's Attendance Overview -->
+            <div class="dashboard-section mt-4">
+                <div class="section-header mb-3">
+                    <h4 class="section-title">📊 Today's Attendance Overview</h4>
+                    <span class="section-date" id="current_date">Loading date...</span>
+                </div>
+
+                <!-- Attendance Stats Cards -->
+                <div class="row g-3 justify-content-center mb-4">
+                    <div class="col-md-4 col-sm-6">
+                        <div class="stat-card total-students">
+                            <div class="stat-icon">
+                                <i class="fa fa-users"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-title">Total Students</div>
+                                <div class="stat-value" id="total_students">--</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="stat-card present-students">
+                            <div class="stat-icon">
+                                <i class="fa fa-check-circle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-title">Present Today</div>
+                                <div class="stat-value" id="today_present">--</div>
+                                <div class="stat-percentage" id="present_percentage">--%</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="stat-card absent-students">
+                            <div class="stat-icon">
+                                <i class="fa fa-times-circle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-title">Absent Today</div>
+                                <div class="stat-value" id="today_absent">--</div>
+                                <div class="stat-percentage" id="absent_percentage">--%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Division-wise Attendance -->
+                <div class="section-header mt-4 mb-3">
+                    <h4 class="section-title">🏫 Division-wise Attendance</h4>
+                </div>
+
+                <div class="row g-3" id="division_summary_grid">
+                    <!-- JS will populate cards here -->
+                    <div class="col-12 text-center text-muted py-4">Loading division data...</div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .edu-dashboard {
+                background: #f8fafc;
+                min-height: 100vh;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            .dashboard-header {
+                border-bottom: 1px solid #e2e8f0;
+                padding-bottom: 1rem;
+            }
+
+            .dashboard-section {
+                background: #ffffff;
+                border-radius: 12px;
+                padding: 1.5rem;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                margin-bottom: 1.5rem;
+            }
+
+            .section-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+            }
+
+            .section-title {
+                font-weight: 600;
+                color: #374151;
+                margin: 0;
+            }
+
+            .section-date {
+                color: #6b7280;
+                font-size: 0.9rem;
+            }
+
+            /* Main Stats Cards */
+            .dashboard-card {
+                position: relative;
+                border-radius: 16px;
+                color: #fff;
+                text-align: center;
+                padding: 1.5rem 1rem;
+                transition: all 0.3s ease;
+                cursor: pointer;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                min-height: 140px;
+            }
+
+            .dashboard-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            }
+
+            .dashboard-card .card-icon {
+                font-size: 2.5rem;
+                margin-bottom: 0.75rem;
+                opacity: 0.9;
+            }
+
+            .dashboard-card .card-title {
+                font-size: 1rem;
+                font-weight: 600;
+                letter-spacing: 0.5px;
+                margin-bottom: 0.5rem;
+                text-transform: uppercase;
+                opacity: 0.9;
+            }
+
+            .dashboard-card .card-value {
+                font-size: 2rem;
+                font-weight: bold;
+                margin-bottom: 0.25rem;
+            }
+
+            .dashboard-card .card-change {
+                font-size: 0.8rem;
+                opacity: 0.8;
+                font-weight: 500;
+            }
+
+            .card-change.positive {
+                color: #a7f3d0;
+            }
+
+            /* Gradient Styles */
+            .card-gradient-blue {
+                background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            }
+
+            .card-gradient-green {
+                background: linear-gradient(135deg, #56ab2f, #a8e063);
+            }
+
+            .card-gradient-purple {
+                background: linear-gradient(135deg, #8e2de2, #4a00e0);
+            }
+
+            .card-gradient-orange {
+                background: linear-gradient(135deg, #f7971e, #ffd200);
+            }
+
+            /* Attendance Stat Cards */
+            .stat-card {
+                display: flex;
+                align-items: center;
+                border-radius: 12px;
+                padding: 1.25rem;
+                color: #fff;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                height: 100%;
+                min-height: 120px;
+            }
+
+            .stat-card .stat-icon {
+                font-size: 2.5rem;
+                margin-right: 1rem;
+                opacity: 0.9;
+            }
+
+            .stat-card .stat-content {
+                flex: 1;
+            }
+
+            .stat-card .stat-title {
+                font-size: 0.9rem;
+                font-weight: 500;
+                margin-bottom: 0.25rem;
+                opacity: 0.9;
+            }
+
+            .stat-card .stat-value {
+                font-size: 1.75rem;
+                font-weight: bold;
+                margin-bottom: 0.25rem;
+            }
+
+            .stat-card .stat-percentage {
+                font-size: 0.85rem;
+                font-weight: 500;
+                opacity: 0.9;
+            }
+
+            .total-students {
+                background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            }
+
+            .present-students {
+                background: linear-gradient(135deg, #10b981, #34d399);
+            }
+
+            .absent-students {
+                background: linear-gradient(135deg, #ef4444, #f87171);
+            }
+
+            /* Division Cards */
+            .division-card {
+                background: #ffffff;
+                border-radius: 10px;
+                padding: 1rem;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+                border-left: 4px solid #3b82f6;
+                transition: all 0.2s ease;
+                height: 100%;
+            }
+
+            .division-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .division-card h5 {
+                font-weight: 600;
+                color: #1f2937;
+                margin-bottom: 0.75rem;
+                font-size: 1rem;
+            }
+
+            .division-card .stats {
+                display: flex;
+                justify-content: space-between;
+                font-size: 0.9rem;
+                font-weight: 500;
+            }
+
+            .division-card .total {
+                color: #374151;
+                font-weight: 600;
+            }
+
+            .division-card .present {
+                color: #10b981;
+            }
+
+            .division-card .absent {
+                color: #ef4444;
+            }
+
+            .division-card .attendance-rate {
+                margin-top: 0.5rem;
+                font-size: 0.8rem;
+                color: #6b7280;
+            }
+
+            /* "Not Updated" style */
+            .division-card.not-updated {
+                background: #fff8e1;
+                border-left: 4px solid #f59e0b;
+                color: #b45309;
+                font-style: italic;
+            }
+
+            /* Responsive Design */
+            @media (max-width: 768px) {
+                .section-header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .section-date {
+                    margin-top: 0.5rem;
+                }
+
+                .dashboard-card, .stat-card {
+                    margin-bottom: 1rem;
+                }
+
+                .stat-card {
+                    flex-direction: column;
+                    text-align: center;
+                }
+
+                .stat-card .stat-icon {
+                    margin-right: 0;
+                    margin-bottom: 0.5rem;
+                }
+
+                .division-card .stats {
+                    flex-direction: column;
+                    gap: 0.25rem;
+                }
+            }
+
+            /* Animation for updated cards */
+            @keyframes highlightUpdate {
+                0% { background-color: rgba(34, 197, 94, 0.2); }
+                100% { background-color: transparent; }
+            }
+
+            .updated-card {
+                animation: highlightUpdate 2s ease;
+            }
+        </style>
+    </t>
+</templates>

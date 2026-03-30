@@ -1,0 +1,92 @@
+<odoo>
+    <record id="mis_task_management_tree" model="ir.ui.view">
+        <field name="name">ala.task.management.tree</field>
+        <field name="model">ala.task.management</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="create_date"/>
+                <field name="user_id" groups="ala_education_core.group_education_principal"/>
+<!--                <field name="task_desc"/>-->
+                <field name="scheduled_date" widget="remaining_days" invisible="state in ['done']"/>
+                <field name="completion_date"  />
+                <field name="task_desc"  />
+                <field name="state" widget="badge"
+                    decoration-success="state == 'done'"
+                    decoration-muted="state == 'draft'"
+                    decoration-warning="state in ('assigned', 'in_progress')"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="mis_task_management_form" model="ir.ui.view">
+        <field name="name">ala.task.management.form</field>
+        <field name="model">ala.task.management</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_assign_to_faculty" string="Assign Task"
+                            type="object" invisible="state != 'draft'"
+                            groups="ala_education_core.group_education_principal"
+                            class="oe_highlight"/>
+                    <button name="accept_task_by_faculty" string="Accept Task"
+                            type="object"
+                            groups="ala_education_core.group_education_faculty,ala_education_core.group_education_office_admin"
+                            invisible="state != 'assigned'"
+                            class="oe_highlight"/>
+                    <button name="complete_task_by_faculty" string="Complete"
+                            type="object"
+                            groups="ala_education_core.group_education_faculty,ala_education_core.group_education_office_admin"
+                            invisible="state != 'in_progress'"
+                            class="oe_highlight"/>
+                    <button name="reset_to_draft" string="Reset To Draft"
+                            type="object"
+                            groups="ala_education_core.group_education_principal"
+                            invisible="state not in ('draft', 'assigned')"
+                            class="oe_highlight"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+<!--                    <div class="oe_edit_only">-->
+<!--                        <label for="name" class="oe_inline"/>-->
+<!--                    </div>-->
+<!--                    <h1>-->
+<!--                        <field name="name" class="oe_inline" readonly="1"/>-->
+<!--                    </h1>-->
+                    <group>
+                         <group>
+                            <field name="task_desc" required="1" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="user_id" options="{'no_create':True,'no_open':True}" required="1" groups="ala_education_core.group_education_principal" readonly="state != 'draft'"/>
+                            <field name="scheduled_date" required="1" readonly="state != 'draft'"/>
+                            <field name="completion_date"  readonly="1" invisible="state != 'done'"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter
+                    open_attachments="True"
+                    reload_on_attachment="True"
+                    reload_on_follower="True"
+                    reload_on_post="True"
+                />
+            </form>
+        </field>
+    </record>
+
+
+
+    <record id="action_task_management" model="ir.actions.act_window">
+        <field name="name">ALA Task</field>
+        <field name="res_model">ala.task.management</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_task_management_root" name="Task Manager" sequence="100"
+        web_icon="ala_task_mgnt,static/description/icon.png" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin,ala_education_core.group_education_faculty"/>
+    <menuitem id="menu_task_management" name="Manage Task" parent="menu_task_management_root" action="action_task_management"/>
+
+
+</odoo>
+

@@ -1,0 +1,12 @@
+<!-- report/school_receipt_report.xml -->
+<odoo>
+
+    <record id="school_receipt_print" model="ir.actions.report">
+        <field name="name">School Receipt Print</field>
+        <field name="model">ala.school.receipt</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">mis_school_receipt.receipt_template</field>
+        <field name="paperformat_id" ref="report.paperformat_euro"/>
+    </record>
+
+</odoo>

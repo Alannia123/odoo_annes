@@ -107,11 +107,12 @@
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"
-                           widget="mail_followers"/>
-                    <field name="message_ids" widget="mail_thread"/>
-                </div>
+                <chatter
+                    open_attachments="True"
+                    reload_on_attachment="True"
+                    reload_on_follower="True"
+                    reload_on_post="True"
+                />
             </form>
         </field>
     </record>
@@ -186,7 +187,7 @@
         <field name="tag">attendance_dashboard</field>
     </record>
 
-    <menuitem id="education_attendance_root_menu" name="MIS Attendance"
+    <menuitem id="education_attendance_root_menu" name="Attendance Management"
               sequence="12"
               web_icon="ala_education_attendances,static/description/icon.png"/>
 

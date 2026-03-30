@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+       <template id="report_ala_fee_invoices_document">
+<t t-call="web.basic_layout">
+
+<style>
+
+@page {
+    size: A4;
+    margin: 10mm;
+}
+
+.page {
+    width: 100%;
+}
+
+.receipt-wrapper {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.receipt-box {
+    width: 49%;
+    border: 1.5px solid black;
+    min-height: 520px;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 14px;
+}
+
+.header-box {
+    width: 100%;
+    border-bottom: 1.5px solid black;
+    height: 90px;
+    position: relative;
+}
+
+table.clean-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+table.clean-table td,
+table.clean-table th {
+    padding: 6px 8px;
+    border: 1px solid black;
+}
+
+.words-box {
+    margin-top: 15px;
+    padding: 10px;
+    font-size: 14px;
+}
+
+.sign {
+    margin-top: 30px;
+    text-align: right;
+    font-weight: bold;
+}
+
+@media print {
+
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    .receipt-wrapper {
+        display: flex;
+        justify-content: space-between;
+    }
+
+}
+
+</style>
+
+<div class="page">
+
+<div class="receipt-wrapper">
+
+    <!-- LEFT COPY -->
+    <div class="receipt-box">
+
+        <!-- Header Row -->
+        <table class="clean-table">
+            <tr>
+                <td><strong>Bill No.:</strong> <t t-esc="doc.invoice_id.name"/></td>
+<!--                <td style="text-align:center;"><strong>Application Fee</strong></td>-->
+                <td style="text-align:right;"><strong>Received Date:</strong> <t t-esc="doc.invoice_id.invoice_date.strftime('%d-%m-%Y')"/></td>
+            </tr>
+        </table>
+
+       <div style="
+    width: 100%;
+    height: 90px;
+    position: relative;
+">
+
+    <!-- Left Logo -->
+    <div style="position: absolute; left: 10px; top: 10px;">
+        <img t-if="doc.invoice_id.company_id.logo"
+             t-att-src="image_data_uri(doc.invoice_id.company_id.logo)"
+             style="height: 70px; width: 70px; object-fit: contain;"/>
+    </div>
+
+    <!-- Centered Title (INSIDE receipt only) -->
+    <div style="
+        position: absolute;
+        left: 10%;
+        top: 10%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        text-align: center;
+        line-height: 1.2;
+    ">
+        <div style="font-size: 18px; font-weight: bold;">
+            <span>MARY IMMACULATE <br></br>ENGLISH MEDIUM SCHOOL</span>
+        </div>
+        <div style="font-size: 14px; margin-top: 2px;font-weight: bold;">
+            Vill.- Patilachandra, P.O.- Paschim Madhyampur<br/>
+            P.S.- Basirhat, Dist.- North 24 Parganas, Pin-743429
+        </div>
+    </div>
+
+</div>
+
+        <div style="text-align: center; margin: 10px 0;">
+            <strong>Office Copy</strong>
+          </div>
+
+          <!-- Table details -->
+          <table width="100%" style="font-size: 12px;">
+            <tr>
+              <td><strong>Received from:</strong> <span t-esc="doc.student_id.name"/></td>
+              <td colspan="2"><strong>Student-ID:</strong> <span t-esc="doc.student_id.register_no"/></td>
+            </tr>
+            <tr>
+              <td><strong>Class:</strong> <span t-esc="doc.student_id.class_division_id.class_id.name"/></td>
+              <td><strong>Sec:</strong> <span t-esc="doc.student_id.class_division_id.division_id.name"/></td>
+              <td><strong>Roll:</strong> <span t-esc="doc.student_id.roll_no"/></td>
+            </tr>
+            <tr>
+              <td><strong>Session:</strong> <span t-esc="doc.student_fee_id.academic_year_id.name"/></td>
+              <td colspan="2"><strong>Mode:</strong> <span t-esc="doc.payment_mode"/></td>
+            </tr>
+          </table>
+
+        <!-- Fee Details -->
+        <table class="clean-table">
+            <thead>
+                <tr>
+                    <th>Particulars</th>
+                    <th style="text-align:center;">Rs.</th>
+                    <th style="text-align:center;">Paisa</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+    <!-- Loop through invoice lines -->
+    <t t-set="total" t-value="0"/>
+    <t t-foreach="doc.invoice_id.invoice_line_ids" t-as="line">
+
+        <tr>
+            <td>
+                <t t-esc="line.name"/>
+            </td>
+
+            <td style="text-align:center;">
+                <t t-esc="int(line.price_subtotal)"/>
+            </td>
+
+            <td style="text-align:center;">
+                00
+            </td>
+        </tr>
+
+        <!-- Add to total -->
+        <t t-set="total" t-value="total + line.price_subtotal"/>
+
+    </t>
+
+    <!-- Blank filler rows (optional fixed height layout) -->
+    <tr><td style="height:14px;"></td><td></td><td></td></tr>
+    <tr><td style="height:14px;"></td><td></td><td></td></tr>
+
+    <!-- Total Row -->
+    <tr>
+        <td style="text-align:right;"><strong>Total</strong></td>
+        <td style="text-align:center;">
+            <strong><t t-esc="int(total)"/></strong>
+        </td>
+        <td style="text-align:center;">00</td>
+    </tr>
+
+</tbody>
+        </table>
+
+        <!-- Amount in Words -->
+        <div class="words-box">
+            <strong>Rupees (in words):</strong>
+            <strong><t t-esc="request.env.ref('base.INR').amount_to_text(total)"/></strong> only
+        </div>
+
+        <!-- Signature -->
+        <div class="sign">Sign. of the Receiving Clerk</div>
+
+    </div>
+
+
+    <!-- RIGHT COPY -->
+    <div class="receipt-box">
+
+        <!-- Header Row -->
+        <table class="clean-table">
+            <tr>
+                <td><strong>Bill No.:</strong> <t t-esc="doc.invoice_id.name"/></td>
+<!--                <td style="text-align:center;"><strong>Application Fee</strong></td>-->
+                <td style="text-align:right;"><strong>Received Date:</strong> <t t-esc="doc.invoice_id.invoice_date.strftime('%d-%m-%Y')"/></td>
+            </tr>
+        </table>
+
+       <div style="
+    width: 100%;
+
+    height: 90px;
+    position: relative;
+">
+
+    <!-- Left Logo -->
+    <div style="position: absolute; left: 10px; top: 10px;">
+        <img t-if="doc.invoice_id.company_id.logo"
+             t-att-src="image_data_uri(doc.invoice_id.company_id.logo)"
+             style="height: 70px; width: 70px; object-fit: contain;"/>
+    </div>
+
+    <!-- Centered Title (INSIDE receipt only) -->
+    <div style="
+        position: absolute;
+        left: 10%;
+        top: 10%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        text-align: center;
+        line-height: 1.2;
+    ">
+        <div style="font-size: 18px; font-weight: bold;">
+            <span>MARY IMMACULATE <br></br> ENGLISH MEDIUM SCHOOL</span>
+        </div>
+        <div style="font-size: 14px; margin-top: 2px;font-weight: bold;">
+            Vill.- Patilachandra, P.O.- Paschim Madhyampur<br/>
+            P.S.- Basirhat, Dist.- North 24 Parganas, Pin-743429
+        </div>
+    </div>
+
+</div>
+
+
+        <div style="text-align: center; margin: 10px 0;">
+            <strong>Student Copy</strong>
+          </div>
+
+       <!-- Table details -->
+          <table width="100%" style="font-size: 12px;">
+            <tr>
+              <td><strong>Received from:</strong> <span t-esc="doc.student_id.name"/></td>
+              <td colspan="2"><strong>Student-ID:</strong> <span t-esc="doc.student_id.register_no"/></td>
+            </tr>
+            <tr>
+              <td><strong>Class:</strong> <span t-esc="doc.student_id.class_division_id.class_id.name"/></td>
+              <td><strong>Sec:</strong> <span t-esc="doc.student_id.class_division_id.division_id.name"/></td>
+              <td><strong>Roll:</strong> <span t-esc="doc.student_id.roll_no"/></td>
+            </tr>
+            <tr>
+              <td><strong>Session:</strong> <span t-esc="doc.student_fee_id.academic_year_id.name"/></td>
+              <td colspan="2"><strong>Mode:</strong> <span t-esc="doc.payment_mode"/></td>
+            </tr>
+          </table>
+
+         <!-- Fee Details -->
+        <table class="clean-table">
+            <thead>
+                <tr>
+                    <th>Particulars</th>
+                    <th style="text-align:center;">Rs.</th>
+                    <th style="text-align:center;">Paisa</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+    <!-- Loop through invoice lines -->
+    <t t-set="total" t-value="0"/>
+    <t t-foreach="doc.invoice_id.invoice_line_ids" t-as="line">
+
+        <tr>
+            <td>
+                <t t-esc="line.name"/>
+            </td>
+
+            <td style="text-align:center;">
+                <t t-esc="int(line.price_subtotal)"/>
+            </td>
+
+            <td style="text-align:center;">
+                00
+            </td>
+        </tr>
+
+        <!-- Add to total -->
+        <t t-set="total" t-value="total + line.price_subtotal"/>
+
+    </t>
+
+    <!-- Blank filler rows (optional fixed height layout) -->
+    <tr><td style="height:14px;"></td><td></td><td></td></tr>
+    <tr><td style="height:14px;"></td><td></td><td></td></tr>
+
+    <!-- Total Row -->
+    <tr>
+        <td style="text-align:right;"><strong>Total</strong></td>
+        <td style="text-align:center;">
+            <strong><t t-esc="int(total)"/></strong>
+        </td>
+        <td style="text-align:center;">00</td>
+    </tr>
+
+</tbody>
+        </table>
+
+        <!-- Amount in Words -->
+        <div class="words-box">
+            <strong>Rupees (in words):</strong>
+            <strong><t t-esc="request.env.ref('base.INR').amount_to_text(total)"/></strong> only
+        </div>
+
+        <!-- Signature -->
+        <div class="sign">Sign. of the Receiving Clerk</div>
+
+    </div>
+
+    </div>
+
+</div>
+
+</t>
+
+
+</template>
+
+
+
+        <template id="report_ala_fee_invoices">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="ala_education_fee.report_ala_fee_invoices_document" t-lang="doc.student_id.partner_id.lang"/>
+                </t>
+            </t>
+        </template>
+
+
+    </data>
+</odoo>
+

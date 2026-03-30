@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+
+
+<template id="report_ala_fee_invoices_document">
+  <t t-call="web.basic_layout">
+      <style>
+  .half-page {
+<!--    height: 148mm;   /* Half of A4 height (297mm / 2) */-->
+<!--    width: 210mm;    /* Full A4 width */-->
+    box-sizing: border-box;
+    page-break-inside: avoid;
+    font-family:'Times New Roman', Times, serif;
+  }
+</style>
+
+    <div class="page half-page">
+      <div style="width:100%;">
+        <!-- Office Copy -->
+        <div style="width:48%; float:left; border:1px solid #000; ">
+          <div style="text-align: start;">
+            <strong>No:</strong> <span t-esc="doc.invoice_id.name"/>
+            <span style="padding-left: 30px;"><strong>Fee Received Date:</strong> <span t-esc="doc.invoice_id.invoice_date"/></span>
+          </div>
+
+          <div style="text-align: center; margin-top: 5px;">
+            <span>MARY IMMACULATE ENGLISH MEDIUM SCHOOL</span>
+            <strong>Missionary School</strong><br/>
+            VILL-Patilachandra, P.O.-Madhyampur<br/>
+            P.S.-Basirhat, Dist.-North 24 Parganas, Pin-743429
+          </div>
+
+          <div style="text-align: center; margin: 10px 0;">
+            <strong>Office Copy</strong>
+          </div>
+
+          <!-- Table details -->
+          <table width="100%" style="font-size: 12px;">
+            <tr>
+              <td><strong>Received from:</strong> <span t-esc="doc.student_id.name"/></td>
+              <td colspan="2"><strong>Student-ID:</strong> <span t-esc="doc.student_id.register_no"/></td>
+            </tr>
+            <tr>
+              <td><strong>Class:</strong> <span t-esc="doc.student_id.class_division_id.class_id.name"/></td>
+              <td><strong>Sec:</strong> <span t-esc="doc.student_id.class_division_id.division_id.name"/></td>
+              <td><strong>Roll:</strong> <span t-esc="doc.student_id.roll_no"/></td>
+            </tr>
+            <tr>
+              <td><strong>Session:</strong> <span t-esc="doc.student_fee_id.academic_year_id.name"/></td>
+              <td colspan="2"><strong>Mode:</strong> <span t-esc="doc.payment_mode"/></td>
+            </tr>
+          </table>
+
+          <div style="text-align: center; font-weight: bold; margin-top: 5px;">
+            <span t-esc="doc.fee_month_range"/>
+          </div>
+
+          <table width="100%" style="border: 1px solid black; border-collapse: collapse; font-size: 12px;">
+            <tr style="border-bottom: 1px solid black;">
+              <th style="text-align: left;">Particulars</th>
+              <th style="text-align: right;">Rs</th>
+              <th style="text-align: right;">P</th>
+            </tr>
+            <tr>
+              <td><b>Tuition Fee</b></td>
+              <td style="text-align: right;">00</td>
+              <td style="text-align: right;">00</td>
+            </tr>
+            <tr>
+              <td><b>Remedial Fee</b></td>
+              <td style="text-align: right;">00</td>
+              <td style="text-align: right;">00</td>
+            </tr>
+            <tr>
+              <td><b>Conveyance Charge</b></td>
+              <td style="text-align: right;">00</td>
+              <td style="text-align: right;">00</td>
+            </tr>
+            <tr style="border-top: 1px solid black;">
+              <td><strong>Total</strong></td>
+              <td style="text-align: right;"><strong>2000</strong></td>
+              <td style="text-align: right;">00</td>
+            </tr>
+          </table>
+
+          <div style="margin-top: 10px;">
+            <strong>Rupees (in words):</strong> <span t-esc="doc.invoice_id.amount_total_words"/>
+          </div>
+
+          <div style="margin-top: 20px; text-align: center;">
+            Pay your tuition fee before 7th of every month to avoid fine.
+          </div>
+
+          <div style="text-align: right; margin-top: 20px;">
+            <strong>Sig. of the Receiving Clerk/Cashier</strong>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div style="width: 1px; border-right: 2px dotted black; margin: 0 15px;"></div>
+
+        <!-- Student Copy (same as Office Copy but labeled Student Copy) -->
+       <div style="width:48%; float:right; border:1px solid #000; ">
+          <div style="text-align: start;">
+            <strong>No:</strong> <span t-esc="doc.invoice_id.name"/>
+            <strong>Fee Received Date:</strong> <span t-esc="doc.invoice_id.invoice_date"/>
+          </div>
+
+          <div style="text-align: center; margin-top: 5px;">
+            <h3>MARY IMMACULATE ENGLISH MEDIUM SCHOOL</h3>
+            <strong>Missionary School</strong><br/>
+            VILL-Patilachandra, P.O.-Madhyampur<br/>
+            P.S.-Basirhat, Dist.-North 24 Parganas, Pin-743429
+          </div>
+
+          <div style="text-align: center; margin: 10px 0;">
+            <strong>Office Copy</strong>
+          </div>
+
+          <!-- Table details -->
+          <table width="100%" style="font-size: 12px;">
+            <tr>
+              <td><strong>Received from:</strong> <span t-esc="doc.student_id.name"/></td>
+              <td colspan="2"><strong>REG No:</strong> <span t-esc="doc.student_id.register_no"/></td>
+            </tr>
+            <tr>
+              <td><strong>Class:</strong> <span t-esc="doc.student_id.class_division_id.class_id.name"/></td>
+              <td><strong>Sec:</strong> <span t-esc="doc.student_id.class_division_id.division_id.name"/></td>
+              <td><strong>Roll:</strong> <span t-esc="doc.student_id.roll_no"/></td>
+            </tr>
+            <tr>
+              <td><strong>Session:</strong> <span t-esc="doc.student_fee_id.academic_year_id.name"/></td>
+              <td colspan="2"><strong>Mode:</strong> <span t-esc="doc.payment_mode"/></td>
+            </tr>
+          </table>
+
+          <div style="text-align: center; font-weight: bold; margin-top: 5px;">
+            <span t-esc="doc.fee_month_range"/>
+          </div>
+
+          <table width="100%" style="border: 1px solid black; border-collapse: collapse; font-size: 12px;">
+            <tr style="border-bottom: 1px solid black;">
+              <th style="text-align: left;">Particulars</th>
+              <th style="text-align: right;">Rs</th>
+              <th style="text-align: right;">P</th>
+            </tr>
+            <tr>
+              <td><b>Tuition Fee</b></td>
+              <td style="text-align: right;">00</td>
+              <td style="text-align: right;">00</td>
+            </tr>
+            <tr>
+              <td><b>Remedial Fee</b></td>
+              <td style="text-align: right;">00</td>
+              <td style="text-align: right;">00</td>
+            </tr>
+            <tr>
+              <td><b>Conveyance Charge</b></td>
+              <td style="text-align: right;">00</td>
+              <td style="text-align: right;">00</td>
+            </tr>
+            <tr style="border-top: 1px solid black;">
+              <td><strong>Total</strong></td>
+              <td style="text-align: right;"><strong>2000</strong></td>
+              <td style="text-align: right;">00</td>
+            </tr>
+          </table>
+
+          <div style="margin-top: 10px;">
+            <strong>Rupees (in words):</strong> <span t-esc="doc.invoice_id.amount_total_words"/>
+          </div>
+
+          <div style="margin-top: 20px; text-align: center;">
+            Pay your tuition fee before 7th of every month to avoid fine.
+          </div>
+
+          <div style="text-align: right; margin-top: 20px;">
+            <strong>Sig. of the Receiving Clerk/Cashier</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </t>
+</template>
+
+
+
+        <template id="report_ala_fee_invoices">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="ala_education_fee.report_ala_fee_invoices_document" t-lang="doc.student_id.partner_id.lang"/>
+                </t>
+            </t>
+        </template>
+
+
+        <!-- LEFT COPY -->
+    <div class="receipt-box">
+
+        <!-- Header Row -->
+        <table class="clean-table">
+            <tr>
+                <td><strong>Bill No.:</strong> <t t-esc="doc.invoice_id.name"/></td>
+<!--                <td style="text-align:center;"><strong>Application Fee</strong></td>-->
+                <td style="text-align:right;"><strong>Fee Received Date:</strong> <t t-esc="doc.invoice_id.invoice_date.strftime('%d-%m-%Y')"/></td>
+            </tr>
+        </table>
+
+       <div style="
+    width: 100%;
+    height: 90px;
+    position: relative;
+">
+
+    <!-- Left Logo -->
+    <div style="position: absolute; left: 10px; top: 10px;">
+        <img t-if="doc.invoice_id.company_id.logo"
+             t-att-src="image_data_uri(doc.invoice_id.company_id.logo)"
+             style="height: 70px; width: 70px; object-fit: contain;"/>
+    </div>
+
+    <!-- Centered Title (INSIDE receipt only) -->
+    <div style="
+        position: absolute;
+        left: 10%;
+        top: 10%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        text-align: center;
+        line-height: 1.2;
+    ">
+        <div style="font-size: 18px; font-weight: bold;">
+            <span>MARY IMMACULATE <br></br>ENGLISH MEDIUM SCHOOL</span>
+        </div>
+        <div style="font-size: 14px; margin-top: 2px;font-weight: bold;">
+            Vill.- Patilachandra, P.O.- Paschim Madhyampur<br/>
+            P.S.- Basirhat, Dist.- North 24 Parganas, Pin-743429
+        </div>
+    </div>
+
+</div>
+
+        <div style="text-align: center; margin: 10px 0;">
+            <strong>Office Copy</strong>
+          </div>
+
+          <!-- Table details -->
+          <table width="100%" style="font-size: 12px;">
+            <tr>
+              <td><strong>Received from:</strong> <span t-esc="doc.student_id.name"/></td>
+              <td colspan="2"><strong>Student-ID:</strong> <span t-esc="doc.student_id.register_no"/></td>
+            </tr>
+            <tr>
+              <td><strong>Class:</strong> <span t-esc="doc.student_id.class_division_id.class_id.name"/></td>
+              <td><strong>Sec:</strong> <span t-esc="doc.student_id.class_division_id.division_id.name"/></td>
+              <td><strong>Roll:</strong> <span t-esc="doc.student_id.roll_no"/></td>
+            </tr>
+            <tr>
+              <td><strong>Session:</strong> <span t-esc="doc.student_fee_id.academic_year_id.name"/></td>
+              <td colspan="2"><strong>Mode:</strong> <span t-esc="doc.payment_mode"/></td>
+            </tr>
+          </table>
+
+        <!-- Fee Details -->
+        <table class="clean-table">
+            <thead>
+                <tr>
+                    <th>Particulars</th>
+                    <th style="text-align:center;">Rs.</th>
+                    <th style="text-align:center;">Paisa</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+    <!-- Loop through invoice lines -->
+    <t t-set="total" t-value="0"/>
+    <t t-foreach="doc.invoice_id.invoice_line_ids" t-as="line">
+
+        <tr>
+            <td>
+                <t t-esc="line.name"/>
+            </td>
+
+            <td style="text-align:center;">
+                <t t-esc="int(line.price_subtotal)"/>
+            </td>
+
+            <td style="text-align:center;">
+                00
+            </td>
+        </tr>
+
+        <!-- Add to total -->
+        <t t-set="total" t-value="total + line.price_subtotal"/>
+
+    </t>
+
+    <!-- Blank filler rows (optional fixed height layout) -->
+    <tr><td style="height:14px;"></td><td></td><td></td></tr>
+    <tr><td style="height:14px;"></td><td></td><td></td></tr>
+
+    <!-- Total Row -->
+    <tr>
+        <td style="text-align:right;"><strong>Total</strong></td>
+        <td style="text-align:center;">
+            <strong><t t-esc="int(total)"/></strong>
+        </td>
+        <td style="text-align:center;">00</td>
+    </tr>
+
+</tbody>
+        </table>
+
+        <!-- Amount in Words -->
+        <div class="words-box">
+            <strong>Rupees (in words):</strong>
+            <strong><t t-esc="request.env.ref('base.INR').amount_to_text(total)"/></strong> only
+        </div>
+
+        <!-- Signature -->
+        <div class="sign">Sign. of the Receiving Clerk</div>
+
+    </div>
+
+
+    </data>
+</odoo>
+

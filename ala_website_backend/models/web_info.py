@@ -23,11 +23,11 @@ class WebAnouInfo(models.Model):
                 "Dear Parents,\n\n"
                 f"{rec.anounce}\n\n"
                 "Regards,\n"
-                "MIS School"
+                "SAS School"
             )
 
             response = self.env['firebase.notification'].send_android_notification(
-                            title="📢 MIS School Announcement",
+                            title="📢 ST.ANNE'S School Announcement",
                             body=message_body
                                 )
             print('222222222222------------------',response)

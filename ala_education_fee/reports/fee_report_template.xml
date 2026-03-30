@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <template id="report_ala_fee_invoices_document">
+            <t t-call="web.basic_layout">
+<!--                <div class="page">-->
+                    <div style="display: flex; align-items: center;">
+                        <div style="flex: 1; padding: 10px;">
+<!--                        <div style="border: 1px solid black; padding: 10px; font-size: 12px;">-->
+                        <div style="text-align: start;">
+                            <strong>No:</strong> <span t-esc="doc.invoice_id.name"/>
+                            <strong>Fee Received Date:</strong> <span t-esc="doc.invoice_id.invoice_date"/>
+                        </div>
+
+                        <div style="text-align: center; margin-top: 5px;">
+                            <h3>MARY IMMACULATE ENGLISH MEDIUM SCHOOL</h3>
+                            <strong>Missionary School</strong><br/>
+                            VILL-Patilachandra, P.O.-Madhyampur<br/>
+                            P.S.-Basirhat, Dist.-North 24 Parganas, Pin-743429
+                        </div>
+
+                        <div style="text-align: center; margin: 10px 0;">
+                            <strong>Office Copy</strong>
+                        </div>
+
+                        <table width="100%" style="font-size: 12px;">
+                            <tr>
+                                <td><strong>Received from:</strong> <span t-esc="doc.student_id.name"/></td>
+                                <td><strong>Student-ID:</strong> <span t-esc="doc.student_id.register_no"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Class:</strong> <span t-esc="doc.student_id.class_division_id.class_id.name"/></td>
+                                <td><strong>Sec:</strong> <span t-esc="doc.student_id.class_division_id.division_id.name"/></td>
+                                <td><strong>Roll:</strong> <span t-esc="doc.student_id.roll_no"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Session:</strong> <span t-esc="doc.student_fee_id.academic_year_id.name"/></td>
+                                <td><strong>Mode:</strong> <span t-esc="doc.payment_mode"/></td>
+                            </tr>
+                        </table>
+
+                        <div style="text-align: center; font-weight: bold; margin-top: 5px;">
+                            <span t-esc="doc.fee_month_range"/> <!-- Eg: JUL-2024 - AUG-2024 -->
+                        </div>
+
+                        <table width="100%" style="border: 1px solid black; border-collapse: collapse; font-size: 12px;">
+                            <tr style="border-bottom: 1px solid black;">
+                                <th style="text-align: left;">Particulars</th>
+                                <th style="text-align: right;">Rs</th>
+                                <th style="text-align: right;">P</th>
+                            </tr>
+<!--                            <t t-foreach="doc.fee_line_ids" t-as="line">-->
+<!--                                <tr>-->
+<!--                                    <td><span t-esc="line.name"/></td>-->
+<!--                                    <td style="text-align: right;"><span t-esc="int(line.amount)"/></td>-->
+<!--                                    <td style="text-align: right;">00</td>-->
+<!--                                </tr>-->
+<!--                            </t>-->
+                            <tr>
+                                <td><b>Tuition Fee</b></td>
+<!--                                <td style="text-align: right;"><span t-esc="int(line.amount)"/></td>-->
+                                <td style="text-align: right;">00</td>
+                                <td style="text-align: right;">00</td>
+                            </tr>
+                            <tr>
+                                <td><b>Remedial Fee</b></td>
+<!--                                <td style="text-align: right;"><span t-esc="int(line.amount)"/></td>-->
+                                <td style="text-align: right;">00</td>
+                                <td style="text-align: right;">00</td>
+                            </tr>
+                            <tr>
+                                <td><b>Conveyance Charge</b></td>
+<!--                                <td style="text-align: right;"><span t-esc="int(line.amount)"/></td>-->
+                                <td style="text-align: right;">00</td>
+                                <td style="text-align: right;">00</td>
+                            </tr>
+                            <tr>
+                                <td><b>Computer &amp; Communicnication</b></td>
+<!--                                <td style="text-align: right;"><span t-esc="int(line.amount)"/></td>-->
+                                <td style="text-align: right;">00</td>
+                                <td style="text-align: right;">00</td>
+                            </tr>
+                            <tr>
+                                <td><b>Fees for Extra-Curricular Activities</b></td>
+<!--                                <td style="text-align: right;"><span t-esc="int(line.amount)"/></td>-->
+                                <td style="text-align: right;">00</td>
+                                <td style="text-align: right;">00</td>
+                            </tr>
+                            <tr>
+                                <td><b>Miscellaneous Fee</b></td>
+<!--                                <td style="text-align: right;"><span t-esc="int(line.amount)"/></td>-->
+                                <td style="text-align: right;">00</td>
+                                <td style="text-align: right;">00</td>
+                            </tr>
+                            <tr>
+                                <td><b>Late fine</b></td>
+<!--                                <td style="text-align: right;"><span t-esc="int(line.amount)"/></td>-->
+                                <td style="text-align: right;">00</td>
+                                <td style="text-align: right;">00</td>
+                            </tr>
+                            <!-- Padding to always make the table 10 rows -->
+<!--                            <t t-set="lines_to_fill" t-value="8 - len(doc.fee_line_ids)"/>-->
+<!--                            <t t-foreach="range(lines_to_fill)" t-as="x">-->
+<!--                                <tr><td></td><td></td><td></td></tr>-->
+<!--                            </t>-->
+                            <tr style="border-top: 1px solid black;">
+                                <td><strong>Total</strong></td>
+<!--                                <td style="text-align: right;"><strong t-esc="int(doc.invoice_id.amount_total_words)"/></td>-->
+                                <td style="text-align: right;"><strong> 2000</strong></td>
+                                <td style="text-align: right;">00</td>
+                            </tr>
+                        </table>
+
+                        <div style="margin-top: 10px;">
+                            <strong>Rupees (in words):</strong> <span t-esc="doc.invoice_id.amount_total_words"/>
+                        </div>
+
+                        <div style="margin-top: 20px; text-align: center;">
+                            Pay your tuition fee before 7th of every month to avoid fine.
+                        </div>
+
+                        <div style="text-align: right; margin-top: 30px;">
+                            <strong>Sig. of the Receiving Clerk/Cashier</strong>
+                        </div>
+<!--                    </div>-->
+                        </div>
+                    <div style="width: 1px; height: 40px; border-right: 2px dotted black; margin: 0 15px;"></div>
+                        <div style="flex: 1; padding: 10px;">
+<!--                        <div style="border: 1px solid black; padding: 10px; font-size: 12px;">-->
+                            <div style="text-align: start;">
+                                <strong>No:</strong> <span t-esc="doc.invoice_id.name"/>
+                                <strong>Fee Received Date:</strong> <span t-esc="doc.invoice_id.invoice_date"/>
+                            </div>
+
+                            <div style="text-align: center; margin-top: 5px;">
+                                <h3>MARY IMMACULATE ENGLISH MEDIUM SCHOOL</h3>
+                                <strong>Missionary School</strong><br/>
+                                VILL-Patilachandra, P.O.-Madhyampur<br/>
+                                P.S.-Basirhat, Dist.-North 24 Parganas, Pin-743429
+                            </div>
+
+                            <div style="text-align: center; margin: 10px 0;">
+                                <strong>Student Copy</strong>
+                            </div>
+
+                            <table width="100%" style="font-size: 12px;">
+                                <tr>
+                                    <td><strong>Received from:</strong> <span t-esc="doc.student_id.name"/></td>
+                                    <td><strong>Student-ID:</strong> <span t-esc="doc.student_id.register_no"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Class:</strong> <span t-esc="doc.student_id.class_division_id.class_id.name"/></td>
+                                    <td><strong>Sec:</strong> <span t-esc="doc.student_id.class_division_id.division_id.name"/></td>
+                                    <td><strong>Roll:</strong> <span t-esc="doc.student_id.roll_no"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Session:</strong> <span t-esc="doc.student_fee_id.academic_year_id.name"/></td>
+                                    <td><strong>Mode:</strong> <span t-esc="doc.payment_mode"/></td>
+                                </tr>
+                            </table>
+
+                            <div style="text-align: center; font-weight: bold; margin-top: 5px;">
+                                <span t-esc="doc.fee_month_range"/> <!-- Eg: JUL-2024 - AUG-2024 -->
+                            </div>
+
+                            <table width="100%" style="border: 1px solid black; border-collapse: collapse; font-size: 12px;">
+                                <tr style="border-bottom: 1px solid black;">
+                                    <th style="text-align: left;">Particulars</th>
+                                    <th style="text-align: right;">Rs</th>
+                                    <th style="text-align: right;">P</th>
+                                </tr>
+    <!--                            <t t-foreach="doc.fee_line_ids" t-as="line">-->
+    <!--                                <tr>-->
+    <!--                                    <td><span t-esc="line.name"/></td>-->
+    <!--                                    <td style="text-align: right;"><span t-esc="int(line.amount)"/></td>-->
+    <!--                                    <td style="text-align: right;">00</td>-->
+    <!--                                </tr>-->
+    <!--                            </t>-->
+                                <tr>
+                                    <td><b>Tuition Fee</b></td>
+    <!--                                <td style="text-align: right;"><span t-esc="int(line.amount)"/></td>-->
+                                    <td style="text-align: right;">00</td>
+                                    <td style="text-align: right;">00</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Remedial Fee</b></td>
+    <!--                                <td style="text-align: right;"><span t-esc="int(line.amount)"/></td>-->
+                                    <td style="text-align: right;">00</td>
+                                    <td style="text-align: right;">00</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Conveyance Charge</b></td>
+    <!--                                <td style="text-align: right;"><span t-esc="int(line.amount)"/></td>-->
+                                    <td style="text-align: right;">00</td>
+                                    <td style="text-align: right;">00</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Computer &amp; Communicnication</b></td>
+    <!--                                <td style="text-align: right;"><span t-esc="int(line.amount)"/></td>-->
+                                    <td style="text-align: right;">00</td>
+                                    <td style="text-align: right;">00</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Fees for Extra-Curricular Activities</b></td>
+    <!--                                <td style="text-align: right;"><span t-esc="int(line.amount)"/></td>-->
+                                    <td style="text-align: right;">00</td>
+                                    <td style="text-align: right;">00</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Miscellaneous Fee</b></td>
+    <!--                                <td style="text-align: right;"><span t-esc="int(line.amount)"/></td>-->
+                                    <td style="text-align: right;">00</td>
+                                    <td style="text-align: right;">00</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Late fine</b></td>
+    <!--                                <td style="text-align: right;"><span t-esc="int(line.amount)"/></td>-->
+                                    <td style="text-align: right;">00</td>
+                                    <td style="text-align: right;">00</td>
+                                </tr>
+                                <!-- Padding to always make the table 10 rows -->
+    <!--                            <t t-set="lines_to_fill" t-value="8 - len(doc.fee_line_ids)"/>-->
+    <!--                            <t t-foreach="range(lines_to_fill)" t-as="x">-->
+    <!--                                <tr><td></td><td></td><td></td></tr>-->
+    <!--                            </t>-->
+                                <tr style="border-top: 1px solid black;">
+                                    <td><strong>Total</strong></td>
+    <!--                                <td style="text-align: right;"><strong t-esc="int(doc.invoice_id.amount_total_words)"/></td>-->
+                                    <td style="text-align: right;"><strong> 2000</strong></td>
+                                    <td style="text-align: right;">00</td>
+                                </tr>
+                            </table>
+
+                            <div style="margin-top: 10px;">
+                                <strong>Rupees (in words):</strong> <span t-esc="doc.invoice_id.amount_total_words"/>
+                            </div>
+
+                            <div style="margin-top: 20px; text-align: center;">
+                                Pay your tuition fee before 7th of every month to avoid fine.
+                            </div>
+
+                            <div style="text-align: right; margin-top: 30px;">
+                                <strong>Sig. of the Receiving Clerk/Cashier</strong>
+                            </div>
+<!--                        </div>-->
+                        </div>
+                    </div>
+<!--                </div>-->
+            </t>
+        </template>
+
+
+        <template id="report_ala_fee_invoices">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="ala_education_fee.report_ala_fee_invoices_document" t-lang="doc.student_id.partner_id.lang"/>
+                </t>
+            </t>
+        </template>
+
+
+    </data>
+</odoo>

@@ -66,10 +66,12 @@
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" widget="mail_followers"/>
-                    <field name="message_ids" widget="mail_thread"/>
-                </div>
+                <chatter
+                    open_attachments="True"
+                    reload_on_attachment="True"
+                    reload_on_follower="True"
+                    reload_on_post="True"
+                />
             </form>
         </field>
     </record>
@@ -92,24 +94,24 @@
         </field>
     </record>
     <!--   Search view for the Education exam results   -->
-    <record id="education_exam_results_view_search" model="ir.ui.view">
-        <field name="name">ala.education.exam.results.view.search</field>
-        <field name="model">ala.education.exam.results</field>
-        <field name="arch" type="xml">
-            <search string="Exam Results">
-                <group expand="1" string="Group By">
-                    <filter string="Class" name="group_class_id"
-                            context="{'group_by':'class_id'}"/>
-                    <filter string="Division" name="group_division_id"
-                            context="{'group_by':'division_id'}"/>
-                    <filter string="Exam" name="group_exam_id"
-                            context="{'group_by':'exam_id'}"/>
-                    <filter string="Academic Year" name="group_academic_year"
-                            context="{'group_by':'academic_year_id'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
+<!--    <record id="education_exam_results_view_search" model="ir.ui.view">-->
+<!--    <field name="name">ala.education.exam.results.view.search</field>-->
+<!--    <field name="model">ala.education.exam.results</field>-->
+<!--    <field name="arch" type="xml">-->
+<!--        <search string="Exam Results">-->
+<!--            <group expand="1" string="Group By">-->
+<!--                <filter string="Class Division" name="group_division_id"-->
+<!--                        context="{'group_by': 'division_id'}"/>-->
+<!--                <filter string="Exam" name="group_exam_id"-->
+<!--                        context="{'group_by': 'exam_id'}"/>-->
+<!--                <filter string="Academic Year" name="group_academic_year"-->
+<!--                        context="{'group_by': 'academic_year_id'}"/>-->
+<!--                <filter string="Student" name="group_student_id"-->
+<!--                        context="{'group_by': 'student_id'}"/>-->
+<!--            </group>-->
+<!--        </search>-->
+<!--    </field>-->
+<!--</record>-->
     <!--   Action for the Education exam results   -->
     <record id="education_exam_results_action" model="ir.actions.act_window">
         <field name="name">Exam Results</field>
@@ -143,26 +145,26 @@
         </field>
     </record>
     <!--   Search view for the Subject line   -->
-    <record id="results_subject_line_view_search" model="ir.ui.view">
-        <field name="name">ala.results.subject.line.view.search</field>
-        <field name="model">ala.results.subject.line</field>
-        <field name="arch" type="xml">
-            <search string="Reports">
-                <group expand="1" string="Group By">
-                    <filter string="Class" name="group_class_id"
-                            context="{'group_by':'class_id'}"/>
-                    <filter string="Division" name="group_division_id"
-                            context="{'group_by':'division_id'}"/>
-                    <filter string="Exam" name="group_exam_id"
-                            context="{'group_by':'exam_id'}"/>
-                    <filter string="Subject" name="group_subject_id"
-                            context="{'group_by':'subject_id'}"/>
-                    <filter string="Academic Year" name="group_academic_year"
-                            context="{'group_by':'academic_year_id'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
+<!--    <record id="results_subject_line_view_search" model="ir.ui.view">-->
+<!--        <field name="name">ala.results.subject.line.view.search</field>-->
+<!--        <field name="model">ala.results.subject.line</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <search string="Reports">-->
+<!--                <group expand="1" string="Group By">-->
+<!--                    <filter string="Class" name="group_class_id"-->
+<!--                            context="{'group_by':'class_id'}"/>-->
+<!--                    <filter string="Division" name="group_division_id"-->
+<!--                            context="{'group_by':'division_id'}"/>-->
+<!--                    <filter string="Exam" name="group_exam_id"-->
+<!--                            context="{'group_by':'exam_id'}"/>-->
+<!--                    <filter string="Subject" name="group_subject_id"-->
+<!--                            context="{'group_by':'subject_id'}"/>-->
+<!--                    <filter string="Academic Year" name="group_academic_year"-->
+<!--                            context="{'group_by':'academic_year_id'}"/>-->
+<!--                </group>-->
+<!--            </search>-->
+<!--        </field>-->
+<!--    </record>-->
     <!--   Action for the Subject line   -->
     <record id="results_subject_line_action" model="ir.actions.act_window">
         <field name="name">Report</field>

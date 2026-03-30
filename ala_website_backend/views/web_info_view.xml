@@ -28,11 +28,12 @@
                             <field name="anounce"/>
                         </group>
 					</sheet>
-					<div class="oe_chatter">
-						<field name="message_follower_ids"/>
-						<field name="activity_ids"/>
-						<field name="message_ids"/>
-					</div>
+					<chatter
+                        open_attachments="True"
+                        reload_on_attachment="True"
+                        reload_on_follower="True"
+                        reload_on_post="True"
+                    />
 				</form>
 			</field>
 		</record>

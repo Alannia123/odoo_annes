@@ -58,12 +58,12 @@
     <!--    Configuration menu-->
     <menuitem
             id="education_school_calendar_root"  groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
-            name="Calendar" web_icon="ala_school_calendar,static/description/miscal.png"
+            name="School Calendar" action="school_calendar_action" web_icon="ala_school_calendar,static/description/miscal.png"
             />
     <!--    Periods menu-->
-    <menuitem
-            id="education_school_calendar_menu"
-            name="School Calendar"
-            parent="education_school_calendar_root"
-            action="school_calendar_action"/>
+<!--    <menuitem-->
+<!--            id="education_school_calendar_menu"-->
+<!--            name="School Calendar"-->
+<!--            parent="education_school_calendar_root"-->
+<!--            action="school_calendar_action"/>-->
 </odoo>

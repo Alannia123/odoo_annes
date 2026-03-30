@@ -1,0 +1,138 @@
+<!-- views/school_receipt_views.xml -->
+<odoo>
+
+    <record id="view_student_fee_concession_tree" model="ir.ui.view">
+        <field name="name">ala.student.fee.concession.tree</field>
+        <field name="model">ala.student.fee.concession</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="student_id"/>
+                <field name="class_division_id"/>
+                <field name="date"/>
+                <field name="ad_concession_value"/>
+                <field name="monthly_concession_value"/>
+                <field name="total_concession_amount"/>
+                <field name="academic_year_id"/>
+                <field name="state" decoration-danger="state == 'reject'" decoration-warning="state == 'to_approve'"
+                       decoration-success="state == 'approved'" decoration-info="state == 'draft'" widget="badge" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="view_student_fee_concession_form" model="ir.ui.view">
+        <field name="name">ala.student.fee.concession.form</field>
+        <field name="model">ala.student.fee.concession</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" string="To Approve"  type="object" invisible="state != 'draft'" class="btn-primary"/>
+                    <button name="action_approve" string="Approve"  type="object" invisible="state != 'to_approve'" class="btn-primary"/>
+                    <button name="action_reject" string="Reject"  type="object" invisible="state != 'to_approve'" class="btn-primary"/>
+                    <button name="action_reset" string="Reset"  type="object" invisible="state != 'approved'" class="btn-primary"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                    <button type="object" invisible="not student_fee_id"
+                            class="oe_stat_button" string="Go To Fees"
+                            name="action_view_student_fees"
+                            icon="fa-pencil-square-o">
+                    </button>
+                </div>
+                    <group>
+                        <group>
+                            <field name="student_id" options="{'no_create': True, 'no_open': True}" readonly="state != 'draft'"/>
+
+                            <field name="class_division_id" options="{'no_create': True, 'no_open': True}" readonly="1" force_save="1"/>
+                        </group>
+                        <group>
+                            <field name="date" readonly="1"/>
+                            <field name="student_fee_id" invisible="1" force_save="1"/>
+                            <field name="academic_year_id" readonly="state != 'draft'" options="{'no_create': True, 'no_open': True}"/>
+                        </group>
+
+                    </group>
+                    <group>
+                        <group string="Addmision Fee Concession">
+                            <field name="old_admission_fee" readonly="1" force_save="1" decoration-bf="old_admission_fee != 0" widget="badge"/>
+                            <field name="concession_amount" readonly="state not in ('draft','to_approve')" />
+                            <field name="last_ad_fee" readonly="1" force_save="1" decoration-info="last_ad_fee != 0" widget="badge"/>
+                        </group>
+                        <group string="Monthly Fee Concession">
+                            <field name="old_monthly_fee" readonly="1" force_save="1" decoration-bf="old_monthly_fee != 0" widget="badge"/>
+                            <field name="monthly_concession_amount" readonly="state not in ('draft','to_approve')"/>
+                            <field name="last_monthly_fee" readonly="1" force_save="1" decoration-info="last_monthly_fee != 0" widget="badge"/>
+                        </group>
+                    </group>
+                    <group string="Summary" class="">
+                        <group>
+                            <field name="ad_concession_value" readonly="1" force_save="1"/>
+                            <field name="monthly_concession_value" readonly="1" force_save="1"/>
+                            <field name="unpaid_month_fee_count" invisible="1" force_save="1"/>
+                        </group>
+                        <group>
+                            <field name="total_concession_amount" force_save="1"
+                                   readonly="1" decoration-warning="total_concession_amount != 0" widget="badge"
+                                   class="oe_inline text-end"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Fee Details">
+                            <field name="concession_line_ids" create="0" edit="0" delete="0">
+                            <list editable="bottom">
+                                <field name="student_id" column_invisible="1"/>
+                                <field name="stu_fee_line_id" force_save="1" column_invisible="1"/>
+                                <field name="product_id"/>
+                                <field name="fee_type" decoration-primary="fee_type == 're_admission'" decoration-info="fee_type == 'monthly'" widget="badge" />
+                                <field name="amount"/>
+                                <field name="concession_amount"/>
+                                <field name="payment_status"/>
+                            </list>
+                        </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter
+                    open_attachments="True"
+                    reload_on_attachment="True"
+                    reload_on_follower="True"
+                    reload_on_post="True"
+                />
+            </form>
+        </field>
+    </record>
+
+
+
+    <record id="action_student_fee_concession" model="ir.actions.act_window">
+        <field name="name">Student Concession</field>
+        <field name="res_model">ala.student.fee.concession</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_student_consessions_inherit_form" model="ir.ui.view">
+        <field name="name">ala.education.student.view.form</field>
+        <field name="model">ala.education.student</field>
+        <field name="inherit_id" ref="ala_education_core.education_student_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='ad_no']" position="after">
+                    <field name="concession_ids" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//button[@name='action_view_student_discipline_history']" position="after">
+                <button type="object" name="action_view_student_consessions" class="oe_stat_button"
+                                string="Consessions" invisible="not concession_ids" icon="fa-inr" groups="ala_education_core.group_education_principal">
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem id="menu_student_fee_concession" name="Student Concession"
+              action="action_student_fee_concession" groups="ala_education_core.group_education_principal"
+              sequence="3"/>
+
+</odoo>
+
+

@@ -13,7 +13,7 @@ class EducationClassAmenities(models.Model):
                            help="Select the amenities in class room")
     qty = fields.Float(string='Quantity', help="The quantity of the amenities",
                        default=1.0)
-    class_id = fields.Many2one('ala.education.class.division',
+    class_id = fields.Many2one('ala.education.class.division', domain=[('current_year', '=', True)],
                                string="Class Room", help="Select class room")
 
     @api.constrains('qty')

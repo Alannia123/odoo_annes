@@ -1,0 +1,117 @@
+<odoo>
+
+
+    <record id="view_student_homework_line_tree" model="ir.ui.view">
+        <field name="name">ala.student.homework.line.tree</field>
+        <field name="model">ala.student.homework.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" class="o_field_text o_list_small_column"/>
+                <field name="class_div_id"/>
+                <field name="subject_id"/>
+                <field name="homework_date"/>
+<!--                <field name="homework"/>-->
+                <field name="uploaded_by"/>
+                <field name="work_id" column_invisible="1"/>
+                <field name="faculty_user_id" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"/>
+                <field name="academic_year" options="{'no_create':True,'no_open':True}"/>
+                <field name="state" decoration-warning="state == 'draft'" decoration-success="state == 'post' " widget="badge"/>
+                <button name="view_home_work" type="object" class="btn-secondry" string="View HW" invisible="work_id == False"
+                                    groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"/>
+            </list>
+        </field>
+    </record>
+
+
+
+    <record id="view_student_homework_line_form" model="ir.ui.view">
+        <field name="name">ala.student.homework.line.form</field>
+        <field name="model">ala.student.homework.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_post" string="Publish"
+                            type="object" invisible="state != 'draft'"
+                            groups="ala_education_core.group_education_faculty,ala_education_core.group_education_principal"
+                            class="btn-primary" />
+                    <button name="reset_to_draft" string="Reset"
+                            type="object"
+                            groups="ala_education_core.group_education_faculty,ala_education_core.group_education_principal"
+                            invisible="state != 'post'"
+                            class="btn-secondary"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+
+<!--                            <div class="text-warning" invisible="not show_name_warning">The current highest number is <field class="oe_inline" name="highest_name"/>. You might want to put a higher number here.</div>-->
+
+                            <h1>
+                                <field name="name"  readonly="1" placeholder="Draft"/>
+                            </h1>
+                        </div>
+                    <group>
+                        <group>
+                            <field name="class_div_id" options='{"no_open": True, "no_create": True}' readonly="state != 'draft'"/>
+                            <field name="subject_id" options='{"no_open": True, "no_create": True}' domain="[('id', 'in', domain_subjects)]" readonly="state != 'draft'"/>
+                            <field name="domain_subjects" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="homework_date" readonly="1" />
+                            <field name="uploaded_by" readonly="1" options='{"no_open": True, "no_create": True}'/>
+                            <field name="academic_year" options="{'no_create':True,'no_open':True}"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="homework" required="1" readonly="state != 'draft'" widget="voice_to_text"/>
+                    </group>
+                </sheet>
+                <chatter
+                    open_attachments="True"
+                    reload_on_attachment="True"
+                    reload_on_follower="True"
+                    reload_on_post="True"
+                />
+            </form>
+        </field>
+    </record>
+
+    <record id="action_student_homework_line" model="ir.actions.act_window">
+        <field name="name">Homework(Subjects)</field>
+        <field name="res_model">ala.student.homework.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_today_homework' : 1, 'search_default_group_by_faculty' : 1}</field>
+    </record>
+
+    <!--Search view of the Education attendance-->
+    <record id="education_subject_homework_view_search" model="ir.ui.view">
+        <field name="name">ala.student.homework.line.view.search</field>
+        <field name="model">ala.student.homework.line</field>
+        <field name="arch" type="xml">
+            <search string="Students Homeworks">
+                <field name="class_div_id"/>
+                <filter string="Today" name="today_homework"
+                        domain="[('homework_date','=',time.strftime('%%Y-%%m-%%d'))]"/>
+                <separator/>
+                <filter string="Current Academic Year"
+                        name='current_academic_year'
+                        domain="[('academic_year.ay_start_date', '&lt;=', context_today().strftime('%Y-%m-%d')),
+                            ('academic_year.ay_end_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="group_by_faculty" string="Faculty" context="{'group_by': 'uploaded_by'}"/>
+
+            </search>
+        </field>
+    </record>
+
+
+
+
+<!--<menuitem id="menu_student_homework_root" name="Homework" sequence="10"/>-->
+
+<menuitem id="menu_student_homework_lines"
+          name="Homeworks Entry"
+          web_icon="ala_homework,static/description/class_home.png"
+          action="action_student_homework_line"
+          sequence="10"/>
+
+</odoo>

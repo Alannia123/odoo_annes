@@ -28,8 +28,8 @@
     </record>
     <!--    Subject menu-->
     <menuitem id="education_subject_menu" action="education_subject_action"
-              parent="menu_education_class_conf"
-              sequence="4"/>
+              parent="menu_education_root"
+              sequence="30"/>
 
     <record id="education_subject_group_form" model="ir.ui.view">
         <field name="name">ala.education.subject.group.form</field>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--    Menu for Education fee-->
+    <menuitem id="education_fee_menu_root" name="Fees Administration"
+              web_icon="ala_education_fee,static/description/overview.png" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
+              sequence="1"/>
+
+    <!--    Educational Dashboard Menu-->
+    <menuitem id="education_fee_collect_dashboard_menu_root" parent="education_fee_menu_root"
+              name="Fees Collect Overview" sequence="1" action="education_fee_overview_action"/>
+
+    <menuitem id="menu_student_fees_root" name="Fee Details" parent="education_fee_menu_root" sequence="2" groups="">
+        <menuitem id="menu_student_fees" name="Student Payments"  action="action_student_fees" sequence="1"/>
+        <menuitem id="menu_fee_lines" name="Fee Installments" action="action_fee_lines" sequence="2"/>
+    </menuitem>
+
+
+    <menuitem id="menu_application_fee" parent="education_fee_menu_root" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
+              name="Application Receipts" action="action_application_fee" sequence="3"/>
+
+    <menuitem
+            id="education_fee_structure_menu_root" action="education_fee_structure_action"
+            parent="education_fee_menu_root" name="Configuration" groups="ala_education_core.group_education_principal"
+            sequence="4"/>
+
+    <menuitem
+    id="menu_student_fine_log"
+    name="Fine Change Logs"
+    parent="education_fee_menu_root"
+    action="action_student_fine_log"
+    sequence="50"/>
+
+</odoo>
+

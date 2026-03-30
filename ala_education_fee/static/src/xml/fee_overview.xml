@@ -1,0 +1,601 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="ala_education_fee.FeeOverview">
+
+<div class="o_control_panel glossy-container p-3">
+
+    <!-- ================= GLOSSY STYLES ================= -->
+    <style>
+        /* ================= FIX ODOO LAYOUT ================= */
+.o_control_panel.glossy-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ================= PAGE CONTAINER ================= */
+.glossy-container {
+    background: linear-gradient(145deg, #f0f4f8, #e6edf5);
+    border-radius: 12px;
+    padding: 14px;
+}
+
+.page-heading {
+    font-size: 22px;
+}
+
+.glossy-table th {
+    font-size: 13px;
+}
+
+.glossy-table td {
+    font-size: 13px;
+}
+
+.fee-box {
+    font-size: 13px;
+}
+
+.student-name {
+    font-size: 13px;
+}
+
+.student-division {
+    font-size: 12px;
+}
+
+
+/* ================= FILTER BAR ================= */
+.glossy-filter-bar {
+    background: linear-gradient(145deg, #ffffff, #f8fafc);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    padding: 10px 14px;
+    margin-bottom: 10px;
+}
+
+.glossy-filter-bar .row {
+    row-gap: 6px;
+}
+
+.filter-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 2px;
+}
+
+.glossy-input {
+    border-radius: 8px;
+    font-size: 12px;
+    height: 30px;
+    padding: 4px 8px;
+}
+
+.glossy-input:focus {
+    box-shadow: 0 0 0 2px rgba(75,108,183,0.25);
+    border-color: #4b6cb7;
+}
+
+/* ================= TABLE WRAPPER ================= */
+.glossy-table-wrapper {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.07);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* IMPORTANT */
+}
+
+/* ================= SCROLL FIX ================= */
+.glossy-table-scroll {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 20px;
+}
+
+/* Custom Scrollbar */
+.glossy-table-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.glossy-table-scroll::-webkit-scrollbar-thumb {
+    background: #94a3b8;
+    border-radius: 10px;
+}
+
+/* ================= TABLE ================= */
+.glossy-table {
+    margin-bottom: 0;
+}
+
+.glossy-table th {
+    background: linear-gradient(90deg, #3a6073, #16222a);
+    color: white;
+    font-weight: 500;
+    padding: 8px 10px;
+    font-size: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.glossy-table td {
+    padding: 8px 10px;
+    vertical-align: top;
+    font-size: 12px;
+}
+
+.glossy-table tbody tr {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* ================= STUDENT CARD ================= */
+.student-card {
+    background: linear-gradient(145deg, #f8fafc, #e2e8f0);
+    border-radius: 10px;
+    padding: 8px;
+}
+
+.student-name {
+    background: linear-gradient(90deg, #4b6cb7, #182848);
+    color: white;
+    border-radius: 18px;
+    padding: 4px 10px;
+    font-size: 12px;
+    display: inline-block;
+    margin-top: 4px;
+}
+
+.student-division {
+    background: #cbd5e1;
+    border-radius: 18px;
+    padding: 3px 8px;
+    font-size: 11px;
+    display: inline-block;
+    margin-top: 4px;
+}
+
+/* ================= FEE GRID ================= */
+.fee-grid-compact {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 6px;
+}
+
+/* ================= FEE CARD ================= */
+.fee-box {
+    background: linear-gradient(145deg, #ffffff, #f1f5f9);
+    border-radius: 8px;
+    padding: 6px 6px;
+    font-size: 11px;
+    min-height: 65px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.04);
+    transition: 0.2s ease;
+}
+
+.fee-box:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+}
+
+.paid-box {
+    background: linear-gradient(145deg, #e6f6ea, #d8f1df);
+}
+
+.fee-title {
+    max-width: 80px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+}
+
+/* ================= ACTION SECTION ================= */
+.action-section {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+}
+
+.action-section select,
+.action-section input[type="file"] {
+    height: 30px;
+    font-size: 12px;
+}
+
+.pay-btn {
+    background: linear-gradient(90deg, #4b6cb7, #182848);
+    border: none;
+    padding: 5px 18px;
+    border-radius: 18px;
+    color: white;
+    font-size: 12px;
+    transition: 0.2s ease;
+}
+
+.pay-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+        /* ================= MODERN CHECKBOX ================= */
+.modern-checkbox {
+    position: relative;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+}
+
+.modern-checkbox input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.modern-checkbox .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 18px;
+    width: 18px;
+    background-color: #ffffff;
+    border: 2px solid #94a3b8;
+    border-radius: 5px;
+    transition: 0.2s ease;
+}
+
+/* Checked */
+.modern-checkbox input:checked + .checkmark {
+    background: linear-gradient(90deg, #4b6cb7, #182848);
+    border-color: #4b6cb7;
+}
+
+/* Check icon */
+.modern-checkbox .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.modern-checkbox input:checked + .checkmark:after {
+    display: block;
+}
+
+.modern-checkbox .checkmark:after {
+    left: 5px;
+    top: 2px;
+    width: 5px;
+    height: 9px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* Disabled */
+.modern-checkbox input:disabled + .checkmark {
+    background-color: #e2e8f0;
+    border-color: #cbd5e1;
+    cursor: not-allowed;
+}
+.fee-summary-top {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.summary-box {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 13px;
+    text-align: center;
+}
+
+.summary-box.payable { background: #e3f2fd; }
+.summary-box.paid { background: #e8f5e9; }
+.summary-box.unpaid { background: #fff3cd; }
+.summary-box.overdue { background: #fdecea; }
+
+        .academic-summary {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 8px 0;
+    border-top: 1px dashed #ddd;
+}
+
+.academic-item {
+    font-size: 13px;
+}
+    </style>
+
+    <!-- ================= HEADING ================= -->
+    <div class="d-flex justify-content-between align-items-center mb-2">
+
+    <div class="page-heading">
+        Fees Collection Overview
+    </div>
+
+    <span class="badge">
+            <t t-if="state.fees.length">
+        Showing <t t-esc="state.fees.length"/> Students
+    </t>
+    <t t-else="">
+        No Students Found
+    </t>
+        </span>
+
+    </div>
+
+
+    <div class="glossy-filter-bar">
+
+    <div class="row g-2 align-items-end">
+
+        <div class="col-md-4">
+            <label class="filter-label">Search</label>
+            <input type="text"
+                   class="form-control form-control-sm glossy-input"
+                   placeholder="Register No / Name"
+                   t-on-keyup="onSearch"/>
+        </div>
+
+        <div class="col-md-3">
+            <label class="filter-label">Division</label>
+            <select class="form-select form-select-sm glossy-input"
+                    t-on-change="onDivisionChange">
+                <option value="">All</option>
+                <t t-foreach="state.divisions"
+                   t-as="div"
+                   t-key="div.id">
+                    <option t-att-value="div.id">
+                        <t t-esc="div.name"/>
+                    </option>
+                </t>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label class="filter-label">Year</label>
+            <select class="form-select form-select-sm glossy-input"
+                    t-on-change="onYearChange">
+                <option value="">All</option>
+                <t t-foreach="state.academic_years"
+                   t-as="year"
+                   t-key="year.id">
+                    <option t-att-value="year.id">
+                        <t t-esc="year.name"/>
+                    </option>
+                </t>
+            </select>
+        </div>
+
+    </div>
+
+</div>
+    <!-- ================= TABLE ================= -->
+<!-- TABLE WRAPPER -->
+<div class="glossy-table-wrapper">
+
+    <div class="glossy-table-scroll">
+
+        <table class="table mb-0 glossy-table">
+
+
+            <thead>
+                <tr>
+                    <th style="width:220px;">Register No</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <t t-foreach="state.fees"
+                   t-as="student"
+                   t-key="student.id">
+
+                    <tr>
+
+                        <!-- Left Column -->
+                        <td>
+                            <div class="student-card">
+
+                                <div class="fw-semibold text-muted">
+                                    <t t-esc="student.register_number"/>
+                                </div>
+
+                                <div class="mt-2">
+                                    <span class="student-name">
+                                        <t t-esc="student.student"/>
+                                    </span>
+                                </div>
+
+                                <div>
+                                    <span class="student-division">
+                                        <t t-esc="student.division"/>
+                                    </span>
+                                </div>
+
+                            </div>
+                        </td>
+
+                        <!-- Right Column -->
+                        <td>
+<!-- Fee Summary Header -->
+<div class="fee-summary-top mb-2">
+
+    <div class="summary-box payable">
+        <div>Total Payable</div>
+        <strong>₹ <t t-esc="student.total_payable"/></strong>
+    </div>
+
+    <div class="summary-box paid">
+        <div>Total Paid</div>
+        <strong>₹ <t t-esc="student.total_paid"/></strong>
+    </div>
+
+    <div class="summary-box unpaid">
+        <div>Total Unpaid</div>
+        <strong>₹ <t t-esc="student.total_unpaid"/></strong>
+    </div>
+
+    <div class="summary-box overdue">
+        <div>Total Overdue</div>
+        <strong>₹ <t t-esc="student.total_overdue"/></strong>
+    </div>
+
+</div>
+                            <!-- Fees -->
+                            <div class="fee-grid-compact">
+
+                                <t t-foreach="ala.student.fees"
+                                   t-as="fee"
+                                   t-key="fee.id">
+
+                                    <div class="fee-box"
+                                         t-att-class="fee.payment_status === 'paid' ? 'paid-box' : ''">
+
+                                        <div class="d-flex justify-content-between">
+                                                                            <span class="fee-title px-2 py-1 rounded"
+                                      t-att-class="
+                                        fee.fee_type === 'admission' ? 'type-admission-bg' :
+                                        fee.fee_type === 're_admission' ? 'type-readmission-bg' :
+                                        fee.fee_type === 'monthly' ? 'type-monthly-bg' :
+                                        'type-other-bg'
+                                      ">
+                                    <t t-esc="fee.name"/>
+                                </span>
+                                            <span class="fw-bold">
+                                                ₹ <t t-esc="fee.amount"/>
+                                            </span>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between align-items-center mt-1">
+
+                                            <span t-att-class="
+                                                fee.payment_status === 'paid' ? 'badge bg-success small' :
+                                                fee.payment_status === 'over_due' ? 'badge bg-danger small' :
+                                                fee.payment_status === 'unpaid' ? 'badge bg-warning text-dark small' :
+                                                'badge bg-info text-dark small'
+                                            ">
+                                                <t t-esc="
+                                                    fee.payment_status === 'paid' ? 'Paid' :
+                                                    fee.payment_status === 'over_due' ? 'Over Due' :
+                                                    fee.payment_status === 'unpaid' ? 'Un Paid' :
+                                                    'Upcoming'
+                                                "/>
+                                            </span>
+
+                                            <label class="modern-checkbox">
+                                                <input type="checkbox"
+                                                       t-att-disabled="fee.payment_status === 'paid'"
+                                                       t-att-data-id="fee.id"
+                                                       t-att-checked="state.selected_fee_ids.includes(fee.id)"
+                                                       t-on-change="toggleFee"/>
+                                                <span class="checkmark"></span>
+                                            </label>
+
+
+                                        </div>
+
+                                    </div>
+
+                                </t>
+
+                            </div>
+
+                            <!-- Payment Section -->
+                            <div class="action-section">
+
+                                <!-- Academic Summary -->
+<div class="academic-summary mb-2">
+
+    <div class="academic-item">
+        Paid Months:
+        <strong><t t-esc="student.paid_months"/></strong>
+    </div>
+
+    <div class="academic-item">
+        Remaining Months:
+        <strong><t t-esc="student.remaining_months"/></strong>
+    </div>
+
+    <div class="academic-item">
+        Concession:
+        ₹ <strong><t t-esc="student.concession_amount"/></strong>
+    </div>
+
+    <div class="academic-item">
+        Extra:
+        ₹ <strong><t t-esc="student.extra_amount"/></strong>
+    </div>
+
+    <!-- View Bill Button -->
+    <button class="btn btn-sm btn-outline-primary"
+            t-att-data-student="student.id"
+            t-on-click="viewStudentBill">
+        View Bill
+    </button>
+
+</div>
+
+                                <!-- Selected Total -->
+    <div class="selected-total-box">
+        <span class="fw-bold text-primary">
+            Selected Total:
+            ₹ <t t-esc="selectedTotal.toFixed(2)"/>
+        </span>
+    </div>
+
+                                <!-- Payment Date -->
+                                <input type="date"
+                                       style="width:150px;"
+                                       class="form-control form-control-sm"
+                                       t-model="state.payment_date"/>
+
+                                <!-- Payment Mode -->
+                                <select class="form-select form-select-sm"
+                                        style="width:120px;"
+                                        t-model="state.payment_mode">
+                                    <option value="cash">Cash</option>
+                                    <option value="bank">Bank</option>
+                                </select>
+
+                                <!-- Pay Button -->
+                                <button class="pay-btn"
+                                        t-att-data-student="student.id"
+                                        t-on-click="payStudentFees">
+                                    Pay
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                </t>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    </div>
+
+</div>
+
+</t>
+</templates>

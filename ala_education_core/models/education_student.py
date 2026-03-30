@@ -114,9 +114,9 @@ class EducationStudent(models.Model):
     mother_qualify = fields.Char(string="Mother's Qualification", required=False)
     mother_occupation = fields.Char(string="Mother's Occupation", required=False)
     mother_tongue = fields.Char(string="Mother Tongue", help="Enter Student's Mother Tongue")
-    class_division_id = fields.Many2one('ala.education.class.division',
+    class_division_id = fields.Many2one('ala.education.class.division', domain=[('current_year', '=', True)],
                                         string="Division",
-                                        help="Class of the student")
+                                        help="Class of the student", )
     admission_class_id = fields.Many2one('ala.education.class',
                                          string="Class",
                                          help="Admission taken class")

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--    View form of Education fee structure-->
+    <record id="education_fee_structure_view_form" model="ir.ui.view">
+        <field name="name">ala.education.fee.structure.view.form</field>
+        <field name="model">ala.education.fee.structure</field>
+        <field name="arch" type="xml">
+            <form string="Fee Structure" class="o_invoice_form">
+                <header>
+                    <button string="Create Student Fees" type="object" name="action_create_student_fees" class="oe_highlight"/>
+                </header>
+
+                <sheet string="Fee Structure">
+                    <h1 class="mt0">
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="fee_structure_name"
+                                   placeholder="Eg:LKG and UKG"/>
+                        </group>
+                        <group>
+                            <field name="academic_year_id"/>
+                            <field name="class_ids" required="1" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <notebook colspan="4">
+                        <page string="Overall Fees">
+                            <field name="fee_type_ids" nolabel="1"
+                                   widget="one2many" mode="list">
+                                <list string="Fee Types" editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="fee_description" readonly=""/>
+                                    <field name="fee_type" readonly=""/>
+<!--                                    <field name="payment_type"/>-->
+                                    <field name="fee_amount" required="1" options="{'currency_field': 'currency_id'}"
+                                           widget="monetary"/>
+                                    <field name="reminder_date" required="1"/>
+                                    <field name="due_date" required="1"/>
+                                </list>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="amount_total" readonly="1" widget="monetary" options="{'currency_field': 'currency_id'}"
+                                       class="oe_subtotal_footer_separator"/>
+                            </group>
+                            <field name="comment"
+                                   placeholder="Terms and conditions..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!--    Tree view of Education Fee Structure-->
+    <record id="education_fee_structure_view_tree" model="ir.ui.view">
+        <field name="name">ala.education.fee.structure.view.tree</field>
+        <field name="model">ala.education.fee.structure</field>
+        <field name="arch" type="xml">
+            <list string="Fee Structure">
+                <field name="fee_structure_name"/>
+                <field name="academic_year_id"/>
+                <field name="class_ids" widget="many2many_tags"/>
+                <field name="amount_total" widget="monetary"  options="{'currency_field': 'currency_id'}"/>
+            </list>
+        </field>
+    </record>
+    <!--Action for Education fee structure-->
+    <record id="education_fee_structure_action" model="ir.actions.act_window">
+        <field name="name">Fee Structure</field>
+        <field name="res_model">ala.education.fee.structure</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <!--    Menu for configuration-->
+<!--    <menuitem-->
+<!--            id="education_fee_structure_menu_root"-->
+<!--            parent="education_fee_menu_root" name="Configuration"-->
+<!--            sequence="3"/>-->
+<!--    <menuitem action="education_fee_structure_action"-->
+<!--              id="menu_action_fee_structure"-->
+<!--              parent="education_fee_structure_menu_root"-->
+<!--              sequence="1"/>-->
+</odoo>

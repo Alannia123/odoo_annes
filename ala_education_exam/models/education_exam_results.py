@@ -21,7 +21,7 @@ class EducationExamResults(models.Model):
     class_id = fields.Many2one('ala.education.class', string='Class',
                                help='Select the class for which the exam '
                                     'result is recorded.')
-    division_id = fields.Many2one('ala.education.class.division', string='Division',
+    division_id = fields.Many2one('ala.education.class.division', string='Division', domain=[('current_year', '=', True)],
                                   help='Select the division within the class.')
     student_id = fields.Many2one('ala.education.student', string='Student',
                                  help='Select the student for whom the '
@@ -174,7 +174,7 @@ class ResultsSubjectLine(models.Model):
     class_id = fields.Many2one('ala.education.class', string='Class',
                                help='Reference to the class associated with'
                                     ' the subject result.')
-    division_id = fields.Many2one('ala.education.class.division',
+    division_id = fields.Many2one('ala.education.class.division', domain=[('current_year', '=', True)],
                                   string='Division',
                                   help='Reference to the division within the'
                                        ' class.')

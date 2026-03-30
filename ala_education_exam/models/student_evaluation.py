@@ -15,7 +15,7 @@ class EducationEvaluation(models.Model):
                        help="Name of the evaluation")
     class_id = fields.Many2one('ala.education.class', string='Class',
                                help="Class of the attendance")
-    division_id = fields.Many2one('ala.education.class.division',
+    division_id = fields.Many2one('ala.education.class.division', domain=[('current_year', '=', True)],
                                   string='Division', required=True, tracking=True,
                                   help="Class division for attendance")
     date = fields.Date(string='Date', default=fields.Date.today, required=True, tracking=True,
@@ -167,7 +167,7 @@ class EducationEvaluationLine(models.Model):
     class_id = fields.Many2one('ala.education.class', string='Class',
                                required=True,
                                help="Enter class for attendance")
-    division_id = fields.Many2one('ala.education.class.division',
+    division_id = fields.Many2one('ala.education.class.division', domain=[('current_year', '=', True)],
                                   string='Division',
                                   help="Enter class division for attendance",
                                   required=True)
@@ -228,7 +228,7 @@ class AnnualEvaluationLine(models.Model):
     class_id = fields.Many2one('ala.education.class', string='Class',
                                required=True,
                                help="Enter class for attendance")
-    division_id = fields.Many2one('ala.education.class.division',
+    division_id = fields.Many2one('ala.education.class.division', domain=[('current_year', '=', True)],
                                   string='Division',
                                   help="Enter class division for attendance",
                                   required=True)

@@ -13,7 +13,7 @@ class EducationAttendanceEntry(models.Model):
 
     name = fields.Char(string='Name', default='New',
                        help="Name of the attendance")
-    division_id = fields.Many2one('ala.education.class.division',
+    division_id = fields.Many2one('ala.education.class.division', domain=[('current_year', '=', True)],
                                   string='Division', required=True, tracking=True,
                                   help="Class division for attendance")
     class_id = fields.Many2one('ala.education.class', string='Class', help="Class of the attendance")

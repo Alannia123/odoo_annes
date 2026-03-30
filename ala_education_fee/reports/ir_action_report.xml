@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="paperformat_ala_invoice" model="report.paperformat">
+        <field name="name">MIS Invoice A4</field>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">8</field>
+        <field name="margin_bottom">8</field>
+        <field name="margin_left">8</field>
+        <field name="margin_right">8</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">100</field>
+    </record>
+
+
+
+    <!--Generate the pdf report-->
+    <record id="action_generate_fees_invoice_report" model="ir.actions.report">
+        <field name="name">Fees Print</field>
+        <field name="model">ala.student.fee.line</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ala_education_fee.report_ala_fee_invoices</field>
+        <field name="report_file">ala_education_fee.report_ala_fee_invoices</field>
+        <field name="paperformat_id" ref="ala_education_fee.paperformat_ala_invoice"/>
+        <field name="binding_model_id" ref="ala_education_fee.model_ala_student_fee_line"/>
+<!--        <field name="binding_type">report</field>-->
+    </record>
+
+
+</odoo>

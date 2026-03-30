@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="ala_education_class_division_view_form_timetable" model="ir.ui.view">
+        <field name="name">ala.education.class.division.view.form.inherit.education.time.table</field>
+        <field name="model">ala.education.class.division</field>
+        <field name="inherit_id" ref="ala_education_core.education_class_division_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box'] | //div[contains(@class, 'oe_button_box')]" position="inside">
+                <button name="%(ala_education_time_table.action_education_time_table_view_class_division_wise)d"
+                        type="action" class="oe_stat_button" icon="fa-calendar" string="Timetable"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

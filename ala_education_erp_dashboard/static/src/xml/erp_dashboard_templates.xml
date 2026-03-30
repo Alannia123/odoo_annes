@@ -1,0 +1,529 @@
+<templates id="Educational_dashboard_template" xml:space="preserve">
+    <t t-name="ala_education_erp_dashboard.EducationalDashboard">
+        <div class="edu-dashboard-wrapper">
+        <div class="edu-dashboard p-3">
+    <!-- Header Section -->
+    <div class="dashboard-header mb-4 text-center">
+        <!-- Logo + Animation -->
+        <div class="logo-wrapper mb-2">
+            <img src="/ala_education_erp_dashboard/static/src/img/logo.png"
+                 alt="School Logo"
+                 class="edu-logo animate-glow"></img>
+        </div>
+
+        <h2 class="mb-1" style="font-weight:700;color:#2c3e50;">
+            🎓 Educational Dashboard
+        </h2>
+        <p class="text-muted" style="font-size:13px;">
+            Quick institutional overview
+        </p>
+    </div>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+
+            <!-- Summary Cards -->
+            <div class="row g-2 justify-content-center mb-3">
+<!--    Faculty-->
+                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                    <div class="dashboard-card card-gradient-green text-white text-center p-3 d-flex flex-column justify-content-between align-items-center"
+                                 t-att-class="{'cursor-not-allowed opacity-75': !state.canViewStudents}"
+                                 t-on-click="onDashboardCardClick"
+                                 data-action="faculties">
+                        <div class="card-icon mb-2">
+                            <i class="fa fa-users" style="font-size:2rem; opacity:0.9;"></i>
+                        </div>
+                        <div class="card-title text-uppercase mb-2" style="font-size:0.9rem; font-weight:600;">
+                            Faculties
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center w-100 px-3" style="font-size:1rem; font-weight:600;">
+                            <div class="text-start d-flex align-items-center">
+                                <i class="fa fa-male" style="font-size:22px; color:#dbeafe;"></i>
+                                <span id="faculty_male" style="margin-left:5px;"></span>
+                            </div>
+                            <div class="text-center" style="font-size:1.6rem; font-weight:700;">
+                                <span id="all_faculties"></span>
+                            </div>
+                            <div class="text-end d-flex align-items-center">
+                                <i class="fa fa-female" style="font-size:22px; color:#fbcfe8;"></i>
+                                <span id="faculty_female" style="margin-left:5px;"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<!--                Students-->
+                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                    <div class="dashboard-card card-gradient-stu text-white text-center p-3 d-flex flex-column justify-content-between align-items-center"
+                             t-att-class="{'cursor-not-allowed opacity-75': !state.canViewStudents}"
+                             t-on-click="onDashboardCardClick"
+                             data-action="students">
+                        <div class="card-icon mb-2">
+                            <i class="fa fa-user-graduate" style="font-size:2rem; opacity:0.9;"></i>
+                        </div>
+                        <div class="card-title text-uppercase mb-2" style="font-size:0.9rem; font-weight:600;">
+                            Students
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center w-100 px-3" style="font-size:1rem; font-weight:600;">
+                            <div class="text-start d-flex align-items-center">
+                                <i class="fa fa-male" style="font-size:22px; color:#dbeafe;"></i>
+                                <span id="student_male" style="margin-left:5px;"></span>
+                            </div>
+                            <div class="text-center" style="font-size:1.6rem; font-weight:700;">
+                                <span id="all_students"></span>
+                            </div>
+                            <div class="text-end d-flex align-items-center">
+                                <i class="fa fa-female" style="font-size:22px; color:#fbcfe8;"></i>
+                                <span id="student_female" style="margin-left:5px;"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<!--                Exams-->
+               <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                    <div class="dashboard-card card-gradient-purple text-white text-center p-3 d-flex flex-column justify-content-between align-items-center"
+                     t-att-class="{'cursor-not-allowed opacity-75': !state.canViewExams}"
+                     t-on-click="onDashboardCardClick"
+                     data-action="exams">
+                        <div class="card-icon mb-2">
+                            <i class="fa fa-file-alt" style="font-size:2rem; opacity:0.9;"></i>
+                        </div>
+
+                        <div class="card-title text-uppercase mb-2" style="font-size:0.9rem; font-weight:600;">
+                            Exams
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center w-100 px-3" style="font-size:1rem; font-weight:600;">
+                            <!-- Ongoing Exams -->
+                            <div class="text-start d-flex align-items-center">
+                                <i class="fa fa-play-circle" style="font-size:22px; color:#fde047;"></i>
+                                <span id="exam_ongoing" style="margin-left:5px;"></span>
+                            </div>
+
+                            <!-- Total Exams -->
+                            <div class="text-center" style="font-size:1.6rem; font-weight:700;">
+                                <span id="all_exams"></span>
+                            </div>
+
+                            <!-- Closed Exams -->
+                            <div class="text-end d-flex align-items-center">
+                                <i class="fa fa-check-circle" style="font-size:22px; color:#059669;"></i>
+                                <span id="exam_closed" style="margin-left:5px;"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+               <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                   <div class="dashboard-card card-gradient-orange text-white text-center p-3 d-flex flex-column justify-content-between align-items-center"
+                     t-att-class="{'cursor-not-allowed opacity-75': !state.canViewAmenities}"
+                     t-on-click="onDashboardCardClick"
+                     data-action="amenities">
+                        <!-- Main Icon -->
+                        <div class="card-icon mb-2">
+                            <i class="fa fa-school" style="font-size:2rem; opacity:0.9;"></i>
+                        </div>
+
+                        <!-- Title -->
+                        <div class="card-title text-uppercase mb-2" style="font-size:0.9rem; font-weight:600;">
+                            Amenities
+                        </div>
+
+                        <!-- Icons & Counts -->
+                        <div class="d-flex justify-content-between align-items-center w-100 px-3" style="font-size:1rem; font-weight:600;">
+                            <!-- Indoor -->
+                            <div class="text-start d-flex align-items-center">
+                                <i class="fa fa-building" style="font-size:24px; color:#4338ca;"></i>
+                                <span id="amenities_indoor" style="margin-left:6px;"></span>
+                            </div>
+
+                            <!-- Total -->
+                            <div class="text-center" style="font-size:1.6rem; font-weight:700;">
+                                <span id="all_amenities"></span>
+                            </div>
+
+                            <!-- Outdoor -->
+                            <div class="text-end d-flex align-items-center">
+                                <i class="fa fa-tree" style="font-size:26px; color:#86efac;"></i>
+                                <span id="amenities_outdoor" style="margin-left:6px;"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Attendance Section -->
+<div class="dashboard-section p-3">
+    <div class="section-header mb-2">
+        <h5 class="section-title mb-0">📊 Today's Attendance Overview</h5>
+        <span class="section-date" id="current_date" style="font-size:12px;">Loading...</span>
+    </div>
+
+    <div class="row g-2 mb-3">
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+            <div class="stat-card total-students">
+                <div class="stat-icon"><i class="fa fa-user-graduate"></i></div>
+                <div class="stat-content">
+                    <div class="stat-title">Total</div>
+                    <div class="stat-value" id="total_students">--</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+            <div class="stat-card present-students">
+                <div class="stat-icon"><i class="fa fa-user-check"></i></div>
+                <div class="stat-content">
+                    <div class="stat-title">Present</div>
+                    <div class="stat-value" id="today_present">--</div>
+<!--                    <div class="stat-percentage" id="present_percentage">&#45;&#45;%</div>-->
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+            <div class="stat-card absent-students">
+                <div class="stat-icon"><i class="fa fa-user-times"></i></div>
+                <div class="stat-content">
+                    <div class="stat-title">Absent</div>
+                    <div class="stat-value" id="today_absent">--</div>
+<!--                    <div class="stat-percentage" id="absent_percentage">&#45;&#45;%</div>-->
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+            <div class="stat-card homework-students">
+                <div class="stat-icon"><i class="fa fa-book-open"></i></div>
+                <div class="stat-content">
+                    <div class="stat-title">Homeworks</div>
+                    <div class="stat-value" id="today_homeworks">--</div>
+                    <div class="stat-percentage text-light small">Assigned</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-header mb-2 d-flex align-items-center justify-content-between" style="padding-left:5px;">
+    <div class="d-flex align-items-center gap-1">
+        <h5 class="section-title mb-0" style="font-weight:600; font-size:16px;">
+            🏫 Division-wise Attendance
+        </h5>
+        <b id="div_update_ratio" style="font-size:14px; margin-left:6px; color:#2563eb;"></b>
+    </div>
+    <!-- ✅ Tiny progress bar container -->
+    <!-- ✅ Division progress bar (slightly larger and shifted left) -->
+<div class="progress"
+     style="width:150px; height:10px; margin-right:10px; background:#e5e7eb;
+            border-radius:6px; overflow:hidden; box-shadow:inset 0 0 2px rgba(0,0,0,0.1);">
+    <div id="division_progress_bar"
+         style="height:100%; width:0%;
+                background:linear-gradient(90deg,#2563eb,#3b82f6,#60a5fa);
+                border-radius:6px; transition:width 0.6s ease;"></div>
+</div>
+
+</div>
+
+<div class="row g-2" id="division_summary_grid">
+    <div class="col-12 text-center text-muted py-2">Loading...</div>
+</div>
+</div>
+
+
+
+            <!-- Teacher Task Summary Section -->
+            <div class="dashboard-section p-3">
+    <div class="section-header mb-2 d-flex justify-content-between align-items-center">
+        <h5 class="section-title mb-0">👩‍🏫 Teacher Task Summary</h5>
+        <span class="section-date" id="task_summary_date" style="font-size:12px;">As of today</span>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle" id="teacher_task_table"
+               style="background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,0.05);">
+            <thead class="table-light">
+                <tr class="text-center" style="font-size:13px;">
+                    <th>Teacher</th>
+                    <th>Task</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="teacher_task_body">
+                <tr>
+                    <td colspan="4" class="text-center text-muted py-2">Loading...</td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+
+            <div class="dashboard-section p-3 mt-3">
+    <div class="section-header mb-2 d-flex justify-content-between align-items-center">
+        <h5 class="section-title mb-0">📝 Exam Valuation Summary</h5>
+        <span class="section-date"
+              id="valuation_summary_date"
+              style="font-size:12px;">
+            Draft valuations
+        </span>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle"
+               id="valuation_summary_table"
+               style="background:#fff; border-radius:8px; overflow:hidden;
+                      box-shadow:0 2px 6px rgba(0,0,0,0.05);">
+
+            <thead class="table-light">
+                <tr class="text-center" style="font-size:13px;">
+                    <th>Exam</th>
+                    <th>Subject</th>
+                    <th>Class</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody id="valuation_summary_body">
+                <tr>
+                    <td colspan="4" class="text-center text-muted py-2">
+                        Loading...
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+
+        </div>
+
+        <style>
+            .edu-dashboard {
+                background: #f8fafc;
+                height: calc(100vh - 48px);   /* header safe */
+                overflow-y: auto;             /* ✅ ENABLE SCROLL */
+                overflow-x: hidden;
+                padding-bottom: 40px;
+            }
+
+            .dashboard-header h2 {
+                font-size: 1.5rem;
+            }
+            .dashboard-card {
+<!--                border-radius: 12px;-->
+<!--                color: #fff;-->
+<!--                text-align: center;-->
+<!--                padding: 1rem 0.75rem;-->
+<!--                transition: 0.2s;-->
+<!--                cursor: pointer;-->
+<!--                box-shadow: 0 2px 4px rgba(0,0,0,0.1);-->
+<!--                min-height: 90px;-->
+
+<!--            display: flex;-->
+        align-items: center;
+        justify-content: start;
+            text-align: center;
+        border-radius: 10px;
+        padding: 0.8rem 1rem;
+        color: #fff;
+<!--            cursor: pointer;-->
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        min-height: 60px;
+        transition: 0.2s ease;
+            }
+            .dashboard-card:hover {
+                transform: translateY(-3px);
+            }
+            .dashboard-card .card-icon {
+                font-size: 1.8rem;
+                margin-bottom: 0.3rem;
+            }
+            .dashboard-card .card-title {
+                font-size: 0.85rem;
+                text-transform: uppercase;
+            }
+            .dashboard-card .card-value {
+                font-size: 1.4rem;
+                font-weight: bold;
+            }
+
+            /* Compact Stat Cards */
+    .stat-card {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        border-radius: 10px;
+        padding: 0.8rem 1rem;
+        color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        min-height: 90px;
+        transition: 0.2s ease;
+    }
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    .stat-icon {
+    font-size: 1.6rem;       /* smaller, subtle size */
+    margin-right: 0.5rem;    /* tighter spacing */
+    opacity: 0.9;            /* keeps soft tone */
+    background: none;        /* removes background color */
+    border: none;            /* ensures no box border */
+    padding: 0;              /* removes any inner space */
+    border-radius: 0;        /* removes rounded box */
+    color: #ffffff;          /* optional: make icon white for dark backgrounds */
+}
+    .stat-content {
+        line-height: 1.2;
+    }
+    .stat-title {
+        font-size: 0.8rem;
+        font-weight: 500;
+        opacity: 0.9;
+        margin-bottom: 2px;
+    }
+    .stat-value {
+        font-size: 1.4rem;
+        font-weight: bold;
+        margin-bottom: 0;
+    }
+    .stat-percentage {
+        font-size: 0.75rem;
+        font-weight: 500;
+        opacity: 0.9;
+    }
+
+
+            /* Gradient Styles */
+            .card-gradient-blue {
+                background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            }
+
+            .card-gradient-green {
+                background: linear-gradient(135deg, #56ab2f, #a8e063);
+            }
+
+            .card-gradient-stu {
+                background: #17a2b8;
+            }
+
+            .card-gradient-purple {
+                background: linear-gradient(135deg, #8e2de2, #4a00e0);
+            }
+
+            .card-gradient-orange {
+    background: linear-gradient(135deg, #14b8a6, #2dd4bf);
+}
+
+            /* Gradient Colors */
+    .total-students { background: linear-gradient(135deg, #4f46e5, #7c3aed); }
+    .present-students { background: linear-gradient(135deg, #059669, #34d399); }
+    .absent-students { background: linear-gradient(135deg, #dc2626, #f87171); }
+    .homework-students { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+
+            /* Division cards smaller and compact */
+            .division-card {
+                background: #fff;
+                border-left: 3px solid #3b82f6;
+                border-radius: 8px;
+                padding: 0.5rem 0.75rem;
+                font-size: 0.8rem;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+                transition: 0.2s;
+            }
+            .division-card:hover { transform: translateY(-2px); }
+            .division-card h5 {
+                margin-bottom: 0.4rem;
+                font-size: 0.9rem;
+                font-weight: 600;
+            }
+            .division-card .stats {
+                display: flex;
+                justify-content: space-between;
+                font-weight: 500;
+                font-size: 0.75rem;
+            }
+            .division-card.not-updated {
+                background: #fffbea;
+                border-left: 3px solid #f59e0b;
+            }
+            /* Responsive tweaks */
+    @media (max-width: 768px) {
+        .stat-card {
+            flex-direction: column;
+            text-align: center;
+            padding: 0.8rem;
+        }
+        .stat-icon {
+            margin: 0 0 0.4rem 0;
+            font-size: 1.4rem;
+        }
+    }
+
+            /* Teacher Task Summary Styling */
+#teacher_task_table tbody tr td {
+    font-size: 13px;
+    padding: 6px 10px;
+}
+
+.task-status {
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.task-status.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+.task-status.completed {
+    background: #d4edda;
+    color: #155724;
+}
+.task-status.overdue {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+            .edu-logo {
+    height: 60px;
+    width: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.edu-logo:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+}
+
+.animate-glow {
+    animation: pulse-glow 3s infinite ease-in-out;
+}
+
+@keyframes pulse-glow {
+    0%   { box-shadow: 0 0 8px rgba(66,153,225,0.4); }
+    50%  { box-shadow: 0 0 20px rgba(66,153,225,0.7); }
+    100% { box-shadow: 0 0 8px rgba(66,153,225,0.4); }
+}
+
+            .o_content {
+    overflow: auto !important;
+}
+
+.o_action_manager {
+    overflow: auto !important;
+}
+.edu-dashboard-wrapper {
+    height: 100%;
+    overflow-y: auto;
+}
+
+
+
+        </style>
+        </div>
+    </t>
+
+</templates>

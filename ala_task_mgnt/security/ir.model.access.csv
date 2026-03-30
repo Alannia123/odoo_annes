@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ala_task_management_principal,access_ala_task_management_principal,model_ala_task_management,ala_education_core.group_education_principal,1,1,1,1
+access_ala_task_management_user,access_ala_task_management_user,model_ala_task_management,base.group_user,1,1,1,0

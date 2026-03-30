@@ -18,7 +18,7 @@ class EducationAttendance(models.Model):
                        help="Name of the attendance")
     class_id = fields.Many2one('ala.education.class', string='Class',
                                help="Class of the attendance")
-    division_id = fields.Many2one('ala.education.class.division',
+    division_id = fields.Many2one('ala.education.class.division', domain=[('current_year', '=', True)],
                                   string='Division', required=True, tracking=True,
                                   help="Class division for attendance")
     date = fields.Date(string='Date', default=fields.Date.today, required=True, tracking=True,
@@ -340,6 +340,8 @@ class EducationAttendance(models.Model):
                     'name': rec.name,
                     'attendance_id': rec.id,
                     'student_id': student.id,
+                    'register_no': student.register_no,
+                    'roll_no': student.roll_no,
                     'student_name': student.name,
                     'class_id': rec.division_id.class_id.id,
                     'division_id': rec.division_id.id,

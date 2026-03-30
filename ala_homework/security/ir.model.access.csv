@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_student_homework,access.ala.student.homework,model_ala_student_homework,ala_education_core.group_education_principal,1,1,1,0
+access_student_homework,access.ala.student.homework,model_ala_student_homework,ala_education_core.group_education_office_admin,1,1,1,0
+access_student_homework,access.ala.student.homework,model_ala_student_homework,ala_education_core.group_education_faculty,1,1,1,0
+access_student_homework,access.ala.student.homework,model_ala_student_homework,base.group_user,1,1,1,0
+access_student_homework_line,access.ala.ala.student.homework.line,model_ala_student_homework_line,base.group_user,1,1,1,0

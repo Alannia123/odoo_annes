@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="voice_to_text.VoiceToTextButton" owl="1">
+        <button
+            type="button"
+            class="btn o_voice_button"
+            t-att-class="state.isListening ? 'btn-danger is-listening' : 'btn-secondary'"
+            t-on-click="toggleRecording"
+            title="Voice Input"
+        >
+            <i t-att-class="state.isListening ? 'fa fa-microphone-slash' : 'fa fa-microphone'"/>
+        </button>
+    </t>
+</templates>

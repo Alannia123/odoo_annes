@@ -31,7 +31,7 @@
                 <field name="faculty_id"/>
                 <field name="current_year"/>
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_global_click o_res_partner_kanban">
                             <div class="oe_kanban_details">
                                 <div class="o_kanban_record_top">
@@ -150,8 +150,6 @@
             </p>
         </field>
     </record>
-    <menuitem id="education_class_division_menu"
-              action="education_class_division_action"
-              parent="menu_education_admission"
-              sequence="20"/>
+    <menuitem id="education_class_division_menu" name="Class Division" action="education_class_division_action"
+              parent="menu_education_root" sequence="10"/>
 </odoo>

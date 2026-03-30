@@ -27,7 +27,7 @@ class EducationExam(models.Model):
         'ala.education.class', string='Class', tracking=True,
         help='Class associated with the exam.')
     division_id = fields.Many2one(
-        'ala.education.class.division', string='Division',
+        'ala.education.class.division', string='Division', domain=[('current_year', '=', True)],
         help='Division associated with the exam.')
     exam_type_id = fields.Many2one(
         'ala.education.exam.type', string='Type', required=True, tracking=True,

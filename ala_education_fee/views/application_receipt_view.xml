@@ -1,0 +1,97 @@
+<odoo>
+
+
+    <record id="view_application_fee_tree" model="ir.ui.view">
+        <field name="name">ala.application.fee.receipt.tree</field>
+        <field name="model">ala.application.fee.receipt</field>
+        <field name="arch" type="xml">
+            <list string="Application Receipts" create="true" edit="true">
+                <field name="name"/>
+                <field name="student_name"/>
+                <field name="class_id"/>
+                <field name="amount" sum="Total" optional="show"/>
+                <field name="academic_year_id"/>
+                <field name="company_id" column_invisible="1"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" decoration-info="state == 'draft'" decoration-success="state == 'paid'" decoration-muted="state == 'cancel'" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+
+
+    <record id="view_application_fee_form" model="ir.ui.view">
+        <field name="name">application.fee.form</field>
+        <field name="model">ala.application.fee.receipt</field>
+        <field name="arch" type="xml">
+            <form string="Application Fee Receipt">
+                <header>
+                        <button name="action_pay_and_print" string="Pay &amp; Print"
+                                type="object" class="btn-primary"
+                               invisible="state != 'draft'"/>
+
+                        <button name="action_print_receipt"
+                                string="Print Receipt"
+                                type="object" invisible="state != 'paid'"
+                                class="btn-primary"/>
+                    <button name="reset_to_draft"
+                                string="Reset"
+                                type="object" invisible="state != 'paid'"
+                                class="btn-primary"/>
+                    <button name="action_set_cancel"
+                                string="Cancel"
+                                type="object" invisible="state != 'draft'"
+                                class="btn-primary"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                <sheet>
+                    <div class="oe_title">
+                            <h1>
+                                <field name="name"  readonly="1" placeholder="Draft"/>
+                            </h1>
+                        </div>
+                    <group>
+
+                        <group>
+                            <field name="student_name" readonly="state == 'paid'" required="1"/>
+                            <field name="class_id" options="{'no_create': True, 'no_open': True}" readonly="state == 'paid'" required="1"/>
+                        </group>
+                        <group>
+                            <field name="amount" widget="monetary"/>
+                            <field name="date" readonly="1"/>
+                            <field name="academic_year_id" readonly="1" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="company_id" readonly="1" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="currency_id" invisible="1" options="{'no_create': True, 'no_open': True}"/>
+                        </group>
+                    </group>
+
+                </sheet>
+                <chatter
+                    open_attachments="True"
+                    reload_on_attachment="True"
+                    reload_on_follower="True"
+                    reload_on_post="True"
+                />
+            </form>
+        </field>
+    </record>
+
+    <record id="action_application_fee" model="ir.actions.act_window">
+        <field name="name">Application Receipts</field>
+        <field name="res_model">ala.application.fee.receipt</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+<!--    <menuitem id="menu_application_fee" web_icon="ala_education_fee,static/description/fee_icon.png" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"-->
+<!--              name="Application Receipts" action="action_application_fee" sequence="3"/>-->
+
+    <menuitem id="menu_customer_invoices_menu_root" web_icon="ala_education_fee,static/description/invoices.png" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
+              name="Student Invoices" action="account.action_move_out_invoice_type" sequence="6"/>
+
+    <menuitem id="menu_expenses_menu_root" web_icon="ala_education_fee,static/description/icon_exp.png" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
+              name="Expense Management" action="hr_expense.hr_expense_actions_my_all" sequence="7"/>
+
+    <menuitem id="menu_vendor_bills_menu_root" web_icon="ala_education_fee,static/description/bills.png" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
+              name="Vendor Management" action="account.action_move_in_invoice_type" sequence="8"/>
+
+</odoo>

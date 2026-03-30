@@ -8,7 +8,7 @@ class RankCard(models.TransientModel):
     _description = 'Rank Card'
 
 
-    class_div_id = fields.Many2one('ala.education.class.division', string='Select Class', required=True)
+    class_div_id = fields.Many2one('ala.education.class.division', domain=[('current_year', '=', True)], string='Select Class', required=True)
 
 
     def action_generate_pdf(self):

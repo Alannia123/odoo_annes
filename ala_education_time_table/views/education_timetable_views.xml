@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="education_time_table_view_form" model="ir.ui.view">
+        <field name="name">ala.education.timetable.view.form</field>
+        <field name="model">ala.education.timetable</field>
+        <field name="arch" type="xml">
+            <form string="Education Timetable">
+                <header>
+                    <button name="action_set_to_post" class="oe_highlight" type="object" string="Post" invisible="state != 'draft'" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"/>
+                    <button name="action_reset_to_draft" class="oe_highlight" type="object" string="Reset" invisible="state != 'done'" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" default_focus="1" placeholder="Name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options="{'terminology': 'archive'}" groups="ala_education_core.group_education_principal"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="class_division_id" options="{'no_open': True, 'no_create': True}" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"/>
+                            <field name="academic_year_id" options="{'no_open': True, 'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="facebook_photo_url" invisible="1"/>
+                            <field name="file_name" invisible="1"/>
+                            <field name="pdf_file" filename="file_name" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Time Table">
+                            <group>
+                                <field name="pre_file_name" invisible="1"/>
+                                <field name="preview_image" invisible="1" filename="pre_file_name" readonly="1" force_save="1"/>
+                                <field name="preview_image" widget="image" style="height: 600px; width: 600px;" string="" options="{'preview_image': 'preview_image'}"/>
+                            </group>
+                        </page>
+                        <page string="Monday" invisible="1">
+                            <field name="timetable_mon_ids" domain="[('week_day', '=', '0')]" context="{'default_week_day': '0'}">
+                                <list string="Monday" editable="bottom">
+                                    <field name="period_id"/>
+                                    <field name="time_from" widget="float_time"/>
+                                    <field name="time_till" widget="float_time"/>
+                                    <field name="subject_id"/>
+                                    <field name="faculty_id"/>
+                                    <field name="week_day" invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Tuesday" invisible="1">
+                            <field name="timetable_tue_ids" domain="[('week_day', '=', '1')]" context="{'default_week_day': '1'}">
+                                <list string="Tuesday" editable="bottom">
+                                    <field name="period_id"/>
+                                    <field name="time_from" widget="float_time"/>
+                                    <field name="time_till" widget="float_time"/>
+                                    <field name="subject_id"/>
+                                    <field name="faculty_id"/>
+                                    <field name="week_day" invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Wednesday" invisible="1">
+                            <field name="timetable_wed_ids" domain="[('week_day', '=', '2')]" context="{'default_week_day': '2'}">
+                                <list string="Wednesday" editable="bottom">
+                                    <field name="period_id"/>
+                                    <field name="time_from" widget="float_time"/>
+                                    <field name="time_till" widget="float_time"/>
+                                    <field name="subject_id"/>
+                                    <field name="faculty_id"/>
+                                    <field name="week_day" invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Thursday" invisible="1">
+                            <field name="timetable_thur_ids" domain="[('week_day', '=', '3')]" context="{'default_week_day': '3'}">
+                                <list string="Thursday" editable="bottom">
+                                    <field name="period_id"/>
+                                    <field name="time_from" widget="float_time"/>
+                                    <field name="time_till" widget="float_time"/>
+                                    <field name="subject_id"/>
+                                    <field name="faculty_id"/>
+                                    <field name="week_day" invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Friday" invisible="1">
+                            <field name="timetable_fri_ids" domain="[('week_day', '=', '4')]" context="{'default_week_day': '4'}">
+                                <list string="Friday" editable="bottom">
+                                    <field name="period_id"/>
+                                    <field name="time_from" widget="float_time"/>
+                                    <field name="time_till" widget="float_time"/>
+                                    <field name="subject_id"/>
+                                    <field name="faculty_id"/>
+                                    <field name="week_day" invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Saturday" invisible="1">
+                            <field name="timetable_sat_ids" domain="[('week_day', '=', '5')]" context="{'default_week_day': '5'}">
+                                <list string="Saturday" editable="bottom">
+                                    <field name="period_id"/>
+                                    <field name="time_from" widget="float_time"/>
+                                    <field name="time_till" widget="float_time"/>
+                                    <field name="subject_id"/>
+                                    <field name="faculty_id"/>
+                                    <field name="week_day" invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Sunday" invisible="1">
+                            <field name="timetable_sun_ids" domain="[('week_day', '=', '6')]" context="{'default_week_day': '6'}">
+                                <list string="Sunday" editable="bottom">
+                                    <field name="period_id"/>
+                                    <field name="time_from" widget="float_time"/>
+                                    <field name="time_till" widget="float_time"/>
+                                    <field name="subject_id"/>
+                                    <field name="faculty_id"/>
+                                    <field name="week_day" invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="education_time_table_view_list" model="ir.ui.view">
+        <field name="name">ala.education.timetable.view.list</field>
+        <field name="model">ala.education.timetable</field>
+        <field name="arch" type="xml">
+            <list string="Education Timetable">
+                <field name="name"/>
+                <field name="class_division_id"/>
+                <field name="academic_year_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="education_time_table_action" model="ir.actions.act_window">
+        <field name="name">Education Timetable</field>
+        <field name="res_model">ala.education.timetable</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">You haven't created any timetable yet.</p>
+        </field>
+    </record>
+
+    <menuitem id="education_time_table_main_menu" web_icon="ala_education_time_table,static/description/icon.png" name="ALA Timetable"/>
+    <menuitem id="education_time_table_sub_menu" name="Timetable" parent="education_time_table_main_menu" sequence="1"/>
+    <menuitem id="education_time_table_sub_sub_menu" name="Timetable" parent="education_time_table_sub_menu" action="education_time_table_action"/>
+</odoo>

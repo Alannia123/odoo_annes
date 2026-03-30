@@ -53,6 +53,6 @@
     </record>
     <menuitem id="education_academic_year_menu"
               action="education_academic_year_action"
-              parent="menu_education_main_menu"
-              sequence="2"/>
+              parent="menu_education_root"
+              sequence="40"/>
 </odoo>

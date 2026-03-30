@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Record to create a tag for Educational Dashboard -->
+    <record id="education_fee_overview_action" model="ir.actions.client">
+        <field name="name">Fees Collect Overview</field>
+        <field name="tag">erp_fee_overview_tag</field>
+        <field name="target">current</field>
+    </record>
+<!--    &lt;!&ndash;    Educational Dashboard Menu&ndash;&gt;-->
+<!--    <menuitem id="education_fee_collect_dashboard_menu_root" parent="menu_student_fees_collection_root"-->
+<!--              name="Student Fees Overview" sequence="-1" action="education_fee_overview_action"/>-->
+
+</odoo>

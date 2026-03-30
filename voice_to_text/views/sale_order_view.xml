@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form_voice_input" model="ir.ui.view">
+        <field name="name">sale.order.form.voice.input</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='note']" position="after">
+                <field name="voice_note" widget="voice_to_text"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -59,6 +59,6 @@
         </field>
     </record>
     <menuitem id="education_class_menu" action="education_class_action"
-              parent="menu_education_class_conf"
-              sequence="1"/>
+              parent="menu_education_root"
+              sequence="20"/>
 </odoo>

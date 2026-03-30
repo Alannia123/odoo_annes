@@ -1,0 +1,345 @@
+<odoo>
+       <template id="receipt_template_document">
+<t t-call="web.basic_layout">
+
+<style>
+    .receipt-box {
+        width: 49%;
+        float: left;
+        border: 1.5px solid black;
+        min-height: 520px;
+        box-sizing: border-box;
+        padding: 10px;
+        font-size: 14px;
+    }
+    .receipt-box-right {
+        width: 49%;
+        float: right;
+        border: 1.5px solid black;
+        min-height: 520px;
+        box-sizing: border-box;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .header-box {
+        width: 100%;
+        border-bottom: 1.5px solid black;
+        height: 90px;
+        position: relative;
+    }
+
+    .header-logo {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+    }
+
+    .school-header {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        width: 100%;
+        line-height: 1.3;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .school-address {
+        font-size: 12px;
+        font-weight: normal;
+    }
+
+    table.clean-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+
+    table.clean-table td,
+    table.clean-table th {
+        padding: 6px 8px;
+        border: 1px solid black;
+    }
+
+    .label {
+        font-weight: bold;
+        width: 30%;
+    }
+
+    .words-box {
+        margin-top: 15px;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .sign {
+        margin-top: 30px;
+        text-align: right;
+        font-weight: bold;
+        padding-right: 10px;
+    }
+</style>
+
+<div class="page">
+
+    <!-- LEFT COPY -->
+    <div class="receipt-box">
+
+        <!-- Header Row -->
+        <table class="clean-table">
+            <tr>
+                <td><strong>Appl. No.:</strong> <t t-esc="doc.name"/></td>
+                <td style="text-align:center;"><strong>Application Fee</strong></td>
+                <td style="text-align:right;"><strong>Date:</strong> <t t-esc="doc.date.strftime('%d-%m-%Y')"/></td>
+            </tr>
+        </table>
+
+       <div style="
+    width: 100%;
+    height: 90px;
+    position: relative;
+">
+
+    <!-- Left Logo -->
+    <div style="position: absolute; left: 10px; top: 10px;">
+        <img t-if="doc.company_id.logo"
+             t-att-src="image_data_uri(doc.company_id.logo)"
+             style="height: 70px; width: 70px; object-fit: contain;"/>
+    </div>
+
+    <!-- Centered Title (INSIDE receipt only) -->
+    <div style="
+        position: absolute;
+        left: 10%;
+        top: 10%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        text-align: center;
+        line-height: 1.2;
+    ">
+        <div style="font-size: 18px; font-weight: bold;">
+            <span>MARY IMMACULATE <br></br>ENGLISH MEDIUM SCHOOL</span>
+        </div>
+        <div style="font-size: 14px; margin-top: 2px;font-weight: bold;">
+            Vill.- Patilachandra, P.O.- Paschim Madhyampur<br/>
+            P.S.- Basirhat, Dist.- North 24 Parganas, Pin-743429
+        </div>
+    </div>
+
+</div>
+
+        <!-- Student Info -->
+        <table class="clean-table">
+            <tr>
+                <td class="label">Name</td>
+                <td><t t-esc="doc.student_name"/></td>
+            </tr>
+            <tr>
+                <td class="label">Class</td>
+                <td><t t-esc="doc.class_id.name"/></td>
+            </tr>
+            <tr>
+                <td class="label">Session</td>
+                <td><t t-esc="doc.academic_year_id.name"/></td>
+            </tr>
+        </table>
+
+        <!-- Fee Details -->
+        <table class="clean-table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th style="text-align:center;">Rs.</th>
+                    <th style="text-align:center;">Paisa</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>Admission Form Fee</td>
+                    <td style="text-align:center;"><t t-esc="int(doc.amount)"/></td>
+                    <td style="text-align:center;">00</td>
+                </tr>
+
+                <!-- Blank filler rows -->
+                <tr><td style="height:14px;"></td><td></td><td></td></tr>
+                <tr><td style="height:14px;"></td><td></td><td></td></tr>
+                <tr><td style="height:14px;"></td><td></td><td></td></tr>
+                <tr><td style="height:14px;"></td><td></td><td></td></tr>
+
+                <tr>
+                    <td style="text-align:right;"><strong>Total</strong></td>
+                    <td style="text-align:center;"><strong><t t-esc="int(doc.amount)"/></strong></td>
+                    <td style="text-align:center;">00</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Amount in Words -->
+        <div class="words-box">
+            <strong>Rupees (in words):</strong>
+            <strong><t t-esc="request.env.ref('base.INR').amount_to_text(doc.amount)"/></strong> only
+        </div>
+
+        <!-- Signature -->
+        <div class="sign">Sign. of the Receiving Clerk</div>
+
+    </div>
+
+    <!-- RIGHT COPY -->
+    <div class="receipt-box-right">
+
+        <!-- Header Row -->
+        <table class="clean-table">
+            <tr>
+                <td><strong>Appl. No.:</strong> <t t-esc="doc.name"/></td>
+                <td style="text-align:center;"><strong>Application Fee</strong></td>
+                <td style="text-align:right;"><strong>Date:</strong> <t t-esc="doc.date.strftime('%d-%m-%Y')"/></td>
+            </tr>
+        </table>
+
+       <div style="
+    width: 100%;
+
+    height: 90px;
+    position: relative;
+">
+
+    <!-- Left Logo -->
+    <div style="position: absolute; left: 10px; top: 10px;">
+        <img t-if="doc.company_id.logo"
+             t-att-src="image_data_uri(doc.company_id.logo)"
+             style="height: 70px; width: 70px; object-fit: contain;"/>
+    </div>
+
+    <!-- Centered Title (INSIDE receipt only) -->
+    <div style="
+        position: absolute;
+        left: 10%;
+        top: 10%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        text-align: center;
+        line-height: 1.2;
+    ">
+        <div style="font-size: 18px; font-weight: bold;">
+            <span>MARY IMMACULATE <br></br> ENGLISH MEDIUM SCHOOL</span>
+        </div>
+        <div style="font-size: 14px; margin-top: 2px;font-weight: bold;">
+            Vill.- Patilachandra, P.O.- Paschim Madhyampur<br/>
+            P.S.- Basirhat, Dist.- North 24 Parganas, Pin-743429
+        </div>
+    </div>
+
+</div>
+
+        <!-- Student Info -->
+        <table class="clean-table">
+            <tr>
+                <td class="label">Name</td>
+                <td><t t-esc="doc.student_name"/></td>
+            </tr>
+            <tr>
+                <td class="label">Class</td>
+                <td><t t-esc="doc.class_id.name"/></td>
+            </tr>
+            <tr>
+                <td class="label">Session</td>
+                <td><t t-esc="doc.academic_year_id.name"/></td>
+            </tr>
+        </table>
+
+        <!-- Fee Details -->
+        <table class="clean-table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th style="text-align:center;">Rs.</th>
+                    <th style="text-align:center;">Paisa</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>Admission Form Fee</td>
+                    <td style="text-align:center;"><t t-esc="int(doc.amount)"/></td>
+                    <td style="text-align:center;">00</td>
+                </tr>
+
+                <!-- Blank filler rows -->
+                <tr><td style="height:14px;"></td><td></td><td></td></tr>
+                <tr><td style="height:14px;"></td><td></td><td></td></tr>
+                <tr><td style="height:14px;"></td><td></td><td></td></tr>
+                <tr><td style="height:14px;"></td><td></td><td></td></tr>
+
+                <tr>
+                    <td style="text-align:right;"><strong>Total</strong></td>
+                    <td style="text-align:center;"><strong><t t-esc="int(doc.amount)"/></strong></td>
+                    <td style="text-align:center;">00</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Amount in Words -->
+        <div class="words-box">
+            <strong>Rupees (in words):</strong>
+            <strong><t t-esc="request.env.ref('base.INR').amount_to_text(doc.amount)"/></strong> only
+        </div>
+
+        <!-- Signature -->
+        <div class="sign">Sign. of the Receiving Clerk</div>
+
+    </div>
+
+    <div style="clear: both;"></div>
+
+</div>
+
+</t>
+
+
+</template>
+
+
+
+        <template id="receipt_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="ala_education_fee.receipt_template_document" />
+                </t>
+            </t>
+        </template>
+
+    <record id="paperformat_receipt_half" model="report.paperformat">
+        <field name="name">MIS Invoice A4</field>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">10</field>
+        <field name="margin_bottom">5</field>
+        <field name="margin_left">2</field>
+        <field name="margin_right">2</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">100</field>
+    </record>
+
+
+
+
+    <!--Generate the pdf report-->
+    <record id="receipt_report_action" model="ir.actions.report">
+        <field name="name">Application Receipt</field>
+        <field name="model">ala.application.fee.receipt</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ala_education_fee.receipt_template</field>
+        <field name="report_file">ala_education_fee.receipt_template</field>
+        <field name="print_report_name">'Application Receipt - %s' % (object.name)</field>
+        <field name="paperformat_id" ref="ala_education_fee.paperformat_receipt_half"/>
+        <field name="binding_model_id" ref="ala_education_fee.model_ala_application_fee_receipt"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<odoo>
+
+    <record id="fine_amount_change_wizard" model="ir.ui.view">
+        <field name="name">Budget Amount Change</field>
+        <field name="model">ala.fine.remove.wizard</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Fine Amount Change">
+                <group>
+                    <group>
+                        <field name="ex_fine_amount"/>
+                    </group>
+                    <group>
+                        <field name="fine_amount"/>
+                        <field name="fee_line_id"/>
+                    </group>
+                </group>
+                <footer>
+                    <button  name="update_fine_amount" string="Change Fine" type="object" class="btn-warning"/>
+                    <button special="cancel" string="Cancel" class="oe_link" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+</odoo>

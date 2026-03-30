@@ -103,10 +103,12 @@
                             invisible="not mark_sheet_created or state != 'draft'"
                             class="oe_highlight" string="Completed"/>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" widget="mail_followers"/>
-                    <field name="message_ids" widget="mail_thread"/>
-                </div>
+                <chatter
+                    open_attachments="True"
+                    reload_on_attachment="True"
+                    reload_on_follower="True"
+                    reload_on_post="True"
+                />
             </form>
         </field>
     </record>
@@ -132,8 +134,8 @@
 <!--    Exam Valuation line tree-->
     <!--   Tree view for education exam valuation   -->
     <record id="exam_valuation_line_view_tree" model="ir.ui.view">
-        <field name="name">exam.valuation.line.view.tree</field>
-        <field name="model">exam.valuation.line</field>
+        <field name="name">ala.exam.valuation.line.view.tree</field>
+        <field name="model">ala.exam.valuation.line</field>
         <field name="arch" type="xml">
             <list>
                 <field name="valuation_id"/>
