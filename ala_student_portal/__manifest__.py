@@ -10,7 +10,7 @@
     'company': 'alanniainfotechz',
     'maintainer': 'Alanniainfotechz',
     'depends': ['web','website','portal', 'account', 'ala_education_erp_dashboard',
-                'ala_homework', 'ala_school_calendar'],
+                'ala_homework', 'ala_school_calender'],
     'data': [
         # 'security/ir.model.access.csv',
         # 'data/web_menu.xml',
