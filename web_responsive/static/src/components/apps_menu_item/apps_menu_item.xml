@@ -26,9 +26,7 @@
                 <i t-if="isActive" class="fa fa-check-circle o-app-menu-item__active" />
             </div>
             <span class="o-app-menu-item__name" t-att-title="props.app.name">
-                <strong>
-                    <t t-out="props.app.name"/>
-                </strong>
+                <t t-out="props.app.name" />
             </span>
         </a>
     </t>
