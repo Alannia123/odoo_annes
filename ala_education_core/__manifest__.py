@@ -39,7 +39,7 @@
         'views/education_subject_views.xml',
         # 'views/education_syllabus_views.xml',
         'views/education_amenities_views.xml',
-        'views/res_company_views.xml',
+        # 'views/res_company_views.xml',
         'views/hr_applicant_views.xml',
         'views/application_reject_reason_views.xml',
         'views/grenn_book_view.xml',
