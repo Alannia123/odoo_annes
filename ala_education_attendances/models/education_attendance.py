@@ -99,14 +99,14 @@ class EducationAttendance(models.Model):
         compute="_compute_attendance_count"
     )
 
-    @api.depends('attendance_line_ids.present_morning')
+    @api.depends('attendance_line_ids.present')
     def _compute_attendance_count(self):
         for rec in self:
             rec.present_count = len(
-                rec.attendance_line_ids.filtered(lambda l: l.present_morning)
+                rec.attendance_line_ids.filtered(lambda l: l.present)
             )
             rec.absent_count = len(
-                rec.attendance_line_ids.filtered(lambda l: not l.present_morning)
+                rec.attendance_line_ids.filtered(lambda l: not l.present)
             )
 
     @api.model
@@ -157,7 +157,7 @@ class EducationAttendance(models.Model):
             'view_mode': 'tree',
             'domain': [
                 ('attendance_id', '=', self.id),
-                ('present_morning', '=', True)
+                ('present', '=', True)
             ],
             'context': {'default_attendance_id': self.id},
         }
@@ -171,7 +171,7 @@ class EducationAttendance(models.Model):
             'view_mode': 'tree',
             'domain': [
                 ('attendance_id', '=', self.id),
-                ('present_morning', '=', False)
+                ('present', '=', False)
             ],
             'context': {'default_attendance_id': self.id},
         }
@@ -353,15 +353,15 @@ class EducationAttendance(models.Model):
 
             rec.attendance_created = True
 
-    def action_mark_all_present_morning(self):
+    def action_mark_all_present(self):
         """Mark all students as present (morning)"""
-        self.attendance_line_ids.write({'present_morning': True})
+        self.attendance_line_ids.write({'present': True})
         self.attendance_line_ids.write({'attendance_status': 'present'})
         self.all_marked_morning = True
 
-    def action_un_mark_all_present_morning(self):
+    def action_un_mark_all_present(self):
         """Unmark all students as present (morning)"""
-        self.attendance_line_ids.write({'present_morning': False})
+        self.attendance_line_ids.write({'present': False})
         self.attendance_line_ids.write({'attendance_status': 'absent'})
         self.all_marked_morning = False
 
@@ -376,7 +376,7 @@ class EducationAttendance(models.Model):
                 raise UserError(_("No attendance lines found."))
 
             # ✅ Step 1: Mark all students as present
-            lines.write({'present_morning': True})
+            lines.write({'present': True})
             lines.write({'attendance_status': 'present'})
 
 
@@ -409,7 +409,7 @@ class EducationAttendance(models.Model):
                 )
 
                 # Mark them absent
-                absent_lines.write({'present_morning': False})
+                absent_lines.write({'present': False})
                 absent_lines.write({'attendance_status': 'absent'})
 
             # ✅ Step 3: Finalize attendance
@@ -420,7 +420,7 @@ class EducationAttendance(models.Model):
         for rec in self:
             if rec.state == 'draft':
                 continue
-            rec.action_un_mark_all_present_morning()
+            rec.action_un_mark_all_present()
             rec.attendance_line_ids.write({'state': 'draft'})
             rec.state = 'draft'
 

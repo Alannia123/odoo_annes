@@ -1,0 +1,51 @@
+.welcome-text {
+    line-height: 1.2;
+}
+
+/* Small top line */
+.welcome-line {
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: #6c757d;
+    font-weight: 600;
+}
+
+/* Main school name */
+.welcome-school {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 1px;
+
+    background: linear-gradient(90deg, #1e3c72, #2a5298, #1e3c72);
+    background-size: 200%;
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    animation: shimmer 3s linear infinite;
+}
+
+/* Animation */
+@keyframes shimmer {
+    0% { background-position: -200%; }
+    100% { background-position: 200%; }
+}
+
+.welcome-school::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 3px;
+    margin: 6px auto 0;
+    background: #2a5298;
+    border-radius: 2px;
+}
+
+.welcome-school {
+    font-size: 28px;
+    font-weight: 800;
+
+    background: linear-gradient(90deg, #d4af37, #ffd700, #d4af37);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

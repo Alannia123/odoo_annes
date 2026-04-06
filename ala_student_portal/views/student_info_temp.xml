@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="student_info" name="Student Details">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Student Info</t>
+            </t>
+
+            <style>
+                .student-card {
+                    max-width: 500px;
+                    margin: 20px auto;
+                    background: #ffffff;
+                    border-radius: 16px;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                    padding: 20px;
+                    font-family: 'Poppins', sans-serif;
+                    color: #333;
+                }
+
+                .student-header {
+                    text-align: center;
+                    border-bottom: 3px solid #3498db;
+                    padding-bottom: 10px;
+                    margin-bottom: 15px;
+                }
+
+                .student-header h2 {
+                    font-size: 20px;
+                    color: #2c3e50;
+                    margin-bottom: 4px;
+                }
+
+                .student-header h3 {
+                    font-size: 14px;
+                    color: #7f8c8d;
+                    margin-top: 0;
+                }
+
+                .student-photo {
+                    text-align: center;
+                    margin-bottom: 15px;
+                }
+
+                .student-photo img {
+                    width: 130px;
+                    height: 160px;
+                    border-radius: 12px;
+                    border: 3px solid #3498db;
+                    object-fit: cover;
+                }
+
+                .info-section {
+                    margin-top: 10px;
+                }
+
+                .info-section h4 {
+                    color: #2980B9;
+                    font-size: 16px;
+                    border-left: 4px solid #2980B9;
+                    padding-left: 8px;
+                    margin-bottom: 10px;
+                    font-weight: 600;
+                }
+
+                .info-table {
+                    width: 100%;
+                    border-collapse: separate;
+                    border-spacing: 0 8px;
+                }
+
+                .info-table td {
+                    padding: 4px 6px;
+                    vertical-align: top;
+                }
+
+                .info-label {
+                    font-weight: 600;
+                    color: #555;
+                    width: 35%;
+                }
+
+                .info-value {
+                    color: #2c3e50;
+                }
+
+                .address-block {
+                    line-height: 1.4em;
+                }
+
+                @media screen and (max-width: 600px) {
+                    .student-card {
+                        width: 90%;
+                        padding: 15px;
+                    }
+                }
+            </style>
+
+            <div class="student-card">
+                <div class="student-header">
+                    <h2 t-esc="student.name"/>
+                    <h3>Student Information</h3>
+                </div>
+
+                <div class="student-photo">
+                    <t t-if="student.image_1920">
+                        <img t-att-src="image_data_uri(student.image_1920)" alt="Student Photo"/>
+                    </t>
+                    <t t-else="">
+                        <img t-att-src="'/web/static/src/img/placeholder.png'" alt="No Photo"/>
+                    </t>
+                </div>
+
+                <div class="info-section">
+                    <h4>Basic Details</h4>
+                    <table class="info-table">
+                        <tr><td class="info-label">Division</td><td class="info-value"><t t-esc="student.class_division_id.name"/></td></tr>
+                        <tr><td class="info-label">Gender</td><td class="info-value"><t t-esc="student.gender"/></td></tr>
+                        <tr><td class="info-label">Date of Birth</td><td class="info-value"><t t-esc="student.date_of_birth"/></td></tr>
+                        <tr><td class="info-label">Blood Group</td><td class="info-value"><t t-esc="student.blood_group"/></td></tr>
+                        <tr>
+                            <td class="info-label">Address</td>
+                            <td class="info-value address-block">
+                                <t t-esc="student.street"/><br/>
+                                <t t-esc="student.street2"/><br/>
+                                <t t-esc="student.city"/>, <t t-esc="student.state_id.name"/><br/>
+                                <t t-esc="student.country_id.name"/> - <t t-esc="student.zip"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

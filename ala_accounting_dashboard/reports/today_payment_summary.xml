@@ -1,0 +1,104 @@
+<!-- report/school_receipt_report.xml -->
+<odoo>
+
+
+
+
+   <template id="today_invoice_report_template">
+    <t t-call="web.external_layout">
+
+        <!-- Required in Odoo 17 -->
+
+            <t t-set="company" t-value="docs and docs[0].company_id"/>
+
+            <div class="page">
+
+                <!-- Title -->
+                <h3 style="text-align:center; margin-top:10px;">
+                    Today's Invoice Report
+                </h3>
+
+                <br/>
+
+                <!-- Table -->
+                <table class="table table-sm table-bordered"
+                       style="width:100%; border-collapse:collapse;">
+                    <thead style="background:#f2f2f2;">
+                        <tr>
+                            <th style="padding:8px;">Register No</th>
+                            <th style="padding:8px;">Student Name</th>
+                            <th style="padding:8px;">Division</th>
+                            <th style="padding:8px; text-align:right;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <t t-set="total" t-value="0"/>
+
+                        <t t-foreach="docs" t-as="o">
+
+                            <t t-set="student"
+                               t-value="env['ala.education.student'].search([('partner_id', '=', o.partner_id.id)], limit=1)"/>
+
+                            <tr>
+                                <td style="padding:6px;">
+                                    <t t-esc="student.register_no if student else ''"/>
+                                </td>
+
+                                <td style="padding:6px;">
+                                    <t t-esc="student.name if student else o.partner_id.name"/>
+                                </td>
+
+                                <td style="padding:6px;">
+                                    <t t-esc="student.class_division_id.name if student and student.class_division_id else ''"/>
+                                </td>
+
+                                <td style="padding:6px; text-align:right;">
+                                    <t t-esc="o.amount_total"/>
+                                </td>
+                            </tr>
+
+                            <t t-set="total" t-value="total + o.amount_total"/>
+
+                        </t>
+
+                    </tbody>
+                </table>
+
+                <br/>
+
+                <!-- Total Section -->
+                <div style="text-align:right; margin-top:15px;">
+                    <h4>
+                        Total:
+                        <t t-esc="company.currency_id.symbol"/>
+                        <t t-esc="total"/>
+                    </h4>
+
+                    <p>
+                        <strong>Amount in Words:</strong>
+                        <t t-esc="company.currency_id.amount_to_text(total)"/>
+                    </p>
+                </div>
+
+            </div>
+
+
+    </t>
+</template>
+
+
+
+
+
+
+    <record id="today_invoice_report_action" model="ir.actions.report">
+        <field name="name">Today Invoice Report</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ala_accounting_dashboard.today_invoice_report_template</field>
+        <field name="report_file">ala_accounting_dashboard.today_invoice_report_template</field>
+        <field name="print_report_name">'Today Invoice Report'</field>
+    </record>
+
+</odoo>

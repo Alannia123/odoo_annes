@@ -81,23 +81,23 @@
                         <page string="Attendance Entry" invisible="attendance_created == False">
                             <button
                                     string="Mark All" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
-                                    name="action_mark_all_present_morning"
+                                    name="action_mark_all_present"
                                     type="object" invisible="1"
                                     class="oe_highlight btn-success"/>
                             <button
                                     string="Un Mark" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
-                                    name="action_un_mark_all_present_morning" class="oe_highlight btn-danger"
+                                    name="action_un_mark_all_present" class="oe_highlight btn-danger"
                                     type="object" invisible="1"/>
 <!--                    <div class="table_header_box"-->
 <!--                         invisible="attendance_created == False">-->
                         <field name="attendance_line_ids"
                                readonly="1">
-                            <list editable="bottom" create="false" decoration-danger="present_morning == False" decoration-success="present_morning != False" delete="false">
+                            <list editable="bottom" create="false" decoration-danger="present == False" decoration-success="present != False" delete="false">
                                 <field name="student_name" readonly="1"
                                        style=" width: 500px; "/>
                                 <field name="register_no"/>
                                 <field name="roll_no"/>
-                                <field name="present_morning" />
+                                <field name="present" />
                                 <field name="attendance_status" decoration-danger="attendance_status == 'absent'" decoration-success="attendance_status == 'present'" widget="badge"/>
                                 <field name="state" optional="hide" decoration-warning="state == 'draft'" decoration-success="state == 'done'" widget="badge"/>
 <!--                                <field name="present_afternoon"/>-->

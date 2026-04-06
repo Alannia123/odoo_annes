@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+   <template id="template_school_event_wall_calendar" name="School Event Wall Calendar">
+  <t t-call="website.layout">
+    <div class="container my-5">
+
+      <!-- Navigation Header -->
+      <div class="calendar-nav-bar d-flex justify-content-between align-items-center mb-4 p-3">
+  <a t-attf-href="/school/calendar?month={{ (month - 1) if month > 1 else 12 }}&amp;year={{ year - 1 if month == 1 else year }}"
+     class="nav-btn shadow-glass">❮</a>
+
+  <h2 class="calendar-title">SCHOOL CALENDAR - <t t-esc="month_name"/> <t t-esc="year"/></h2>
+
+
+  <a t-attf-href="/school/calendar?month={{ (month % 12) + 1 }}&amp;year={{ year + 1 if month == 12 else year }}"
+     class="nav-btn shadow-glass">❯</a>
+</div>
+
+
+      <!-- Calendar Grid -->
+      <div class="calendar-grid border shadow-sm rounded">
+
+        <!-- Week headers -->
+        <div class="calendar-cell calendar-header sunday-header">Sun</div>
+        <div class="calendar-cell calendar-header">Mon</div>
+        <div class="calendar-cell calendar-header">Tue</div>
+        <div class="calendar-cell calendar-header">Wed</div>
+        <div class="calendar-cell calendar-header">Thu</div>
+        <div class="calendar-cell calendar-header">Fri</div>
+        <div class="calendar-cell calendar-header">Sat</div>
+
+        <!-- Add top empty row -->
+        <t t-foreach="range(7)" t-as="i">
+          <div class="calendar-cell empty-tile"></div>
+        </t>
+
+        <!-- Calendar Days -->
+        <t t-foreach="enumerate(calendar_data)" t-as="cell_item">
+    <t t-set="i" t-value="cell_item[0]"/>
+    <t t-set="cell" t-value="cell_item[1]"/>
+
+    <div t-att-class="'calendar-cell ' +
+        ('sunday ' if (i % 7 == 0) else '') +
+        ('today ' if cell.get('is_today') else '') +
+        ('event-day ' if cell.get('event') else '')">
+
+        <div class="date-circle">
+            <t t-esc="cell['day']"/>
+        </div>
+
+        <t t-if="cell['event']">
+  <t t-set="event_name" t-value="cell['event'].name or ''"/>
+
+  <t t-if="'test' in event_name.lower()">
+    <div class="event-title event-test">🧪 <t t-esc="event_name"/></div>
+  </t>
+  <t t-elif="'birthday' in event_name.lower()">
+    <div class="event-title event-birthday">🎂 <t t-esc="event_name"/></div>
+  </t>
+  <t t-elif="'holiday' in event_name.lower() or 'vacation' in event_name.lower()">
+    <div class="event-title event-holiday">🌴 <t t-esc="event_name"/></div>
+  </t>
+  <t t-elif="'exam' in event_name.lower() or 'board' in event_name.lower()">
+    <div class="event-title event-exam">📘 <t t-esc="event_name"/></div>
+  </t>
+  <t t-else="">
+    <div class="event-title event-general">🎉 <t t-esc="event_name"/></div>
+  </t>
+</t>
+
+    </div>
+</t>
+
+
+        <!-- Add bottom empty row -->
+        <t t-foreach="range(7)" t-as="i">
+          <div class="calendar-cell empty-tile"></div>
+        </t>
+
+      </div>
+    </div>
+
+      <div class="calendar-legend">
+  <div class="legend-item"><span class="legend-circle legend-today"></span> Today</div>
+  <div class="legend-item"><span class="legend-circle legend-sunday"></span> Sunday</div>
+<!--  <div class="legend-item"><span class="legend-circle legend-saturday"></span> Saturday</div>-->
+  <div class="legend-item"><span class="legend-circle legend-event"></span> Event</div>
+  <div class="legend-item"><span class="legend-circle legend-exam"></span> Exam</div>
+</div>
+
+
+    <!-- STYLING -->
+    <style>
+
+        /* === CRYSTAL TITLE WITH GRADIENT SHIMMER === */
+/* === CRYSTAL SHIMMER TITLE (auto intro + hover re-activate) 67321a=== */
+.calendar-title {
+  background: linear-gradient(90deg, #0044cc, #f1c40f, #ffd700, #f1c40f, #0044cc);
+}
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 900;
+  font-size: 30px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+  text-shadow: 0 2px 6px rgba(0, 102, 255, 0.25),
+               0 0 10px rgba(0, 204, 255, 0.2);
+  animation: textShimmerIntro 2.5s ease-in-out 0.3s 1 forwards;
+  cursor: default;
+}
+
+/* Shimmer movement animation */
+@keyframes textShimmerMove {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* 2-second intro animation that fades out */
+@keyframes textShimmerIntro {
+  0%   { background-position: 0% 50%; opacity: 0.7; }
+  50%  { background-position: 100% 50%; opacity: 1; }
+  100% { background-position: 0% 50%; opacity: 1; }
+}
+
+/* Reactivate shimmer only on hover */
+.calendar-title:hover {
+  animation: textShimmerMove 5s linear infinite;
+  transform: scale(1.02);
+}
+
+
+      /* === CRYSTAL HEADER BAR (Refined Look) === */
+.calendar-nav-bar {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05),
+              inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  padding: 15px 25px;
+  margin-bottom: 25px;
+}
+.nav-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(0, 64, 160, 0.45);         /* deeper blue tone */
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  text-align: center;
+  line-height: 42px;
+  font-size: 20px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  box-shadow: 0 3px 10px rgba(0, 64, 160, 0.25),
+              inset 0 0 6px rgba(255, 255, 255, 0.2);
+}
+.nav-btn:hover {
+  background: rgba(0, 64, 160, 0.65);
+  transform: scale(1.08);
+  box-shadow: 0 6px 15px rgba(0, 64, 160, 0.45),
+              0 0 12px rgba(255, 255, 255, 0.25);
+}
+
+/* === TITLE === */
+.calendar-title {
+  color: #67321a;
+  font-weight: 800;
+  font-size: 26px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 3px rgba(255,255,255,0.8),
+               0 0 8px rgba(0,123,255,0.15);
+}
+.calendar-title span {
+  color: #007bff;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .calendar-nav-bar {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+  .calendar-title {
+    font-size: 20px;
+  }
+  .nav-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 18px;
+  }
+}
+
+    /* === GRID LAYOUT === */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background-color: #ddd;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+/* === CELL BASE === */
+.calendar-cell {
+  background-color: #fff;
+  min-height: 110px;
+  padding: 10px;
+  position: relative;
+  border: 1px solid #eee;
+  transition: all 0.25s ease-in-out;
+  text-align: center;
+}
+.calendar-cell:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 3;
+  border-radius: 10px;
+}
+
+/* === HEADER STYLING === */
+.calendar-header {
+  background: linear-gradient(135deg, #007bff, #0d6efd);
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  padding: 12px 0;
+  font-size: 15px;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  border-bottom: 2px solid #e9ecef;
+}
+.sunday-header {
+  background: linear-gradient(135deg, #e74c3c, #ff6b6b);
+  color: #fff;
+}
+.saturday-header {
+  background: linear-gradient(135deg, #f39c12, #f1c40f);
+  color: #fff;
+}
+
+/* === WEEKEND CELLS === */
+.sunday,
+.saturday {
+  background-color: #fef2f2;
+  color: #b22222;
+  filter: brightness(0.98);
+}
+.sunday:hover,
+.saturday:hover {
+  background-color: #fdecea;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* === TODAY CELL FULL HIGHLIGHT === */
+.today {
+  background: #d69999;
+  border: 2px solid #d27979;
+  box-shadow: 0 0 20px 5px rgba(255, 193, 7, 0.45);
+  position: relative;
+  z-index: 2;
+  animation: todayPulse 2.5s infinite;
+  transition: all 0.3s ease;
+}
+@keyframes todayPulse {
+  0% { box-shadow: 0 0 0 0 rgba(255,193,7,0.5); }
+  70% { box-shadow: 0 0 20px 8px rgba(255,193,7,0); }
+  100% { box-shadow: 0 0 0 0 rgba(255,193,7,0); }
+}
+.today .date-circle {
+  background: #ff3333;
+  color: #000;
+  font-weight: 700;
+  box-shadow: 0 0 6px rgba(0,0,0,0.2);
+}
+
+/* === EVENT CELLS === */
+.event-day {
+  background: #e9f5ff;
+  border-left: 4px solid #007bff;
+}
+
+/* === DATE CIRCLES === */
+.date-circle {
+  display: inline-block;
+  background: #f5f5f5;
+  color: #333;
+  width: 35px;
+  height: 35px;
+  line-height: 35px;
+  border-radius: 50%;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 8px;
+  transition: all 0.3s;
+}
+.calendar-cell:hover .date-circle {
+  background: #007bff;
+  color: #fff;
+}
+
+/* === EVENT TITLE BADGES === */
+.event-title {
+  display: inline-block;
+  padding: 4px 6px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  animation: fadeInUp 0.6s ease;
+  color: #fff;
+  margin-top: 8px;
+}
+.event-test {
+  background: linear-gradient(135deg, #17a2b8, #138496);
+}
+.event-birthday {
+  background: linear-gradient(135deg, #ff69b4, #ff4081);
+}
+.event-holiday {
+  background: linear-gradient(135deg, #28a745, #20c997);
+}
+.event-exam {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+}
+.event-general {
+  background: linear-gradient(135deg, #6f42c1, #9b59b6);
+}
+.event-title:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
+}
+
+/* === ANIMATIONS === */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === EMPTY TILES (TOP/BOTTOM) === */
+.empty-tile {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  min-height: 50px;
+}
+
+/* === LEGEND BAR === */
+.calendar-legend {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 20px;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  background: #f9f9f9;
+  border-radius: 0 0 15px 15px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #333;
+}
+.legend-circle {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.legend-today {
+  background: #ffc107;
+}
+.legend-sunday {
+  background: #ff6b6b;
+}
+.legend-saturday {
+  background: #f1c40f;
+}
+.legend-event {
+  background: #007bff;
+}
+.legend-exam {
+  background: #6f42c1;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .calendar-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .calendar-header {
+    font-size: 13px;
+  }
+  .calendar-cell {
+    min-height: 90px;
+  }
+  .date-circle {
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    font-size: 12px;
+  }
+  .calendar-legend {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+    </style>
+  </t>
+</template>
+
+
+
+</odoo>

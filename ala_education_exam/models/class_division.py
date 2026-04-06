@@ -69,7 +69,7 @@ class EducationStudent(models.Model):
         class_id = self.class_division_id.class_id.id
         self.env.cr.execute("""
                     SELECT id
-                    FROM education_exam
+                    FROM ala_education_exam
                     WHERE class_id = %s
                 """, (class_id,))
         # Fetch all IDs as a tuple

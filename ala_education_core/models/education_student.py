@@ -3,6 +3,9 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 from html.parser import HTMLParser
+import qrcode
+import base64
+from io import BytesIO
 
 class HTMLFilter(HTMLParser):
     def __init__(self):
@@ -191,6 +194,35 @@ class EducationStudent(models.Model):
                         ('new', 'New Student'),
                         ('old', 'Old Student')], 'Student(Old Or New)', default='old',  copy=False)
     mobile = fields.Char('Mobile')
+    qr_code = fields.Binary("QR Code", readonly=True, attachment=True)
+    qr_token = fields.Char("QR Token", readonly=True, copy=False, index=True)
+    qr_url = fields.Char("QR Url", readonly=True, copy=False, index=True)
+
+    def _build_qr_verify_url(self):
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        return f"{base_url}/student/verify/{self.id}/{self.qr_token}"
+
+    def action_generate_qr_code(self):
+        for rec in self:
+            if not rec.qr_token:
+                rec.qr_token = (self.env['ir.sequence'].next_by_code('mis.education.student.qr.token') or str(rec.id)).replace('/', '')
+
+            qr_data = rec._build_qr_verify_url()
+            rec.qr_url = qr_data
+
+            qr = qrcode.QRCode(
+                version=1,
+                box_size=10,
+                border=2,
+            )
+            qr.add_data(qr_data)
+            qr.make(fit=True)
+
+            img = qr.make_image(fill_color="black", back_color="white")
+            buffer = BytesIO()
+            img.save(buffer, format="PNG")
+
+            rec.qr_code = base64.b64encode(buffer.getvalue()).decode('utf-8')
 
     def tc_issue_reason_wizard(self):
         self.ensure_one()
@@ -236,7 +268,7 @@ class EducationStudent(models.Model):
             self.env.cr.execute("""
                 SELECT
                     COUNT(*) AS total_days,
-                    SUM(CASE WHEN present_morning = TRUE THEN 1 ELSE 0 END) AS present_days
+                    SUM(CASE WHEN present = TRUE THEN 1 ELSE 0 END) AS present_days
                 FROM education_attendance_line AS line
                 JOIN education_academic_year AS year
                     ON year.id = line.academic_year_id

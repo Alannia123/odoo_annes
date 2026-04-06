@@ -1,0 +1,736 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+  <template id="student_id_card_student_template_document">
+    <t t-call="web.html_container">
+        <div class="page">
+            <table class="id-sheet">
+                <t t-foreach="range(0, len(doc.student_ids[:9]), 3)" t-as="i">
+                    <tr>
+                        <td class="id-cell">
+                            <t t-if="i &lt; len(doc.student_ids[:9])">
+                                <t t-set="student" t-value="doc.student_ids[i]"/>
+                                <div class="id-card">
+                                    <div class="card-inner">
+                                        <t t-call="mis_education_core.student_id_card_single_card"/>
+                                    </div>
+                                </div>
+                            </t>
+                        </td>
+                        <td class="id-cell">
+                            <t t-if="i + 1 &lt; len(doc.student_ids[:9])">
+                                <t t-set="student" t-value="doc.student_ids[i + 1]"/>
+                                <div class="id-card">
+                                    <div class="card-inner">
+                                        <t t-call="mis_education_core.student_id_card_single_card"/>
+                                    </div>
+                                </div>
+                            </t>
+                        </td>
+                        <td class="id-cell">
+                            <t t-if="i + 2 &lt; len(doc.student_ids[:9])">
+                                <t t-set="student" t-value="doc.student_ids[i + 2]"/>
+                                <div class="id-card">
+                                    <div class="card-inner">
+                                        <t t-call="mis_education_core.student_id_card_single_card"/>
+                                    </div>
+                                </div>
+                            </t>
+                        </td>
+                    </tr>
+                </t>
+            </table>
+        </div>
+
+    <style>
+    @page {
+        size: A4 portrait;
+        margin: 6mm;
+    }
+
+    .page {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .id-sheet {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 3mm 2.2mm;
+        table-layout: fixed;
+    }
+
+    .id-cell {
+        width: 33.33%;
+        vertical-align: top;
+        padding-top: 1mm;
+        text-align: center;
+    }
+
+    .id-card {
+    width: 70mm;
+    height: 108mm;
+    margin: 0 auto;
+    border: 0.35mm solid #c8d3dc;
+    border-radius: 4mm;
+    background: #ffffff;
+    box-sizing: border-box;
+    overflow: hidden;
+    page-break-inside: avoid;
+    position: relative;
+}
+
+    .card-inner {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        box-sizing: border-box;
+        position: relative;
+    }
+
+    .id-card-full {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        background: #f4f1fb;
+        overflow: hidden;
+        box-sizing: border-box;
+        padding-bottom: 22mm;
+    }
+
+    .top-blue-band {
+    background: #3479b9;
+    min-height: 25mm;
+    padding: 2.3mm 2.5mm 1.5mm 2.5mm;
+    box-sizing: border-box;
+    border-radius: 4mm 4mm 0 0;   /* important */
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+    .top-wave-left {
+    position: absolute;
+    left: -6mm;
+    top: -5mm;
+    width: 30mm;
+    height: 14mm;
+    background: #5a9fda;
+    border-radius: 0 0 16mm 0;
+    z-index: 0;
+}
+
+.top-wave-right {
+    position: absolute;
+    right: -7mm;
+    bottom: -4mm;
+    width: 34mm;
+    height: 11mm;
+    background: #6fb3e8;
+    border-radius: 16mm 0 0 0;
+    z-index: 0;
+}
+
+.bottom-wave-left {
+    position: absolute;
+    left: -6mm;
+    top: -4mm;
+    width: 34mm;
+    height: 10mm;
+    background: #4b93d2;
+    border-radius: 0 0 16mm 16mm;
+    z-index: 2;
+}
+
+.bottom-wave-right {
+    position: absolute;
+    right: -6mm;
+    bottom: -4mm;
+    width: 28mm;
+    height: 10mm;
+    background: #5fa2db;
+    border-radius: 16mm 16mm 0 0;
+    z-index: 2;
+}
+.bottom-wave-left {
+    position: absolute;
+    left: -6mm;
+    top: -4mm;
+    width: 34mm;
+    height: 10mm;
+    background: #4b93d2;
+    border-radius: 0 0 16mm 16mm;
+    z-index: 2;
+}
+
+.bottom-wave-right {
+    position: absolute;
+    right: -6mm;
+    bottom: -4mm;
+    width: 28mm;
+    height: 10mm;
+    background: #5fa2db;
+    border-radius: 16mm 16mm 0 0;
+    z-index: 2;
+}
+
+        .top-wave-left,
+.top-wave-right,
+.bottom-wave-left,
+.bottom-wave-right {
+    pointer-events: none;
+}
+
+    .school-name-full,
+    .school-name-underline,
+    .affiliate,
+    .header-body-row {
+        position: relative;
+        z-index: 2;
+    }
+
+    .school-name-full {
+        width: 100%;
+        text-align: center;
+        font-size: 10.8pt;
+        font-weight: 900;
+        color: #ffffff !important;
+        text-transform: uppercase;
+        letter-spacing: 0.2px;
+        line-height: 1.02;
+        margin-bottom: 0.7mm;
+        font-family: "DejaVu Serif", serif;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .school-name-underline {
+        width: 72%;
+        height: 0.35mm;
+        background: #f7f7f7;
+        border-radius: 1mm;
+        margin: 0 auto 0.9mm auto;
+    }
+
+    .affiliate {
+        width: 100%;
+        color: #ffe885 !important;
+        font-size: 7.2pt;
+        font-weight: 800;
+        line-height: 1.1;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 0.8mm;
+    }
+
+    .header-body-row {
+        width: 100%;
+    }
+
+    .header-text-block {
+        float: left;
+        width: 72%;
+        box-sizing: border-box;
+    }
+
+    .addr-line-1 {
+        width: 100%;
+        color: #ffffff !important;
+        font-size: 7.4pt;
+        font-weight: 700;
+        line-height: 1.1;
+        text-align: left;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top: 0.5mm;
+        margin-bottom: 0.5mm;
+    }
+
+    .addr-line-2 {
+        width: 100%;
+        color: #e9f4ff !important;
+        font-size: 7pt;
+        font-weight: 800;
+        line-height: 1.1;
+        text-align: left;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 0.6mm;
+        margin-top: 0.2mm;
+    }
+
+    .academic-year-row {
+        width: 100%;
+        text-align: left;
+    }
+
+    .academic-year-badge {
+        display: inline-block;
+        background: #ffffff;
+        color: #1f4e79;
+        font-size: 9pt;
+        font-weight: 900;
+        padding: 0.5mm 2mm;
+        border-radius: 2.5mm;
+        border: 0.3mm solid #1f4e79;
+        font-family: "DejaVu Serif", serif;
+        line-height: 1;
+        white-space: nowrap;
+        letter-spacing: 0.3px;
+    }
+
+    .header-logo-box {
+        float: right;
+        width: 24%;
+        text-align: right;
+        box-sizing: border-box;
+        padding-top: 0.4mm;
+    }
+
+    .school-logo {
+        width: 13mm;
+        height: 13mm;
+        object-fit: contain;
+        display: block;
+        margin-left: auto;
+        background: #ffffff;
+        border-radius: 50%;
+        padding: 0.35mm;
+        border: 0.3mm solid #ffffff;
+    }
+
+    .clearfix {
+        clear: both;
+    }
+
+    /* MIDDLE */
+    .id-middle {
+        padding: 0.8mm 3mm 0 3mm;
+        position: relative;
+        box-sizing: border-box;
+    }
+
+    .photo-box {
+        width: 26mm;
+        height: 33mm;
+        margin: 1.3mm auto 1.2mm auto;
+        border: 0.6mm solid #24384b;
+        background: #f5f5f5;
+        text-align: center;
+        overflow: hidden;
+        box-sizing: border-box;
+        border-radius: 1.6mm;
+    }
+
+    .student-photo {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .student-name {
+        text-align: center;
+        font-size: 8.8pt;
+        font-weight: 900;
+        color: #0f2e67;
+        text-transform: uppercase;
+        line-height: 1.1;
+        margin-bottom: 0.7mm;
+        word-break: break-word;
+        letter-spacing: 0.2pt;
+        min-height: 5mm;
+    }
+
+    /* INFO TABLE */
+    .info-table.info-table-2col {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 0.6mm;
+        margin-bottom: 0.5mm;
+    }
+
+    .info-table.info-table-2col td {
+        padding: 0.25mm 0.7mm;
+        vertical-align: top;
+        font-size: 8.8px;
+        line-height: 1.12;
+    }
+
+    .info-table.info-table-2col .lbl {
+        width: 14mm;
+        font-weight: 800;
+        color: #111111;
+        white-space: nowrap;
+    }
+
+    .info-table.info-table-2col .right-lbl {
+        width: 16mm;
+        padding-left: 1.6mm;
+    }
+
+    .info-table.info-table-2col .sep {
+        width: 2.6mm;
+        text-align: center;
+        font-weight: 800;
+        color: #111111;
+    }
+
+    .info-table.info-table-2col .val {
+        font-weight: 700;
+        color: #111111;
+        white-space: nowrap;
+    }
+
+    .blood-group-val {
+        color: #b40024 !important;
+        font-weight: 900 !important;
+    }
+
+    /* PRINCIPAL SIGN */
+    .principal-sign-row {
+        width: 100%;
+        text-align: right;
+        margin-top: 1.3mm;
+        margin-bottom: 0.5mm;
+    }
+
+    .compact-sign {
+        display: inline-block;
+        width: 26mm;
+        text-align: center;
+    }
+
+    .compact-sign .principal-sign-img {
+        display: block;
+        width: 17mm;
+        height: 4.6mm;
+        object-fit: contain;
+        margin: 0 0 0.3mm auto;
+    }
+
+    .compact-sign .principal-line {
+        width: 17mm;
+        height: 0.18mm;
+        background: #000000;
+        margin: 0 0 0.3mm auto;
+    }
+
+    .compact-sign .principal-text {
+        font-size: 7.8px;
+        font-weight: 800;
+        line-height: 1;
+        color: #000000;
+        text-align: end;
+    }
+
+    .id-bottom-section {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 22mm;
+    overflow: hidden;
+    z-index: 1;
+    border-radius: 0 0 4mm 4mm;   /* important */
+}
+
+        .top-blue-band {
+    border-radius: 4mm 4mm 0 0;
+}
+
+.id-bottom-section,
+.bottom-blue-bg {
+    border-radius: 0 0 4mm 4mm;
+}
+
+    .bottom-blue-bg {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    background: #2b77bd;
+    z-index: 1;
+    border-radius: 0 0 4mm 4mm;   /* important */
+}
+
+    .bottom-wave-left {
+        position: absolute;
+        left: -8mm;
+        top: -5mm;
+        width: 40mm;
+        height: 12mm;
+        background: #4b93d2;
+        border-radius: 0 0 18mm 18mm;
+        z-index: 2;
+    }
+
+    .bottom-wave-right {
+        position: absolute;
+        right: -8mm;
+        bottom: -5mm;
+        width: 32mm;
+        height: 12mm;
+        background: #5fa2db;
+        border-radius: 18mm 18mm 0 0;
+        z-index: 2;
+    }
+
+    .bottom-content {
+        position: absolute;
+        left: 2.4mm;
+        right: 2.4mm;
+        top: 2.6mm;
+        bottom: 1.6mm;
+        z-index: 3;
+    }
+
+    .bottom-left-info {
+        float: left;
+        width: 74%;
+        text-align: left;
+        padding-top: 4.5mm;
+    }
+
+    .bottom-right-qr {
+        float: right;
+        width: 21%;
+        text-align: right;
+        padding-top: 4.5mm;
+    }
+
+    .bottom-line {
+        font-size: 4.9pt;
+        line-height: 1.33;
+        margin-bottom: 0.45mm;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .bottom-lbl {
+        color: #d6a800;
+        font-weight: 900;
+        margin-right: 0.8mm;
+    }
+
+    .bottom-val {
+        color: #f4f4f4;
+        font-weight: 800;
+    }
+
+    .bottom-qr-image {
+        width: 13mm;
+        height: 13mm;
+        object-fit: contain;
+        display: block;
+        margin-left: auto;
+        background: #ffffff;
+        padding: 0.35mm;
+        border-radius: 1mm;
+        border: 0.25mm solid #ffffff;
+    }
+</style>
+    </t>
+  </template>
+
+
+  <template id="student_id_card_single_card">
+    <t t-set="company" t-value="user.company_id"/>
+
+    <div class="id-card-full">
+
+  <div class="top-blue-band">
+    <div class="top-wave-left"></div>
+    <div class="top-wave-right"></div>
+
+    <div class="school-name-full">
+        <t t-esc="company.name or 'SFS HIGH SCHOOL'"/>
+    </div>
+    <div class="school-name-underline"></div>
+
+    <div class="affiliate">
+        <strong>AFFILIATED TO ICSE BOARD - WB 457</strong>
+    </div>
+
+    <div class="header-body-row">
+        <div class="header-text-block">
+            <div class="addr-line-1">
+                <t t-esc="company.street or 'Hebbagodi, Electronics City'"/>
+            </div>
+
+            <div class="addr-line-2">
+                <t t-esc="company.city or 'Bengaluru-100'"/>
+                <t t-if="company.phone">
+                    <span>&#160; &#9990; &#160;</span>
+                    <t t-esc="company.phone"/>
+                </t>
+            </div>
+
+            <div class="academic-year-row">
+                <span class="academic-year-badge">
+                    SESSION : <t t-esc="doc.academic_year_id.name if doc.academic_year_id else '2025-26'"/>
+                </span>
+            </div>
+        </div>
+
+        <div class="header-logo-box">
+            <img t-if="company.logo"
+                 t-att-src="image_data_uri(company.logo)"
+                 class="school-logo"
+                 alt="Logo"/>
+        </div>
+
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+
+      <!-- MIDDLE: photo + info -->
+      <div class="id-middle">
+
+        <div class="photo-box">
+          <img t-if="student.image_1920"
+               class="student-photo"
+               t-attf-src="data:image/png;base64,{{student.image_1920}}"/>
+          <img t-else=""
+               class="student-photo"
+               src="/web/static/src/img/placeholder.png"/>
+        </div>
+
+        <div class="student-name">
+          <span t-field="student.name"/>
+        </div>
+
+        <table class="info-table info-table-2col">
+    <tr>
+        <td class="lbl">Class</td>
+        <td class="sep">:</td>
+        <td class="val">
+            <span t-field="student.class_division_id.name"/>
+        </td>
+
+        <td class="lbl right-lbl">Roll No.</td>
+        <td class="sep">:</td>
+        <td class="val">
+            <t t-if="student.roll_no">
+                <span t-field="student.roll_no"/>
+            </t>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="lbl">DOB</td>
+        <td class="sep">:</td>
+        <td class="val">
+            <t t-if="student.date_of_birth">
+                <span t-field="student.date_of_birth"
+                      t-options='{"widget": "date", "format": "dd/MM/yyyy"}'/>
+            </t>
+        </td>
+
+        <td class="lbl right-lbl">Gender</td>
+        <td class="sep">:</td>
+        <td class="val">
+            <t t-if="student.gender">
+                <span t-field="student.gender"/>
+            </t>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="lbl">Reg. No.</td>
+        <td class="sep">:</td>
+        <td class="val">
+            <span t-field="student.register_no"/>
+        </td>
+
+        <td class="lbl right-lbl">Blood Group</td>
+        <td class="sep">:</td>
+        <td class="val blood-group-val">
+    <t t-if="student.blood_group">
+        <span t-field="student.blood_group"/>
+    </t>
+</td>
+    </tr>
+
+
+</table>
+          <div class="principal-sign-row" t-if="company.principal_signature">
+    <div class="principal-sign-block compact-sign">
+        <img class="principal-sign-img"
+             t-att-src="image_data_uri(company.principal_signature)"
+             alt="Principal Signature"/>
+        <div class="principal-line"></div>
+        <div class="principal-text">Principal</div>
+    </div>
+</div>
+
+
+      </div>
+
+      <!-- BOTTOM SECTION -->
+<div class="id-bottom-section">
+    <div class="bottom-blue-bg"></div>
+    <div class="bottom-wave-left"></div>
+    <div class="bottom-wave-right"></div>
+
+    <div class="bottom-content">
+        <div class="bottom-left-info">
+            <div class="bottom-line" t-if="student.father_name">
+                <span class="bottom-lbl">Father</span>
+                <span class="bottom-val"><t t-esc="student.father_name"/></span>
+            </div>
+
+            <div class="bottom-line" t-if="student.mother_name">
+                <span class="bottom-lbl">Mother</span>
+                <span class="bottom-val"><t t-esc="student.mother_name"/></span>
+            </div>
+
+            <div class="bottom-line" t-if="student.mobile">
+                <span class="bottom-lbl">Mobile Number</span>
+                <span class="bottom-val"><t t-esc="student.mobile"/></span>
+            </div>
+
+            <div class="bottom-line" t-if="student.street or student.city">
+                <span class="bottom-lbl">Address</span>
+                <span class="bottom-val">
+                    <t t-esc="', '.join([x for x in [student.street, student.city] if x])"/>
+                </span>
+            </div>
+        </div>
+
+        <div class="bottom-right-qr" t-if="student.qr_code">
+            <img class="bottom-qr-image"
+                 t-att-src="image_data_uri(student.qr_code)"
+                 alt="QR Code"/>
+        </div>
+
+        <div class="clearfix"></div>
+    </div>
+</div>
+    </div>
+  </template>
+
+
+  <template id="student_id_card_division_template">
+    <t t-call="web.html_container">
+      <div class="page">
+        <div class="id-grid">
+          <t t-foreach="docs" t-as="doc">
+            <t t-call="mis_education_core.student_id_card_student_template_document"/>
+          </t>
+        </div>
+      </div>
+    </t>
+  </template>
+
+</odoo>

@@ -30,8 +30,8 @@ class ErpDashboard(models.Model):
         today_attendances = self.env['ala.education.attendance.line'].search([('date', '=', fields.Date.today()), ('state', '=', 'done')])
         today_homeworks = self.env['ala.student.homework.line'].sudo().search([('homework_date', '=', fields.Date.today()), ('state', '=', 'post')])
         # total_students = len(students)
-        presents_today = len(today_attendances.filtered(lambda a: a.present_morning))
-        absents_today = len(today_attendances.filtered(lambda a: not a.present_morning))
+        presents_today = len(today_attendances.filtered(lambda a: a.present))
+        absents_today = len(today_attendances.filtered(lambda a: not a.present))
         # Division-wise breakdown
         # Division-wise breakdown
         divisions = self.env['ala.education.class.division'].search([])
@@ -102,7 +102,7 @@ class ErpDashboard(models.Model):
 
             attendance_lines = div_attendance.attendance_line_ids
             total = len(attendance_lines)
-            present = len(attendance_lines.filtered(lambda a: a.present_morning))
+            present = len(attendance_lines.filtered(lambda a: a.present))
             absent = total - present
 
             division_summary.append({
@@ -224,10 +224,10 @@ class ErpDashboard(models.Model):
     #
     #     # Attendance lines (use grouped SQL)
     #     cr.execute("""
-    #             SELECT present_morning, COUNT(*)
+    #             SELECT present, COUNT(*)
     #             FROM education_attendance_line
     #             WHERE date = %s AND state = 'done'
-    #             GROUP BY present_morning
+    #             GROUP BY present
     #         """, (today,))
     #     att_summary = dict(cr.fetchall())
     #     presents_today = att_summary.get(True, 0)

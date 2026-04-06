@@ -27,7 +27,7 @@ class EducationAttendanceLine(models.Model):
                                   help="Enter class division for attendance",
                                   required=True)
     date = fields.Date(string='Date', required=True, help="Date of attendance")
-    present_morning = fields.Boolean(string='Present/Absent',
+    present = fields.Boolean(string='Present/Absent',
                                      help="Enable if the student is present "
                                           "in the morning.")
     attendance_status = fields.Selection([

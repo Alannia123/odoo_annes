@@ -45,7 +45,7 @@ class EducationStudent(models.Model):
                 date_str = attendance.date.strftime('%Y-%m-%d')
 
                 # ✅ Convert None → False
-                result.setdefault(student_id, {})[date_str] = bool(line.present_morning)
+                result.setdefault(student_id, {})[date_str] = bool(line.present)
 
         return result
 
@@ -120,7 +120,7 @@ class EducationStudent(models.Model):
         print('att',attendance_recs)
         print('att--------------',students_sorted)
 
-        # attendance_dict = {student_id: { 'YYYY-MM-DD': present_morning(1/0) } }
+        # attendance_dict = {student_id: { 'YYYY-MM-DD': present(1/0) } }
         attendance_dict = self._format_student_attendance(attendance_recs)
         print('AEEEEEEEEEEEEEEE',attendance_dict)
 

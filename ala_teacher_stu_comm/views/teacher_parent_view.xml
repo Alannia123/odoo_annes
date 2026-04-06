@@ -1,0 +1,86 @@
+<odoo>
+    <record id="ala_parent_student_teacher_comm_tree" model="ir.ui.view">
+        <field name="name">ala.teacher.student.parent.tree</field>
+        <field name="model">ala.teacher.student.parent</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="create_date"/>
+                <field name="class_div_id"/>
+                <field name="faculty_id"/>
+                <field name="student_id"/>
+                <field name="desc"/>
+                <field name="state" widget="badge"
+                    decoration-success="state == 'done'"
+                    decoration-muted="state == 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="ala_parent_student_teacher_comm_form" model="ir.ui.view">
+        <field name="name">ala.teacher.student.parent.form</field>
+        <field name="model">ala.teacher.student.parent</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                     <button name="action_assign_to_student" string="Send"
+                            type="object" invisible="state != 'draft'"
+                            class="oe_highlight"/>
+                    <button name="action_set_draft" string="Reset"
+                            type="object" invisible="state != 'done'"
+                            class="oe_highlight"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_edit_only">
+                        <label for="name" class="oe_inline"/>
+                    </div>
+                    <h1>
+                        <field name="name" class="oe_inline" readonly="1"/>
+                    </h1>
+                    <group>
+                         <group>
+                             <field name="student_ids" invisible="1"/>
+                             <field name="faculty_ids" invisible="1"/>
+                            <field name="class_div_id" readonly="state != 'draft'" options="{'no_create':True,'no_open':True}"/>
+                            <field name="student_id" readonly="state != 'draft'"  domain="[('id', 'in', student_ids)]" options="{'no_create':True,'no_open':True}"/>
+
+                        </group>
+                        <group>
+                            <field name="create_date" />
+                            <field name="user_id" options="{'no_create':True,'no_open':True}"/>
+                            <field name="faculty_id" domain="[('id', 'in', faculty_ids)]" options="{'no_create':True,'no_open':True}" invisible="1" required="0" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="desc" required="1" readonly="state != 'draft'"/>
+                    </group>
+                </sheet>
+                <chatter
+                    open_attachments="True"
+                    reload_on_attachment="True"
+                    reload_on_follower="True"
+                    reload_on_post="True"
+                />
+            </form>
+        </field>
+    </record>
+
+
+
+    <record id="action_ala_parent_student_teacher_communication" model="ir.actions.act_window">
+        <field name="name">Teacher To Parent</field>
+        <field name="res_model">ala.teacher.student.parent</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+     <menuitem id="menu_ala_teacher_student_comm_root" name="Teacher Comm" sequence="4"
+        web_icon="ala_teacher_stu_comm,static/src/img/tech_stu.png" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin,ala_education_core.group_education_faculty"/>
+
+    <menuitem id="menu_ala_parent_student_teacher_communication" name="Teacher To Parent" parent="menu_ala_teacher_student_comm_root"
+              action="action_ala_parent_student_teacher_communication"/>
+
+
+</odoo>
+

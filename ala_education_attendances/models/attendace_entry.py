@@ -87,7 +87,7 @@ class EducationAttendanceEntry(models.Model):
     def action_set_to_draft(self):
         for att_line in self.attendance_id.attendance_line_ids:
             att_line.state = 'draft'
-            att_line.present_morning = False
+            att_line.present = False
         self.attendance_id.state = 'draft'
         self.state = 'draft'
 

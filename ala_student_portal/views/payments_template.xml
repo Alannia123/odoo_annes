@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+                <template id="portal_monthly_payment_tiles" name="Monthly Payment Tiles" >
+                    <t t-call="portal.portal_layout">
+                        <style>
+                            .typing-text::after {
+                                  content: attr(data-text);
+                                  display: inline-block;
+                                  overflow: hidden;
+                                  color: #e64d00;
+                                  white-space: nowrap;
+                                  animation: typing 3s infinite;
+                                }
+
+                                @keyframes typing {
+                                  from { width: 0 }
+                                  to { width: 100% }
+                                }
+
+
+                        </style>
+<!--                    <div class="container mt-4">-->
+                        <h3 class="mb-3">School Payments</h3>
+                        <div class="row text-center">
+                            <t t-if="student_fees">
+                                <t t-foreach="student_fees.fee_line_ids"  t-as="fee">
+                                    <div class="col-6 col-md-3 mb-4" >
+    <!--                                    <a t-att-href="'/my/payments/%s' % month[0]" class="text-decoration-none">-->
+                                            <div class="card shadow-sm" style="background-color:#ff99c2;">
+                                                <div class="card-body">
+                                                    <span t-field="fee.fee_description" /><br></br>
+                                                    <b>₹<span t-field="fee.amount" /></b>
+                                                    <t t-if="fee.payment_status == 'upcoming'">
+                                                        <p class="card-text" style="background-color:#7094db; border-radius: 10px;margin-left:25px;margin-right:25px;">Upcomig</p>
+                                                    </t>
+                                                    <t t-elif="fee.payment_status == 'unpaid'">
+                                                        <p class="card-text" style="background-color:#ffad33; border-radius: 10px;margin-left:25px;margin-right:25px;">Unpaid</p>
+                                                    </t>
+                                                    <t t-elif="fee.payment_status == 'over_due'">
+                                                        <p class="card-text" style="background-color:#cc2900; border-radius: 10px;margin-left:25px;margin-right:25px;">Overdue</p>
+                                                        <t t-if="fee.overdue_days &gt; 0">
+                                                            <span class="typing-text" t-att-data-text="str(fee.overdue_days) + ' days ago'"/>
+                                                        </t>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <p class="card-text" style="background-color:green; border-radius: 10px;margin-left:25px;margin-right:25px;">Paid</p>
+                                                    </t>
+                                                </div>
+                                            </div>
+    <!--                                    </a>-->
+                                    </div>
+                                </t>
+                                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                                    <canvas id="feesChart" width="400" height="400"></canvas>
+                                    <div class="text-center"><span  class="card-text" style="background-color:#8585ad; border-radius: 3px;"><b>Payable:</b>₹<t t-esc="total_fees"/></span></div>
+                                    <div >
+                                        <span  class="card-text" style="background-color:green; border-radius: 2px;margin-left:5px;margin-right:10px;"><b>Paid:</b>₹<t t-esc="paid_fees"/></span>
+                                        <span  style="background-color:red; border-radius: 4px;margin-left:30px;"><b>Balance:</b>₹<t t-esc="balance_fees"/></span>
+                                    </div>
+                        <!--        </div>-->
+                                                <div id="fee-data"
+                                                     t-att-data-paid="paid_fees"
+                                                     t-att-data-balance="balance_fees">
+                                                </div>
+                        <!--        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>-->
+
+                                <script>
+                                    document.addEventListener("DOMContentLoaded", function () {
+                                        var el = document.getElementById("fee-data");
+                                        var paid = parseFloat(el.dataset.paid);
+                                        var balance = parseFloat(el.dataset.balance);
+                                        var ctx = document.getElementById("feesChart").getContext("2d");
+                                        new Chart(ctx, {
+                                            type: 'doughnut',
+                                            data: {
+                                                labels: ["Paid Fees", "Balance Fees"],
+                                                datasets: [{
+                                                    label: "Fees Overview",
+                                                    data: [paid, balance],
+                                                    backgroundColor: [
+                                                        'rgba(75, 192, 192, 0.7)',
+                                                        'rgba(255, 99, 132, 0.7)'
+                                                    ],
+                                                    borderColor: [
+                                                        'rgba(75, 192, 192, 1)',
+                                                        'rgba(255, 99, 132, 1)'
+                                                    ],
+                                                    borderWidth: 1
+                                                }]
+                                            },
+                                            options: {
+                                                responsive: true,
+                                                plugins: {
+                                                    legend: {
+                                                        position: 'top',
+                                                    },
+                                                    title: {
+                                                        display: true,
+                                                        text: 'Fees Distribution'
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    });
+                                </script>
+                            </t>
+                            <t t-else="">
+                                    <div class="alert alert-warning text-center" style="border-radius: 10px; padding: 15px; margin: 20px 0;">
+                                        <strong>Sorry for your inconvenience.</strong><br/>
+                                        No fees details found. Please contact the office admin for further assistance.
+                                    </div>
+                            </t>
+                        </div>
+
+
+<!--                        <t t-set="title">My Fees Summary</t>-->
+<!--        <div class="container my-5">-->
+<!--            <h2 class="mb-4">Fees Overview</h2>-->
+
+            <!-- Load Chart.js -->
+
+<!--                    </div>-->
+                    </t>
+            </template>
+
+
+
+</odoo>

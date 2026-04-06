@@ -18,7 +18,7 @@ class ReportMonthlyAttendance(models.AbstractModel):
             for line in attendance.attendance_line_ids:
                 student = line.student_id.id
                 date_str = line.date.strftime('%Y-%m-%d')
-                result.setdefault(student, {})[date_str] = line.present_morning
+                result.setdefault(student, {})[date_str] = line.present
         return result
 
     def _get_report_values(self, docids, data=None):

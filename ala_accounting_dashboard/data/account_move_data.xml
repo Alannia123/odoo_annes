@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="accounting_dashboard_action" model="ir.actions.client">
+            <field name="name">Dashboard</field>
+            <field name="tag">ala_accounting_dashboard_tags</field>
+        </record>
+        <menuitem name="Fees &amp; Payments Dashboard" id="account_dashboard" web_icon="ala_accounting_dashboard,static/src/img/alafees.png"
+                  action="accounting_dashboard_action" groups="ala_education_core.group_education_principal" sequence="-2"/>
+    </data>
+</odoo>

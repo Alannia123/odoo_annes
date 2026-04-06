@@ -76,6 +76,10 @@
                             string="Create Portal User" groups="ala_education_core.group_create_invoices_divisions"
                             help="Click to create employee for this faculty"
                     />
+                     <button name="action_generate_qr_code"
+                            type="object" groups="ala_education_core.group_create_invoices_divisions"
+                            string="Regenerate QR"
+                            class="btn-primary"/>
                 </header>
                 <sheet string="Class">
                     <div class="oe_button_box" name="button_box">
@@ -129,12 +133,13 @@
                             </field>
                         </page>
                     </notebook>
-                </sheet><chatter
-        open_attachments="True"
-        reload_on_attachment="True"
-        reload_on_follower="True"
-        reload_on_post="True"
-    />
+                </sheet>
+                <chatter
+                    open_attachments="True"
+                    reload_on_attachment="True"
+                    reload_on_follower="True"
+                    reload_on_post="True"
+                />
             </form>
         </field>
     </record>

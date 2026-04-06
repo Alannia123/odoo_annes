@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+<!--    About MIS-->
+     <template id="template_magazine_list" name="E-Magazine Gallery (Parallax Animated)">
+    <t t-call="website.layout">
+      <style>
+        /* ===== BACKGROUND  GLOBAL ===== */
+        body {
+          background: radial-gradient(circle at 30% 30%, #f7f3ff 0%, #edf2ff 50%, #f3f6ff 100%);
+          overflow-x: hidden;
+          font-family: "Poppins", sans-serif;
+          position: relative;
+        }
+
+        /* ===== FLOATING BUBBLES ===== */
+        .bubble {
+          position: absolute;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #e600ac55, #007bff55);
+          animation: float 16s ease-in-out infinite;
+          z-index: 0;
+          transition: transform 0.4s ease-out;
+        }
+
+        @keyframes float {
+          0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+          50% { transform: translateY(-40px) scale(1.1); opacity: 0.5; }
+        }
+
+        .bubble:nth-child(1) { width: 180px; height: 180px; top: 15%; left: 10%; animation-delay: 0s; }
+        .bubble:nth-child(2) { width: 140px; height: 140px; top: 70%; left: 80%; animation-delay: 3s; }
+        .bubble:nth-child(3) { width: 100px; height: 100px; top: 35%; left: 65%; animation-delay: 5s; }
+        .bubble:nth-child(4) { width: 160px; height: 160px; top: 80%; left: 25%; animation-delay: 7s; }
+
+        /* ===== PAGE TITLE ===== */
+        .magazine-title {
+          text-align: center;
+          font-size: 3rem;
+          font-weight: 800;
+          color: #e600ac;
+          margin-top: 60px;
+          text-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+          position: relative;
+          z-index: 2;
+          animation: fadeInDown 1.2s ease;
+        }
+
+        .magazine-title::after {
+          content: "";
+          display: block;
+          width: 140px;
+          height: 5px;
+          background: linear-gradient(90deg, #e600ac, #007bff);
+          margin: 10px auto;
+          border-radius: 4px;
+          animation: pulseGlow 2s infinite alternate;
+        }
+
+        @keyframes fadeInDown {
+          0% { opacity: 0; transform: translateY(-40px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulseGlow {
+          0% { box-shadow: 0 0 10px #e600ac; }
+          100% { box-shadow: 0 0 25px #007bff; }
+        }
+
+        /* ===== MAGAZINE GRID ===== */
+        .magazine-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 40px;
+          margin: 70px auto 100px;
+          padding: 0 30px;
+          max-width: 1200px;
+          position: relative;
+          z-index: 2;
+        }
+
+        /* ===== CARD DESIGN ===== */
+        .magazine-card {
+          position: relative;
+          background: #ffffff;
+          border-radius: 20px;
+          overflow: hidden;
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+          transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .magazine-card:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .magazine-card img {
+          width: 100%;
+          height: 300px;
+          object-fit: cover;
+          transition: transform 0.5s ease, filter 0.3s ease;
+        }
+
+        .magazine-card:hover img {
+          transform: scale(1.05);
+          filter: brightness(0.9);
+        }
+
+        /* ===== READ NOW OVERLAY ===== */
+        .overlay {
+          position: absolute;
+          top: 0; left: 0;
+          width: 100%; height: 100%;
+          background: rgba(0, 0, 0, 0.4);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          opacity: 0;
+          transition: opacity 0.4s ease;
+        }
+
+        .magazine-card:hover .overlay {
+          opacity: 1;
+        }
+
+        .overlay span {
+          background: linear-gradient(90deg, #e600ac, #007bff);
+          color: #fff;
+          padding: 10px 25px;
+          border-radius: 30px;
+          font-weight: 600;
+          font-size: 1rem;
+          box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .magazine-card h4 {
+          font-size: 1.2rem;
+          font-weight: 700;
+          color: #002d72;
+          margin-top: 18px;
+        }
+
+        .magazine-card span.date {
+          display: block;
+          color: #666;
+          margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+          .magazine-title { font-size: 2.2rem; }
+          .magazine-card img { height: 220px; }
+        }
+      </style>
+
+      <!-- ===== FLOATING BACKGROUND BUBBLES ===== -->
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+
+      <!-- ===== MAIN CONTENT ===== -->
+      <div class="container-fluid">
+        <h2 class="magazine-title">E-Magazines</h2>
+        <div class="magazine-grid">
+          <t t-foreach="magazines" t-as="magazine">
+            <a t-att-href="'/e-magazine/view/%s' % magazine.id" style="text-decoration:none;">
+              <div class="magazine-card fade-card">
+                <div class="overlay"><span>📖 Read Now</span></div>
+                <img t-att-src="image_data_uri(magazine.cover_photo)" alt="Magazine Cover"/>
+                <h4 t-esc="magazine.name"/>
+                <span t-esc="magazine.upload_date" class="date"/>
+              </div>
+            </a>
+          </t>
+        </div>
+      </div>
+
+      <!-- ===== ANIMATION & PARALLAX SCRIPT ===== -->
+      <script type="text/javascript">
+      //<![CDATA[
+      document.addEventListener("DOMContentLoaded", function () {
+          // Scroll reveal effect
+          var cards = document.querySelectorAll(".fade-card");
+          function reveal() {
+              var triggerBottom = window.innerHeight * 0.85;
+              Array.prototype.forEach.call(cards, function (card) {
+                  var cardTop = card.getBoundingClientRect().top;
+                  if (cardTop &lt; triggerBottom) {
+                      card.classList.add("visible");
+                  }
+              });
+          }
+          window.addEventListener("scroll", reveal);
+          reveal();
+
+          // Mouse parallax for bubbles
+          var bubbles = document.querySelectorAll(".bubble");
+          document.addEventListener("mousemove", function (e) {
+              var x = (e.clientX / window.innerWidth - 0.5) * 20;
+              var y = (e.clientY / window.innerHeight - 0.5) * 20;
+              bubbles.forEach(function (b, i) {
+                  var offset = (i + 1) * 5;
+                  b.style.transform = "translate(" + (x * offset / 5) + "px," + (y * offset / 5) + "px)";
+              });
+          });
+      });
+      //]]>
+      </script>
+    </t>
+  </template>
+
+
+    <template id="template_magazine_view" name="E-Magazine Viewer">
+    <t t-call="website.layout">
+      <style>
+        /* ===== BACKGROUND ===== */
+        body {
+          background: linear-gradient(135deg, #f5f8ff 0%, #eef2ff 100%);
+          font-family: "Poppins", sans-serif;
+          overflow-x: hidden;
+        }
+
+        /* ===== TOP NAV BUTTON ===== */
+        .back-home-top {
+          display: inline-block;
+          margin: 30px 0 0 4%;
+          color: #fff;
+          background: linear-gradient(90deg, #e600ac, #007bff);
+          padding: 8px 20px;
+          border-radius: 25px;
+          font-weight: 600;
+          text-decoration: none;
+          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+          transition: all 0.3s ease;
+          font-size: 1rem;
+        }
+        .back-home-top:hover {
+          transform: scale(1.05);
+          box-shadow: 0 0 15px rgba(230, 0, 172, 0.6);
+        }
+
+        /* ===== HEADER ===== */
+        .magazine-header {
+          text-align: center;
+          margin-top: 30px;
+          position: relative;
+          animation: fadeInDown 1.2s ease;
+        }
+
+        .magazine-header h2 {
+          font-size: 3rem;
+          font-weight: 800;
+          color: #e600ac;
+          text-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+          background: linear-gradient(90deg, #e600ac, #007bff);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          display: inline-block;
+        }
+
+        .magazine-header::after {
+          content: "";
+          display: block;
+          width: 140px;
+          height: 5px;
+          background: linear-gradient(90deg, #e600ac, #007bff);
+          margin: 12px auto;
+          border-radius: 3px;
+          animation: pulseGlow 2s infinite alternate;
+        }
+
+        .upload-date {
+          color: #555;
+          font-size: 1rem;
+          margin-bottom: 25px;
+        }
+
+        @keyframes fadeInDown {
+          0% { opacity: 0; transform: translateY(-30px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulseGlow {
+          0% { box-shadow: 0 0 8px #e600ac; }
+          100% { box-shadow: 0 0 20px #007bff; }
+        }
+
+        /* ===== PDF CONTAINER ===== */
+        .pdf-container {
+          width: 95%;
+          max-width: 1600px;
+          margin: 40px auto 60px auto;
+          background: #fff;
+          border-radius: 18px;
+          box-shadow: 0 6px 30px rgba(0, 0, 0, 0.15);
+          padding: 20px;
+          animation: fadeInUp 1.2s ease;
+        }
+
+        .pdf-container iframe,
+        .pdf-container embed {
+          width: 100%;
+          height: 85vh;
+          border: none;
+          border-radius: 12px;
+        }
+
+        @keyframes fadeInUp {
+          0% { opacity: 0; transform: translateY(40px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== DOWNLOAD BUTTON ===== */
+        .download-btn {
+          background: linear-gradient(90deg, #e600ac, #007bff);
+          color: #fff !important;
+          font-size: 1.2rem;
+          font-weight: 600;
+          padding: 12px 30px;
+          border-radius: 30px;
+          text-decoration: none;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+          transition: all 0.3s ease;
+        }
+        .download-btn:hover {
+          transform: scale(1.05);
+          box-shadow: 0 0 25px rgba(230, 0, 172, 0.6);
+        }
+
+        /* ===== BOTTOM BACK BUTTON ===== */
+        .back-home {
+          display: inline-block;
+          margin-top: 20px;
+          color: #007bff;
+          font-weight: 500;
+          text-decoration: none;
+          transition: color 0.3s;
+        }
+        .back-home:hover {
+          color: #e600ac;
+          text-decoration: underline;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+          .magazine-header h2 { font-size: 2.2rem; }
+          .pdf-container iframe,
+          .pdf-container embed { height: 70vh; }
+          .back-home-top {
+            margin-left: 3%;
+            font-size: 0.9rem;
+          }
+        }
+      </style>
+
+      <!-- ===== TOP NAVIGATION BUTTON ===== -->
+      <a href="/e_magazine" class="back-home-top">← Back to all magazines</a>
+
+      <!-- ===== MAIN HEADER ===== -->
+      <div class="container-fluid text-center">
+        <div class="magazine-header">
+          <h2 t-esc="magazine.name"/>
+          <div class="upload-date" t-esc="magazine.upload_date"/>
+        </div>
+      </div>
+
+      <!-- ===== PDF VIEWER ===== -->
+      <div class="pdf-container text-center">
+        <t t-raw="raw_html_content"/>
+      </div>
+
+      <!-- ===== BOTTOM BUTTONS ===== -->
+      <div class="text-center mb-5">
+        <a t-att-href="'/web/content/%s?download=true' % magazine.attachment_id.id"
+           class="download-btn">⬇️ Download PDF</a>
+        <br/>
+        <a href="/e_magazine" class="back-home">← Back to all magazines</a>
+      </div>
+    </t>
+  </template>
+
+</odoo>

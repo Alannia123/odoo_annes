@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+<!--    About MIS-->
+  <template id="program_events_gallery" name="Program and Events">
+    <t t-call="website.layout">
+
+   <!-- === COMPACT SCHOOL PHOTO GALLERY HEADER === -->
+<section class="school-gallery-hero compact">
+  <div class="animated-bg"></div>
+  <div class="floating-particles"></div>
+
+  <div class="container text-center text-white position-relative py-4">
+    <h1 class="hero-title">School Photo Gallery</h1>
+    <p class="hero-subtitle">Where Every Memory Shines Bright</p>
+  </div>
+</section>
+
+<style>
+/* === HERO BASE === */
+.school-gallery-hero {
+  position: relative;
+  height: 230px; /* reduced height */
+  overflow: hidden;
+  background: radial-gradient(circle at top left, #0047ab, #007bff, #0099ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom-left-radius: 40px;
+  border-bottom-right-radius: 40px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+/* === Animated Gradient BG === */
+.animated-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #0047ab, #007bff, #33ccff, #0047ab);
+  background-size: 400% 400%;
+  animation: gradientShift 10s ease-in-out infinite;
+  z-index: 1;
+}
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* === Floating Sparkles === */
+.floating-particles::before,
+.floating-particles::after {
+  content: "";
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: moveParticles 40s linear infinite;
+}
+.floating-particles::after {
+  animation-duration: 60s;
+  opacity: 0.5;
+}
+@keyframes moveParticles {
+  from { transform: translate(0,0); }
+  to { transform: translate(-200px, -200px); }
+}
+
+/* === TEXT STYLES === */
+.hero-title {
+  position: relative;
+  z-index: 2;
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #fff, #aee0ff, #fff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerTitle 6s linear infinite;
+}
+@keyframes shimmerTitle {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.hero-subtitle {
+  font-size: 16px;
+  color: #e6f2ff;
+  margin-top: 6px;
+  opacity: 0;
+  animation: fadeInUp 1.5s ease forwards 1s;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .school-gallery-hero { height: 180px; border-radius: 0 0 30px 30px; }
+  .hero-title { font-size: 26px; }
+  .hero-subtitle { font-size: 14px; }
+}
+</style>
+
+
+      <!-- === GALLERY CONTENT === -->
+      <div class="container glow-background my-5">
+        <div class="row">
+          <t t-foreach="request.env['program.gallery.aws'].search([])" t-as="gallery">
+            <t t-if="gallery.attach_count != 0">
+              <t t-set="photos" t-value="gallery.aws_url_ids"/>
+
+              <!-- Section Heading -->
+              <h3><span t-out="gallery.event_id.name"></span></h3>
+
+              <!-- Image Grid -->
+              <div class="row g-4">
+                <t t-foreach="photos" t-as="photo">
+                  <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="card animated-image">
+                      <img t-att-src="photo.url" alt="Event Photo"/>
+                    </div>
+                  </div>
+                </t>
+              </div>
+
+              <!-- View All Button -->
+              <div class="text-end mt-3 mb-5">
+                <a t-attf-href="/gallery/photos/#{gallery.id}" class="button-view"><span>View All</span></a>
+              </div>
+            </t>
+          </t>
+        </div>
+      </div>
+
+      <!-- === LIGHTBOX MODAL === -->
+      <div id="lightboxModal" class="lightbox-modal" style="display:none;">
+        <span class="close-btn">&amp;times;</span>
+          <img class="lightbox-content" id="lightboxImg"></img>
+      </div>
+
+      <!-- === JAVASCRIPT === -->
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const modal = document.getElementById("lightboxModal");
+          const modalImg = document.getElementById("lightboxImg");
+          const closeBtn = document.querySelector(".close-btn");
+
+          document.querySelectorAll(".animated-image img").forEach(img => {
+            img.addEventListener("click", () => {
+              modal.style.display = "block";
+              modalImg.src = img.src;
+            });
+          });
+
+          closeBtn.onclick = () => modal.style.display = "none";
+          modal.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
+        });
+      </script>
+
+      <!-- === CSS STYLES === -->
+      <style>
+
+
+        /* === BACKGROUND CONTAINER === */
+        .glow-background {
+          background: linear-gradient(145deg, #f8fbff, #eef5ff);
+          border-radius: 18px;
+          padding: 40px 30px;
+          box-shadow: inset 0 0 20px rgba(255,255,255,0.6),
+                      0 8px 25px rgba(0,0,0,0.06);
+          position: relative;
+          overflow: hidden;
+        }
+        .glow-background::before {
+          content: "";
+          position: absolute;
+          top: -20%;
+          left: -20%;
+          width: 60%;
+          height: 60%;
+          background: radial-gradient(circle, rgba(0,153,255,0.2), transparent 70%);
+          animation: floatLight 10s ease-in-out infinite alternate;
+        }
+        @keyframes floatLight {
+          0% { transform: translate(0,0); opacity: 0.5; }
+          100% { transform: translate(50px,50px); opacity: 1; }
+        }
+
+        /* === SECTION HEADING === */
+        h3 {
+          font-size: 28px;
+          font-weight: 800;
+          color: #0047ab;
+          text-align: center;
+          text-transform: uppercase;
+          margin: 40px 0 25px;
+          letter-spacing: 1px;
+          position: relative;
+          animation: fadeInUp 1s ease both;
+        }
+        h3::after {
+          content: "";
+          position: absolute;
+          bottom: -8px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 120px;
+          height: 4px;
+          background: linear-gradient(90deg, #0047ab, #0099ff);
+          border-radius: 4px;
+          box-shadow: 0 0 12px rgba(0,153,255,0.6);
+        }
+        h3 span {
+          background: linear-gradient(90deg, #0047ab, #00aaff, #66ccff);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          animation: shimmerHeading 6s ease-in-out infinite;
+        }
+        @keyframes shimmerHeading {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+
+        /* === IMAGE CARD === */
+        .card.animated-image {
+          border: none;
+          border-radius: 15px;
+          overflow: hidden;
+          position: relative;
+          box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+          transition: all 0.4s ease;
+          background: #fff;
+          animation: fadeInUp 0.8s ease both;
+        }
+        .card.animated-image:hover {
+          transform: translateY(-6px) scale(1.03);
+          box-shadow: 0 10px 25px rgba(0,102,255,0.25);
+        }
+        .card.animated-image::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-radius: 15px;
+          border: 1px solid rgba(0,153,255,0.15);
+          box-shadow: inset 0 0 25px rgba(0,153,255,0.05);
+          opacity: 0;
+          transition: opacity 0.5s;
+        }
+        .card.animated-image:hover::after {
+          opacity: 1;
+        }
+
+        /* === IMAGES === */
+        .animated-image img {
+          width: 100%;
+          height: 260px;
+          object-fit: cover;
+          transition: transform 0.6s ease;
+        }
+        .animated-image:hover img {
+          transform: scale(1.12);
+        }
+
+        /* === VIEW BUTTON === */
+        .button-view {
+          background: linear-gradient(90deg, #0047ab, #0099ff);
+          color: #fff;
+          font-weight: 600;
+          padding: 10px 26px;
+          border-radius: 30px;
+          border: none;
+          text-transform: uppercase;
+          font-size: 15px;
+          transition: all 0.3s ease;
+          box-shadow: 0 6px 18px rgba(0,102,255,0.3);
+          text-decoration: none;
+        }
+        .button-view:hover {
+          background: linear-gradient(90deg, #0099ff, #0047ab);
+          transform: translateY(-3px);
+          box-shadow: 0 8px 25px rgba(0,102,255,0.45);
+        }
+        .button-view span {
+          display: inline-block;
+          transition: transform 0.3s ease;
+        }
+        .button-view:hover span {
+          transform: translateX(5px);
+        }
+
+        /* === ENTRANCE EFFECT === */
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === LIGHTBOX POPUP === */
+        .lightbox-modal {
+          position: fixed;
+          z-index: 9999;
+          padding-top: 50px;
+          left: 0; top: 0;
+          width: 100%; height: 100%;
+          overflow: auto;
+          background-color: rgba(0,0,0,0.8);
+        }
+        .lightbox-content {
+          display: block;
+          margin: auto;
+          max-width: 90%;
+          max-height: 80vh;
+          border-radius: 10px;
+          box-shadow: 0 0 20px rgba(255,255,255,0.3);
+        }
+        .close-btn {
+          position: absolute;
+          top: 20px;
+          right: 40px;
+          color: #fff;
+          font-size: 36px;
+          font-weight: bold;
+          cursor: pointer;
+          transition: 0.3s;
+        }
+        .close-btn:hover {
+          color: #00aaff;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+          h3 { font-size: 22px; }
+          .animated-image img { height: 200px; }
+        }
+      </style>
+    </t>
+  </template>
+
+
+
+
+<!--    Images gallery-->
+    <template id="program_events_gallery_individual_event" name="Program and Events">
+        <t t-call="website.layout">
+<!--            <div class="container">-->
+                <section class="s_image_gallery o_spc-small o_masonry pt24 pb24" data-vcss="001" data-columns="3" style="overflow: hidden; background-image: none;" data-snippet="s_images_wall" data-name="Images Wall">
+                    <div class="container">
+                         <style>
+                   /* === MAIN GALLERY CONTAINER === */
+.glow-background {
+  background: linear-gradient(145deg, #f8fbff, #eef5ff);
+  border-radius: 16px;
+  padding: 40px 25px;
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5),
+              0 8px 25px rgba(0, 0, 0, 0.05);
+}
+
+/* === SECTION HEADINGS === */
+h3 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #0047ab;
+  margin: 30px 0 20px;
+  text-align: center;
+  text-transform: uppercase;
+  position: relative;
+}
+h3::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -6px;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #0047ab, #0099ff);
+  border-radius: 2px;
+}
+
+/* === PHOTO CARDS === */
+.card.animated-image {
+  border: none;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+  transition: all 0.4s ease;
+  background: #fff;
+  position: relative;
+}
+.card.animated-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.card.animated-image:hover {
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 12px 30px rgba(0, 102, 255, 0.25);
+}
+.card.animated-image:hover::after {
+  opacity: 1;
+}
+
+/* === IMAGES === */
+.animated-image img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  transition: transform 0.5s ease-in-out;
+  border-radius: 14px;
+}
+.animated-image img:hover {
+  transform: scale(1.1);
+}
+
+/* === BUTTONS === */
+.button-view {
+  background: linear-gradient(90deg, #0047ab, #0099ff);
+  color: #fff;
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 30px;
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
+}
+.button-view:hover {
+  background: linear-gradient(90deg, #0099ff, #0047ab);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 102, 255, 0.45);
+}
+.button-view span {
+  display: inline-block;
+  transition: transform 0.4s ease;
+}
+.button-view:hover span {
+  transform: translateX(5px);
+}
+
+/* === ANIMATED SCROLL APPEARANCE === */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animated-image {
+  animation: fadeUp 0.8s ease forwards;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .animated-image img {
+    height: 200px;
+  }
+  h3 {
+    font-size: 20px;
+  }
+}
+
+                </style>
+                    <div class="row s_nb_column_fixed">
+                        <t t-set="photos" t-value="gallery.aws_url_ids"/>
+                        <t t-foreach="photos" t-as="photo">
+                            <div class="col-lg-3 col-md-6">
+                                <div class="card mb-4 animated-image">
+                                    <img t-att-src="photo.url" height="500" wigth="500" />
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                    <div class="text-end" >
+                        <a  style="color: green;font-size: 15px;" t-attf-href="/program_events_gallery">
+                            <b class="button-view"><span>Back To Gallery</span></b>
+                        </a>
+                    </div>
+
+            </div>
+    </section>
+<!--            </div>-->
+        </t>
+    </template>
+
+</odoo>

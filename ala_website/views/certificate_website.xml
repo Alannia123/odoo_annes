@@ -1,0 +1,115 @@
+<odoo>
+    <template id="website_certificate_select" name="Certificate Selection">
+        <t t-call="website.layout">
+            <div class="container py-5 certificate-container">
+
+                <h2 class="text-center mb-4 cert-title">
+                    🎓 Download Your Certificate
+                </h2>
+
+                <!-- Select Certificate -->
+                <div class="card shadow-lg cert-card p-4 mb-5">
+                    <label class="form-label cert-label">Select Certificate Type</label>
+                    <select id="certType" class="form-select cert-input">
+                        <option value="">-- Choose Type --</option>
+                        <t t-foreach="certificate_types" t-as="ct">
+                            <option t-att-value="ct"><t t-esc="ct.title()"/></option>
+                        </t>
+                    </select>
+                </div>
+
+                <!-- Student List -->
+                <div id="studentArea" class="card shadow-lg cert-card p-4 mb-5" style="display:none;">
+                    <label class="form-label cert-label">Select Your Name</label>
+                    <select id="studentSelect" class="form-select cert-input">
+                        <option value="">-- Select Student --</option>
+                    </select>
+                </div>
+
+                <!-- Download Button -->
+                <div class="text-center">
+                    <a id="downloadBtn" class="btn btn-lg download-btn" style="display:none;">
+                        ⬇️ Download Certificate
+                    </a>
+                </div>
+
+            </div>
+
+            <style>
+                .certificate-container {
+                    max-width: 650px;
+                }
+                .cert-title {
+                    font-size: 34px;
+                    font-weight: 700;
+                    color: #5a47d3;
+                    text-shadow: 0 2px 6px rgba(0,0,0,0.1);
+                }
+                .cert-card {
+                    border-radius: 20px;
+                    background: #ffffff;
+                    border: 1px solid #eae8ff;
+                }
+                .cert-label {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #5242b5;
+                }
+                .cert-input {
+                    padding: 12px;
+                    font-size: 16px;
+                    border-radius: 12px;
+                    border: 1px solid #d8d5ff;
+                }
+                .download-btn {
+                    background: linear-gradient(45deg, #6a5acd, #8a79ff);
+                    color: white;
+                    padding: 12px 40px;
+                    border-radius: 50px;
+                    font-size: 20px;
+                    font-weight: 600;
+                    transition: 0.3s;
+                }
+                .download-btn:hover {
+                    background: linear-gradient(45deg, #5b4cc2, #7a6af6);
+                    transform: scale(1.05);
+                }
+            </style>
+
+           <script>
+    $('#certType').change(function () {
+        let type = $(this).val();
+        if (!type) return;
+
+        ajax.jsonRpc("/certificate/get_students", "call", { cert_type: type })
+        .then(function (students) {
+
+            $('#studentSelect').empty();
+
+            $('#studentSelect').append('&lt;option value=""&gt;-- Select Student --&lt;/option&gt;');
+
+            students.forEach(s => {
+                $('#studentSelect').append(
+                    '&lt;option value="' + s.id + '"&gt;' + s.name + '&lt;/option&gt;'
+                );
+            });
+
+            $('#studentArea').show();
+            $('#downloadBtn').hide();
+        });
+    });
+
+    $('#studentSelect').change(function () {
+        let id = $(this).val();
+        if (id) {
+            $('#downloadBtn').attr("href", "/certificate/download/" + id).show();
+        } else {
+            $('#downloadBtn').hide();
+        }
+    });
+</script>
+
+
+        </t>
+    </template>
+</odoo>

@@ -17,7 +17,7 @@
                             <field name="division_id"/>
                         </group>
                         <group string="Leave Status (✔️️ = Present)">
-                            <field name="present_morning" readonly="1"/>
+                            <field name="present" readonly="1"/>
 <!--                            <field name="present_afternoon" readonly="1"/>-->
                             <field name="date"/>
                         </group>
@@ -36,7 +36,7 @@
                 <field name="class_id"/>
                 <field name="division_id"/>
                 <field name="date"/>
-<!--                <field name="present_morning" decoration-danger="not present_morning" decoration-success="present_morning" widget="badge"/>-->
+<!--                <field name="present" decoration-danger="not present" decoration-success="present" widget="badge"/>-->
                 <field name="attendance_status" decoration-danger="attendance_status == 'absent'" decoration-success="attendance_status == 'present'" widget="badge"/>
                 <field name="state" decoration-muted="state == 'draft'" decoration-info="state == 'done'" widget="badge"/>
             </list>
@@ -54,7 +54,7 @@
             <field name="student_name"/>
             <field name="class_id"/>
             <field name="division_id"/>
-            <field name="present_morning"/>
+            <field name="present"/>
 
         </calendar>
     </field>
@@ -68,11 +68,11 @@
                 <pivot string="Division Attendance Report">
                     <!-- Grouping dimensions -->
                     <field name="student_id" type="row"/>
-                    <field name="present_morning" type="col"/>
+                    <field name="present" type="col"/>
 
                     <!-- Measurable fields to aggregate -->
                     <field name="division_id" type="measure"/>
-<!--                    <field name="present_morning" type="measure"/>-->
+<!--                    <field name="present" type="measure"/>-->
 <!--                    <field name="discount" type="measure"/>-->
 <!--                    <field name="price_subtotal" type="measure"/>-->
                 </pivot>

@@ -38,7 +38,7 @@
         <field name="target">new</field>
     </record>
 
-    <menuitem id="menu_open_id_card_wizard" name="ID Card Download" web_icon="mis_education_exam,static/description/id.png"
+    <menuitem id="menu_open_id_card_wizard" name="ID Card Download" web_icon="ala_education_core,static/description/id.png"
              groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"  action="action_open_id_pdf_wizard" sequence="30"/>
 
 </odoo>

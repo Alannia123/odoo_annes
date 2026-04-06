@@ -1,0 +1,2673 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <template id="ala_home_page" name="MIS Welcome !!!">
+    <t t-call="website.layout">St.Anne's
+      <div id="wrap" class="oe_structure o_cc3 o_colored_level">
+        <t t-if="random_images">
+          <div id="cube_json_data"  t-att-data-json="random_images"   style="display:none;"></div>
+        </t>
+<!--          BANER-->
+       <t t-if="banner">
+          <div class="mis-banner-strip">
+            <div class="mis-banner-box">
+              <marquee class="mis-banner-text"
+                       onmouseover="this.stop();"
+                       onmouseout="this.start();">
+                <t t-out="banner.info"/>
+              </marquee>
+            </div>
+          </div>
+        </t>
+        <style>
+              /* =============================
+   ✨ NEW MIS RUNNING BANNER
+   ============================= */
+
+.mis-banner-strip {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.mis-banner-box {
+    background: linear-gradient(90deg, #d8efe8, #f4faf7);
+    border-top: 2px solid #97c9b8;
+    border-bottom: 2px solid #97c9b8;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Soft moving pattern overlay */
+.mis-banner-box::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url('/web/image/website_theme.banner_pattern') repeat;
+    opacity: 0.08;
+    animation: bannerMove 14s linear infinite;
+}
+
+@keyframes bannerMove {
+    from { background-position: 0 0; }
+    to   { background-position: 300px 0; }
+}
+
+/* Marquee Text Style */
+.mis-banner-text {
+    font-size: 18px;
+    font-weight: 700;
+    color: #cc3300;
+    letter-spacing: 0.5px;
+    text-shadow: 0px 1px 2px rgba(0,0,0,0.1);
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Add glow animation to message */
+.mis-banner-text span,
+.mis-banner-text t {
+    animation: shineText 3s ease-in-out infinite;
+}
+
+@keyframes shineText {
+    0%   { opacity: 0.75; }
+    50%  { opacity: 1; }
+    100% { opacity: 0.75; }
+}
+
+/* Mobile Responsive Fix */
+@media (max-width: 768px) {
+    .mis-banner-text {
+        font-size: 16px !important;
+    }
+}
+
+          </style>
+<!--Video and announcements-->
+          <section class="school-video-split">
+          <t t-set="school_vid_url" t-value="school_video_url or ''"/>
+          <div class="split-left">
+            <div class="video-wrapper">
+              <iframe class="school-video-yu"
+                      t-att-src="'https://www.youtube-nocookie.com/embed/' + school_vid_url +
+                                 '?autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=' + school_vid_url +
+                                 '&amp;controls=0&amp;modestbranding=1&amp;rel=0&amp;showinfo=0&amp;iv_load_policy=3'"
+                      allow="autoplay; encrypted-media">
+              </iframe>
+              <div class="video-overlay"></div>
+              <div class="video-caption-sc">
+                <h3>🎓 Mary Immaculate School</h3>
+                <p>Where Knowledge Meets Values</p>
+              </div>
+            </div>
+          </div>
+          <div class="split-right school-objects-panel bubble-area">
+
+    <!-- 🌟 Bubble Layer -->
+    <div class="bubbles">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span>
+    </div>
+            <div class="card mis-frost-card ">
+              <div class="card-body">
+            <h4 class="mis-section-title announcement-title">
+                <img src="/ala_website/static/src/img/announce.png" class="announce-png-icon"/>
+                Announcements
+            </h4>
+
+
+
+                <div class="mis-divider"></div>
+                <div class="mis-scroll-pane">
+                  <marquee width="100%" height="100%" behavior="scroll" direction="up" scrollamount="3"
+                           onmouseover="this.stop();" onmouseout="this.start();">
+                    <t t-raw="notices"/>
+                  </marquee>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+            <style>
+/* Flexible title layout */
+.announcement-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* PNG icon styling */
+.announce-png-icon {
+    width: 32px;        /* Adjust size */
+    height: 32px;
+    object-fit: contain;
+    display: inline-block;
+    animation: pngShake 1.5s infinite ease-in-out;
+}
+
+/* Shake animation */
+@keyframes pngShake {
+    0%   { transform: rotate(0deg); }
+    15%  { transform: rotate(-12deg); }
+    30%  { transform: rotate(10deg); }
+    45%  { transform: rotate(-8deg); }
+    60%  { transform: rotate(6deg); }
+    75%  { transform: rotate(-4deg); }
+    100% { transform: rotate(0deg); }
+}
+
+                /* ============================
+   Full Panel Bubble Background
+============================ */
+.bubble-area {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Bubble layer */
+.bubbles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none; /* 👈 ensures UI remains clickable */
+}
+
+.bubbles span {
+    position: absolute;
+    bottom: -50px;
+    width: 18px;
+    height: 18px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    animation: bubble 7s infinite ease-in-out;
+    filter: blur(1px);
+}
+
+.bubbles span:nth-child(odd) {
+    width: 12px;
+    height: 12px;
+    background: rgba(255,255,255,0.5);
+}
+
+/* ============================
+   Bubble Animation
+============================ */
+@keyframes bubble {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(-300px) scale(1.8);
+        opacity: 0;
+    }
+}
+
+/* Random positions + timing */
+.bubbles span:nth-child(1) { left: 5%;  animation-duration: 5s; }
+.bubbles span:nth-child(2) { left: 20%; animation-duration: 7s; }
+.bubbles span:nth-child(3) { left: 35%; animation-duration: 6s; }
+.bubbles span:nth-child(4) { left: 50%; animation-duration: 8s; }
+.bubbles span:nth-child(5) { left: 65%; animation-duration: 5.5s; }
+.bubbles span:nth-child(6) { left: 80%; animation-duration: 6.5s; }
+.bubbles span:nth-child(7) { left: 15%; animation-duration: 7.5s; }
+.bubbles span:nth-child(8) { left: 40%; animation-duration: 9s; }
+.bubbles span:nth-child(9) { left: 60%; animation-duration: 6.8s; }
+.bubbles span:nth-child(10) { left: 75%; animation-duration: 4.8s; }
+.bubbles span:nth-child(11) { left: 90%; animation-duration: 8.8s; }
+.bubbles span:nth-child(12) { left: 30%; animation-duration: 5.2s; }
+
+/* Keep content above bubbles */
+.split-right .card {
+    position: relative;
+    z-index: 5;
+}
+
+
+          .video-caption-sc {
+              opacity: 1 !important;
+              z-index: 5 !important;
+              transform: translateX(-50%) translateY(0px) !important;
+          }
+
+          @keyframes captionIn {
+              0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+              100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+          }
+          .mis-scroll-pane{ height:380px; overflow:hidden; border-radius:10px; }
+
+          .mis-section-title {
+            font-weight: 800;
+            font-size: 26px;
+            background: linear-gradient(90deg, #0066ff, #ff20a8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+          }
+
+          .mis-divider {
+            width: 100px;
+            height: 4px;
+            margin: 0 auto 20px;
+            background: linear-gradient(to right, #00bfff, #ff66b2);
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(0,150,255,0.4);
+          }
+
+          .mis-frost-card {
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 490px;
+          }
+
+          .video-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0.05), rgba(0,0,0,0.35));
+            z-index: 2;
+          }
+
+          .video-caption-sc {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            padding: 4px 12px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 3;
+            white-space: nowrap;
+            text-align: center;
+          }
+
+          /* Split Layout */
+          .school-video-split { display:flex; width:100%; height:520px; border-radius:30px; overflow:hidden; background:#000; }
+          .split-left { flex:75%; position:relative; }
+          .split-right { flex:25%; padding:13px; background:#7085a3; position:relative; border-radius:0 30px 30px 0; }
+
+          .video-wrapper { position:absolute; inset:0; }
+          .school-video-yu { width:100%; height:100%; object-fit:cover; border:none; pointer-events:none; border-radius:30px 0 0 30px; }
+
+                /* ===========================================================
+   MOBILE RESPONSIVE FIX — VIDEO + ANNOUNCEMENTS SPLIT
+   =========================================================== */
+
+@media (max-width: 768px) {
+
+  /* MAIN SPLIT BECOMES VERTICAL */
+  .school-video-split {
+      flex-direction: column !important;
+      height: auto !important;
+      border-radius: 20px !important;
+      overflow: hidden !important;
+  }
+
+  /* LEFT VIDEO PANEL */
+  .split-left {
+      flex: unset !important;
+      width: 100% !important;
+      height: 240px !important;
+      border-radius: 0 !important;
+      padding: 0 !important;
+  }
+
+  .video-wrapper {
+      position: relative !important;
+      width: 100% !important;
+      height: 100% !important;
+  }
+
+  .school-video-yu {
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 0 !important;
+      object-fit: cover !important;
+  }
+
+  /* VIDEO CAPTION FIX */
+  .video-caption-sc {
+      font-size: 12px !important;
+      padding: 2px 8px !important;
+      bottom: 8px !important;
+      transform: translateX(-50%) translateY(0) !important;
+      white-space: nowrap !important;
+  }
+
+
+
+
+  .mis-scroll-pane {
+      height: 150px !important;
+      overflow: hidden !important;
+  }
+
+  .mis-section-title {
+      font-size: 20px !important;
+  }
+
+  .mis-divider {
+      margin-bottom: 12px !important;
+  }
+
+}
+
+
+        </style>
+
+
+
+<!--          Title-->
+
+          <section class="mis-hero-second">
+    <div class="glass-box fade-in">
+        <h2 class="hero-title">
+            Change the World with
+            <span class="rainbow">Education</span>
+            and
+            <span class="rainbow">Carve</span>
+            Your Child's Future with
+            <span class="rainbow">ST>ANNE'S</span>.
+        </h2>
+
+        <p class="hero-wave-text">
+            To Sail in the Ocean of Wisdom...
+        </p>
+    </div>
+              <div class="ai-badge">
+    <img src="/ala_website/static/src/img/ai_bot.png" class="ai-icon" />
+    <span>Powered by AI Analysis</span>
+</div>
+
+</section>
+        <style>
+
+            /* ------------------------------------------
+   🤖 AI BADGE – bottom right floating label
+------------------------------------------- */
+.ai-badge {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: #ab7d99;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 14px;
+    padding: 6px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(255,255,255,0.25);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+    z-index: 25;
+
+    animation: badgeFloat 4s ease-in-out infinite;
+}
+
+.ai-icon {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    animation: aiGlow 2.2s ease-in-out infinite;
+}
+
+/* Text styling */
+.ai-badge span {
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* Floating animation */
+@keyframes badgeFloat {
+    0%   { transform: translateY(0px); opacity: 1; }
+    50%  { transform: translateY(-6px); opacity: 0.92; }
+    100% { transform: translateY(0px); opacity: 1; }
+}
+
+/* Soft glow pulse on the AI icon */
+@keyframes aiGlow {
+    0%   { filter: drop-shadow(0 0 2px #66eaff); }
+    50%  { filter: drop-shadow(0 0 6px #33cfff); }
+    100% { filter: drop-shadow(0 0 2px #66eaff); }
+}
+
+/* MOBILE FIX */
+@media (max-width: 768px) {
+    .ai-badge {
+        bottom: 10px;
+        right: 10px;
+        padding: 5px 10px;
+        transform: scale(0.85);
+    }
+}
+
+    /* REMOVE TOP SPACE */
+.s_text_image {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+/* SECTION BACKGROUND */
+.mis-hero-second {
+    position: relative;
+<!--    padding: 40px 0 60px;-->
+    background: linear-gradient(180deg, #0074B7 0%, #005A93 100%);
+    overflow: hidden;
+}
+
+/* ---------- FLOATING PARTICLES ---------- */
+.mis-hero-second::before,
+.mis-hero-second::after {
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    animation: floatParticles 6s infinite linear;
+}
+.mis-hero-second::after {
+    width: 8px;
+    height: 8px;
+    left: 80%;
+    animation-duration: 9s;
+}
+
+@keyframes floatParticles {
+    0% { transform: translateY(120px); opacity: 0.9; }
+    50% { opacity: 0.4; }
+    100% { transform: translateY(-220px); opacity: 0; }
+}
+
+/* ---------- GLASS BOX ---------- */
+.glass-box {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.20);
+    backdrop-filter: blur(15px);
+    border-radius: 26px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* SCHOOL LOGO WATERMARK */
+.glass-box::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 340px;
+    height: 340px;
+    transform: translate(-50%, -50%);
+    background: url('/path_to_school_logo.png') no-repeat center/contain;
+    opacity: 0.12;
+    filter: blur(1px);
+    pointer-events: none;
+}
+
+/* ---------- SOFT CORNER LIGHTS ---------- */
+.glass-box::after {
+    content: "";
+    position: absolute;
+    top: -40px;
+    left: -40px;
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(255,255,255,0.35), transparent 70%);
+    border-radius: 50%;
+    filter: blur(25px);
+}
+
+/* ---------- MOVING GRADIENT TEXT ---------- */
+.rainbow {
+    font-weight: 700;
+    background: linear-gradient(
+        90deg,
+        #ff3366,
+        #ff9933,
+        #ffee33,
+        #33dd77,
+        #22aaff,
+        #aa44ff,
+        #ff3366
+    );
+    background-size: 400%;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: gradientMove 4.5s linear infinite;
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0%; }
+    100% { background-position: 400%; }
+}
+
+/* ---------- HERO TITLE ---------- */
+.hero-title {
+    font-size: 38px;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.25;
+    margin-bottom: 14px;
+    text-shadow: 0 3px 12px rgba(0,0,0,0.35);
+}
+.hero-wave-text {
+    font-size: 22px;
+    font-weight: 600;
+
+    /* Premium gradient */
+    background: #b01770;
+    background-size: 300%;
+    -webkit-background-clip: text;
+    color: transparent;
+
+    /* Two animations */
+    animation: bounceOscillate 1.9s ease-in-out infinite,
+               colorShift 5s ease-in-out infinite;
+
+    letter-spacing: 1.5px;
+    text-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+/* 🌈 Wave color movement */
+@keyframes colorShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* 🌟 BOUNCY OSCILLATION ANIMATION */
+@keyframes bounceOscillate {
+    0%   { transform: translateX(0); }
+    15%  { transform: translateX(14px) scale(1.03); }
+    30%  { transform: translateX(-10px) scale(0.98); }
+    45%  { transform: translateX(7px) scale(1.02); }
+    60%  { transform: translateX(-5px); }
+    75%  { transform: translateX(3px); }
+    100% { transform: translateX(0); }
+}
+
+
+@keyframes waveMotion {
+    0% { transform: translateY(0px) rotate(0deg); opacity: 0.9; }
+    50% { transform: translateY(-8px) rotate(1deg); opacity: 1; }
+    100% { transform: translateY(0px) rotate(0deg); opacity: 0.9; }
+}
+
+/* ---------- FADE-IN ANIMATION ---------- */
+.fade-in {
+    animation: fadeInUp 1.1s ease-out both;
+}
+
+@keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+    /* STRONG MODERN TEXT COLOR FOR MAIN TITLE (non-rainbow parts) */
+.hero-title {
+    color: #e8f4ff !important; /* Base soft blue-white */
+    background: linear-gradient(
+        90deg,
+        #ffffff,
+        #e6f3ff,
+        #cfe7ff,
+        #b9dcff
+    );
+    -webkit-background-clip: text;
+    color: transparent !important;
+    text-shadow: 0px 3px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* MAKE NORMAL TEXT MORE VISIBLE */
+.hero-title span:not(.rainbow) {
+    color: #ffffff !important;
+}
+
+
+
+</style>
+
+<!--Slide-->
+       <section class="mis-premium-layout smooth-connect-bg bubble-area">
+
+    <!-- 🌟 Bubble Layer -->
+    <div class="bubbles">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span>
+    </div>
+
+  <!-- LEFT SCHOOL FEATURES -->
+  <div class="left-features">
+
+    <div class="card mis-birthday-glass h-100 text-center">
+          <div class="card-body position-relative birthday-body">
+            <h5 class="mis-section-title">Birthdays</h5>
+            <div class="mis-divider"></div>
+            <p class="mis-muted small mb-3">Today: <t t-out="today_date"/></p>
+            <t t-if="not today_births">
+              <b class="text-light">No birthdays today 🎉</b>
+            </t>
+            <t t-else="">
+              <div class="mis-scroll-pane-birth">
+                <marquee width="100%" height="100%" behavior="scroll" direction="up" scrollamount="3"
+                         onmouseover="this.stop();" onmouseout="this.start();">
+
+                    <t t-raw="birth_raw_html"/>
+
+                    <!-- Birthday wish at the end -->
+                    <div style="text-align:center; margin-top:10px; color:#cc0099; font-weight:bold;">
+                        🎉 Wishing you a wonderful year ahead! 🎂
+                    </div>
+
+                </marquee>
+              </div>
+            </t>
+          </div>
+        </div>
+
+  </div>
+
+  <!-- RIGHT CUBE SLIDER -->
+  <div class="right-cube">
+
+    <div class="cube-container">
+      <div class="cube" id="multiCube">
+        <div class="cube-face front"></div>
+        <div class="cube-face right"></div>
+        <div class="cube-face back"></div>
+        <div class="cube-face left"></div>
+      </div>
+
+      <div class="cube-controls">
+        <button class="cube-prev"><i class="fa fa-chevron-left"></i></button>
+        <button class="cube-next"><i class="fa fa-chevron-right"></i></button>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+          <style>
+
+              /* Birthday inner card background */
+.birthday-body {
+    position: relative;
+    overflow: hidden;
+    border-radius: 14px;
+    padding: 20px;
+
+    /* fallback tint */
+    background-color: rgba(255,255,255,0.18);
+
+    /* blur effect */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Background image layer */
+.birthday-body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url("/ala_website/static/src/img/birth.jpeg") center/cover no-repeat;
+    opacity: 0.35;   /* adjust visibility */
+    z-index: 1;
+}
+
+/* Soft overlay tint */
+.birthday-body::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.12);
+    z-index: 2;
+}
+
+/* Content above everything */
+.birthday-body > * {
+    position: relative;
+    z-index: 5;
+}
+
+
+
+
+
+
+              /* ============================================================
+   🔥 FIX: BIRTHDAY + CUBE SECTION SAME HEIGHT (450px)
+   ============================================================ */
+
+.mis-premium-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch !important;
+    gap: 20px;
+    height: 550px !important;
+    padding: 0 !important;            /* Remove top/bottom spacing */
+    margin: 0 !important;
+    overflow: hidden;
+}
+
+/* LEFT BIRTHDAY PANEL */
+.left-features {
+    width: 28%;
+    height: 100% !important;
+    padding: 0 !important;
+}
+
+
+
+/* SCROLL AREA FIX */
+.mis-scroll-pane-birth {
+    height: 390px !important;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+/* RIGHT CUBE SLIDER */
+.right-cube {
+    width: 70%;
+    height: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.cube-container {
+    width: 100%;
+    height: 100% !important;
+    max-height: 400px !important;
+    perspective: 1500px;
+}
+
+/* Cube lives FULL HEIGHT */
+.cube {
+    height: 100% !important;
+}
+
+/* Cube faces same height */
+.cube-face {
+    height: 100% !important;
+}
+/* ============================================================
+   📱 MOBILE RESPONSIVE FIX
+   ============================================================ */
+@media (max-width: 768px) {
+
+    /* Main layout becomes vertical */
+    .mis-premium-layout {
+        flex-direction: column;
+        height: auto !important;
+        gap: 20px;
+        padding: 0 !important;
+    }
+
+    /* Birthday panel full width */
+    .left-features {
+        width: 100% !important;
+        padding: 0 10px !important;
+        height: auto !important;
+    }
+
+    .mis-birthday-glass {
+        height: auto !important;
+        padding: 15px !important;
+    }
+
+    .birthday-body {
+        padding: 15px !important;
+    }
+
+    /* Reduce scroll height */
+    .mis-scroll-pane-birth {
+        height: 220px !important;
+    }
+
+    /* Cube section full width */
+    .right-cube {
+        width: 100% !important;
+        padding: 0 10px !important;
+        margin-top: 10px;
+        height: auto !important;
+    }
+
+    .cube-container {
+        width: 100%;
+        height: 260px !important;
+        max-height: unset !important;
+        perspective: 900px;
+    }
+
+    .cube {
+        height: 100% !important;
+    }
+
+    /* Scale cube faces for mobile */
+    .cube-face {
+        border-radius: 15px;
+        transform: translateZ(140px) !important; /* small screen depth */
+    }
+
+    /* Adjust cube title size */
+    .cube-title {
+        font-size: 10px !important;
+        padding: 3px 6px !important;
+    }
+
+    /* Bubble background spacing */
+    .bubble-area .bubbles span {
+        transform: scale(0.7);
+    }
+}
+
+
+            /* ========================================================= */
+/* SMOOTH CONNECTED BACKGROUND FIX */
+/* ========================================================= */
+
+.smooth-connect-bg {
+  background: linear-gradient(
+      180deg,
+      rgba(1, 90, 143, 1) 0%,      /* exact bottom color of hero */
+      rgba(4, 120, 175, 1) 20%,
+      #d6e3eb 80%                   /* exact color of your cube bg */
+  );
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  align-items: flex-start;
+  position: relative;
+}
+
+<!--/* Make wave and second section visually merge */-->
+<!--.mis-hero-section {-->
+<!--  padding-bottom: 0 !important;-->
+<!--  margin-bottom: -5px; /* remove gap */-->
+<!--}-->
+
+.hero-wave svg {
+  margin-bottom: -5px;
+}
+
+/* Features card style */
+.feature-box {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 20px 0;
+  font-size: 18px;
+  color: white;
+  font-weight: 600;
+  opacity: 0.95;
+}
+
+.left-features {
+  width: 28%;
+}
+
+/* Cube container */
+.right-cube {
+  width: 65%;
+}
+
+
+
+            /* ---------------------- HERO SECTION ---------------------- */
+.mis-hero-section {
+  width: 100%;
+  padding: 15px 20px 0px;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  background: linear-gradient(135deg,#015a8f,#007bc7,#00a6ff);
+}
+
+.mis-hero-section .hero-wave {
+  margin-top: -25px;   /* pull wave up */
+}
+
+
+/* ---------------------- GLASS CARD ----------------------- */
+.hero-glass-card {
+  max-width: 900px;
+  margin: auto;
+  padding: 22px 40px;
+
+  background: rgba(255,255,255,0.10);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 22px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.20);
+  position: relative;
+  z-index: 5;
+}
+
+/* Title Text */
+.hero-title {
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1.3;
+
+  background: linear-gradient(90deg,#ff66b2,#ffd700,#7ee7ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  margin-bottom: 10px;
+}
+
+.hero-title span {
+  color: #ffd700 !important;
+}
+
+.hero-subtitle {
+  font-size: 16px;
+  color: #e8faff;
+  letter-spacing: 1.5px;
+  opacity: 0.9;
+}
+
+/* ---------------------- BACKGROUND ORBS ----------------------- */
+.orb {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  opacity: 0.28;
+  filter: blur(10px);
+  animation: orbMove 12s infinite ease-in-out;
+}
+
+.orb1 { background: #ffcc00; top: 20px; left: 12%; animation-delay: 0s; }
+.orb2 { background: #00eaff; top: 90px; right: 18%; animation-delay: 2s; }
+.orb3 { background: #ff66b2; bottom: 20px; left: 22%; animation-delay: 3s; }
+
+@keyframes orbMove {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
+}
+
+/* ---------------------- GLOW BEHIND CARD ----------------------- */
+.hero-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 500px;
+  height: 180px;
+
+  background: radial-gradient(circle,
+    rgba(255,255,255,0.35) 0%,
+    rgba(255,255,255,0.05) 60%,
+    rgba(0,0,0,0) 100%
+  );
+
+  transform: translate(-50%, -50%);
+  filter: blur(25px);
+  z-index: 1;
+}
+
+/* ---------------------- WAVE ----------------------- */
+.hero-wave svg {
+  display: block;
+  width: 100%;
+  height: 70px;
+  margin-top: -10px;
+}
+
+
+            .right-cube {
+    padding-top: 40px !important;   /* Increase space above slider */
+}
+
+            .left-features {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    gap: 20px;
+}
+
+.feature-box {
+    margin-bottom: 12px !important;  /* Reduce vertical spacing */
+}
+
+
+/* ---------------------- SMALL ANIMATION ----------------------- */
+.fade-in-up {
+  opacity: 0;
+  animation: fadeUp 0.9s ease-out forwards;
+}
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media(max-width:768px){
+  .hero-title { font-size: 22px; }
+  .hero-subtitle { font-size: 12px; }
+  .hero-glass-card { padding: 15px 18px; }
+  .orb { width: 100px; height: 100px; }
+}
+
+
+
+        /* LAYOUT STRUCTURE */
+        .mis-premium-layout {
+          display: flex;
+          justify-content: space-between;
+          align-items: center !important;
+          width: 100%;
+        }
+
+        /* LEFT FEATURES */
+        .left-features {
+          width: 25%;
+          padding-left: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 25px;
+        }
+
+        .feature-box {
+          display: flex;
+          align-items: center;
+          gap: 18px;
+          animation: slideIn 1s ease;
+        }
+
+        @keyframes slideIn {
+          0% { opacity: 0; transform: translateX(-40px); }
+          100% { opacity: 1; transform: translateX(0); }
+        }
+
+        .icon-circle {
+          width: 55px !important;
+    height: 55px !important;
+    font-size: 22px !important;
+          border-radius: 50%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: #fff;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+          animation: floatAnim 3s ease-in-out infinite;
+        }
+
+        @keyframes floatAnim {
+          0% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
+          100% { transform: translateY(0); }
+        }
+
+        /* RIGHT CUBE */
+        .right-cube {
+          width: 75%;
+          text-align: center;
+        }
+
+<!--        .cube-heading {-->
+<!--          font-size: 30px;-->
+<!--          font-weight: 800;-->
+<!--          color: #003859;-->
+<!--          margin-bottom: 25px;-->
+<!--        }-->
+
+        /* Bigger slider container */
+.cube-container {
+  width: 100%;
+  max-width: 780px;   /* Increased from 680px */
+  height: 420px;      /* Increased from 360px */
+  margin: auto;
+  position: relative;
+  perspective: 1500px;
+}
+
+/* Resize cube area */
+.cube {
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 1.2s ease-in-out;
+}
+        .cube-face {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background-size: cover;
+          background-position: center;
+          border-radius: 20px;
+          backface-visibility: hidden;
+          box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+            .cube-title {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.4);
+  padding: 4px 10px;
+  font-size: 12px;
+  color: #fff;
+  border-radius: 4px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+        .cube-face.front { transform: rotateY(0deg) translateZ(300px); }
+        .cube-face.right { transform: rotateY(90deg) translateZ(300px); }
+        .cube-face.back { transform: rotateY(180deg) translateZ(300px); }
+        .cube-face.left { transform: rotateY(-90deg) translateZ(300px); }
+
+        .cube-controls button {
+          background: rgba(0,0,0,0.45);
+          border: 2px solid rgba(255,255,255,0.3);
+          padding: 8px 12px;
+          border-radius: 50%;
+          color: #fff;
+          font-size: 20px;
+        }
+
+              @media(max-width:768px){
+    .left-features {
+        display: block !important;
+        width: 100% !important;
+        padding: 10px !important;
+    }
+
+    .mis-birthday-glass {
+        height: auto !important;
+    }
+
+    .birthday-body {
+        padding: 15px !important;
+    }
+
+    .mis-scroll-pane-birth {
+        height: 220px !important; /* fits small screen */
+    }
+}
+
+
+              @media(max-width:768px){
+    .mis-premium-layout {
+        flex-direction: column !important;
+        gap: 15px !important;
+        height: auto !important;
+    }
+}
+
+
+            /* Responsive handling */
+@media(max-width:768px){
+  .right-cube { width: 100%; }
+  .left-features { display: none; }
+  .cube-container { height: 300px; max-width: 95%; }
+  .cube-face.front,
+  .cube-face.right,
+  .cube-face.back,
+  .cube-face.left {
+    transform: translateZ(220px);   /* Balanced for small screens */
+  }
+}
+/* ------------------------------------------
+   🎂 BIRTHDAY CARD — CLEAN FINAL VERSION
+------------------------------------------- */
+
+.mis-birthday-glass {
+    position: relative;
+    overflow: hidden;
+    border-radius: 18px;
+    height: 100% !important;
+    min-height: 100% !important;
+    padding: 20px;
+
+    /* subtle base tint for glass feel */
+    background-color: rgba(255, 255, 255, 0.12);
+
+    /* Frosted-glass effect */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Background image layer */
+.mis-birthday-glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url("/ala_website/static/src/img/birth.jpeg") center/cover no-repeat;
+    opacity: 0.35;      /* adjust image visibility */
+    z-index: 1;
+}
+
+/* Additional soft overlay tint for blending */
+.mis-birthday-glass::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.15);
+    z-index: 2;
+}
+
+/* Ensure card content stays above */
+.mis-birthday-glass .card-body {
+    position: relative;
+    z-index: 3;
+}
+
+/* Scroll area height fix */
+.mis-scroll-pane-birth {
+    height: 390px !important;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+/* Simple floating confetti if needed */
+@keyframes confettiFloat {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(120px) rotate(12deg); opacity: 0; }
+}
+
+.mis-birthday-glass .confetti {
+    position: absolute;
+    font-size: 28px;
+    left: 10px;
+    top: 10px;
+    animation: confettiFloat 6s linear infinite;
+    opacity: 0.8;
+    z-index: 2;
+}
+
+
+@keyframes confettiFloat {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(120px) rotate(12deg); opacity: 0; }
+}
+
+
+        </style>
+
+        <!-- ▬▬▬▬▬ JS ▬▬▬▬▬ -->
+        <script type="text/javascript">
+        <![CDATA[
+        document.addEventListener("DOMContentLoaded", function () {
+
+          const jsonHolder = document.getElementById("cube_json_data");
+          if (!jsonHolder) return;
+
+          let images = JSON.parse(jsonHolder.dataset.json || "[]");
+          const cube = document.getElementById("multiCube");
+          if (!cube || !images.length) return;
+
+          const faces = cube.querySelectorAll(".cube-face");
+          let index = 0;
+          let rotation = 0;
+
+          function updateFaces() {
+    let shuffled = [...images].sort(() => Math.random() - 0.5);
+
+    faces.forEach((face, i) => {
+        const data = shuffled[i % shuffled.length];
+        face.style.backgroundImage = "url('" + data.url + "')";
+        face.innerHTML = "<span class='cube-title'>" + (data.event_name || "") + "</span>";
+    });
+}
+
+          updateFaces();
+
+          function rotateCube(dir) {
+            rotation -= dir * 90;
+            cube.style.transform = "rotateY(" + rotation + "deg)";
+            index = (index + dir + images.length) % images.length;
+            setTimeout(updateFaces, 600);
+          }
+
+          document.querySelector(".cube-next").onclick = () => rotateCube(1);
+          document.querySelector(".cube-prev").onclick = () => rotateCube(-1);
+
+          let auto = setInterval(() => rotateCube(1), 5000);
+          cube.onmouseenter = () => clearInterval(auto);
+          cube.onmouseleave = () => auto = setInterval(() => rotateCube(1), 5000);
+
+        });
+        ]]>
+        </script>
+
+<!--          TITLE CSS-->
+
+          <style>
+
+              .event-header-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center; /* centers horizontally */
+    margin: 20px 0 30px;
+}
+
+.event-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 14px 38px;
+
+    background: #081118bf;
+    border-radius: 50px;
+    color: #8a3621;
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: 1.5px;
+
+    /* Glow effect */
+    box-shadow:
+        0 0 22px rgba(210, 160, 255, 0.55),
+        inset 0 0 12px rgba(255, 255, 255, 0.35);
+}
+
+/* emoji icon */
+.event-icon {
+    font-size: 28px;
+    color: #7a7029;
+}
+          </style>
+<!-- ============================
+     🌟 EVENT PHOTO SLIDER
+============================== -->
+<section class="mis-event-slider-section">
+    <div class="event-header-wrapper">
+        <h2 class="event-header">
+            <span class="event-icon">🎉</span>
+            <span class="event-title-ocean" style="color:#a5c0cc;">SCHOOL EVENT MEMORIES</span>
+        </h2>
+    </div>
+
+    <!-- 🔵 TOP ROW SLIDING RIGHT -->
+    <div class="mis-row slide-right">
+        <div class="mis-track">
+            <t t-set="photos"
+                               t-value="request.env['program.gallery.aws.url']
+                                        .sudo()
+                                        .search([('program_id.show_website', '=', True)])"/>
+
+
+            <!-- Normal order -->
+            <t t-foreach="photos" t-as="photo">
+                <div class="mis-item">
+                    <img t-att-src="photo.url" class="mis-img" loading="lazy"/>
+                </div>
+            </t>
+
+            <!-- Duplicate -->
+            <t t-foreach="photos" t-as="photo">
+                <div class="mis-item">
+                    <img t-att-src="photo.url" class="mis-img" loading="lazy"/>
+                </div>
+            </t>
+        </div>
+    </div>
+
+    <!-- 🔵 BOTTOM ROW SLIDING LEFT (REVERSED ORDER) -->
+    <div class="mis-row slide-left">
+        <div class="mis-track">
+            <t t-set="rev_photos" t-value="photos[::-1]"/>
+
+            <!-- Reversed -->
+            <t t-foreach="rev_photos" t-as="photo">
+                <div class="mis-item">
+                    <img t-att-src="photo.url" class="mis-img" loading="lazy"/>
+                </div>
+            </t>
+
+            <!-- Duplicate reversed -->
+            <t t-foreach="rev_photos" t-as="photo">
+                <div class="mis-item">
+                    <img t-att-src="photo.url" class="mis-img" loading="lazy"/>
+                </div>
+            </t>
+        </div>
+    </div>
+</section>
+
+
+
+          <style>
+
+            /* FORCE FLEX LAYOUT */
+.mis-event-slider-section .mis-row .mis-track {
+    display: flex !important;
+    gap: 16px;
+    width: max-content;
+}
+
+/* EXACTLY 6 TILES VISIBLE */
+.mis-event-slider-section .mis-row .mis-track .mis-item {
+    box-sizing: border-box;
+<!--    flex: 0 0 calc(100% / 6) !important;-->
+<!--    max-width: calc(100% / 6) !important;-->
+    background: #7085a3;
+    border-radius: 12px;
+    padding: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* IMAGE FULLY VISIBLE INSIDE TILE */
+.mis-event-slider-section .mis-row .mis-track .mis-item .mis-img {
+    width: 100%;
+    height: 160px;
+    object-fit: contain;      /* full image, no crop */
+    background: #00000012;
+    border-radius: 10px;
+    transition: 0.3s ease;
+}
+
+.mis-event-slider-section .mis-row .mis-track .mis-item .mis-img:hover {
+    transform: scale(1.06);
+}
+
+
+/* IMAGE FULLY VISIBLE IN TILE */
+.mis-img {
+    width: 100%;
+    height: 160px;
+    object-fit: contain;     /* 👈 FULL IMAGE VISIBLE */
+    background: #00000012;   /* 👈 Light background */
+    border-radius: 10px;
+    transition: 0.3s ease;
+}
+
+.mis-img:hover {
+    transform: scale(1.06);
+}
+
+/* Animation */
+.slide-right .mis-track {
+    animation: slideRight 40s linear infinite;
+}
+.slide-left .mis-track {
+    animation: slideLeft 40s linear infinite;
+}
+
+.mis-row:hover .mis-track {
+    animation-play-state: paused !important;
+}
+
+/* Keyframes */
+@keyframes slideRight {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+@keyframes slideLeft {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .mis-item { flex: 0 0 calc(100% / 3); }
+    .mis-img { height: 130px; }
+}
+
+@media (max-width: 480px) {
+    .mis-item { flex: 0 0 100%; }
+    .mis-img { height: 150px; }
+}
+
+
+
+          </style>
+
+
+<!--          About MIS-->
+
+
+
+<section class="mis-about">
+  <div class="container">
+
+    <!-- HEADING -->
+
+      <div class="event-header-wrapper">
+            <h2 class="event-header">
+                <span class="event-title-ocean" style="color:#a5c0cc;">Our School</span>
+            </h2>
+        </div>
+    <!-- FIXED ROW -->
+    <div class="row about-row">
+
+      <!-- LEFT GLASS CARD -->
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <div class="about-glass-box">
+
+          <div class="about-inner">
+            <p>
+              Mary Immaculate E.M. School, Basirhat was started on 11 March 2014 at OMI Maria Bhavan
+              with KG 1 as a co-education school. The school received permanent NOC and Certificate
+              of Recognition (Memo No. 20-SC/AIS/NOC AIS/RTE/COMMTT/55/2019, dated 24.01.2023) by
+              the Directorate of School Education, Government of West Bengal.The school follows the
+                proposed syllabus of ICSE Board, New Delhi. "Mary Immaculate English Medium School",
+                Basirhat, is a missionary school, which has its mission and vision according to the Gospel
+                values. We take care of our children's all-round education.
+            </p>
+
+            <p>
+              The school follows the ICSE syllabus and focuses on the all-round development of every child —
+              academics, values, discipline, leadership, and character formation.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- RIGHT VIDEO BLOCK -->
+      <div class="col-lg-6">
+        <div class="about-video-box">
+
+          <t t-set="media_url" t-value="media_url or ''"/>
+          <iframe class="about-video"
+            t-att-src="'https://www.youtube.com/embed/' + media_url +
+                        '?autoplay=1&amp;mute=1&amp;controls=0&amp;loop=1&amp;playlist=' + media_url">
+          </iframe>
+
+          <div class="about-video-caption">
+            🎓 Mary Immaculate School — Values &amp; Excellence
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+
+          <style>
+              /* SECTION BACKGROUND */
+.mis-about {
+  padding: 8px 0;
+  background: #7085a3;
+}
+
+/* TITLES */
+.about-main-title {
+  font-size: 34px;
+  font-weight: 800;
+  color: #6ea05d;
+}
+
+.about-sub-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-top: -8px;
+  color: #7bb8ff;
+  text-shadow: 0 0 10px rgba(123,184,255,0.6);
+}
+
+/* FIXED HEIGHT FOR DESKTOP */
+.about-row {
+  height: 420px;
+  display: flex;
+  align-items: stretch;
+}
+
+/* GLASS EFFECT BOX */
+.about-glass-box {
+  height: 100%;
+  padding: 20px;
+  border-radius: 18px;
+  background: #e0e8f0;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 6px 35px rgba(0,0,0,0.12);
+  animation: fadeInUp 0.8s ease-out forwards;
+  opacity: 0;
+}
+.about-inner p {
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.7;
+    color: #333;
+}
+
+
+
+/* VIDEO BOX */
+.about-video-box {
+  position: relative;
+  height: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.18);
+  animation: fadeInUp 1s ease-out forwards;
+  opacity: 0;
+}
+
+.about-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: none;
+}
+
+/* VIDEO CAPTION */
+.about-video-caption {
+  position: absolute;
+  bottom: 12px;
+  left: 15px;
+  padding: 6px 14px;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ANIMATION */
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* RESPONSIVE */
+@media(max-width: 992px) {
+  .about-row {
+    height: auto !important;
+    flex-direction: column;
+  }
+
+  .about-video-box {
+    height: 290px !important;
+    margin-top: 20px;
+  }
+}
+
+          </style>
+
+
+
+
+
+        <!-- ========== Facilities (Glassmorphism) ========== -->
+        <section class="s_school_facilities">
+          <t t-jquery="head" t-operation="prepend">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+          </t>
+          <div class="container text-center">
+              <div class="event-header-wrapper">
+                <h2 class="event-header">
+                    <span class="event-icon"><i class="fa-solid fa-school"></i></span>
+                    <span class="event-title-ocean" style="color:#a5c0cc;">School Facilities</span>
+                </h2>
+            </div>
+            <div class="heading-line"></div>
+
+            <div class="row justify-content-center gy-4 mt-3">
+              <div class="col-lg-3 col-md-6">
+                <div class="facility-card glass">
+                  <div class="icon-wrapper pink"><i class="fa-solid fa-futbol"></i></div>
+                  <h3>Play Ground</h3>
+                  <p>A spacious play area encouraging physical activity, teamwork, and fun-filled outdoor learning.</p>
+                </div>
+              </div>
+
+              <div class="col-lg-3 col-md-6">
+                <div class="facility-card glass">
+                  <div class="icon-wrapper blue"><i class="fa-solid fa-chalkboard-user"></i></div>
+                  <h3>Digital Board</h3>
+                  <p>Smart classrooms equipped with digital boards for an engaging and interactive learning experience.</p>
+                </div>
+              </div>
+
+              <div class="col-lg-3 col-md-6">
+                <div class="facility-card glass">
+                  <div class="icon-wrapper green"><i class="fa-solid fa-computer"></i></div>
+                  <h3>Computer Lab</h3>
+                  <p>Modern computer lab fostering digital literacy and practical learning for every student.</p>
+                </div>
+              </div>
+
+              <div class="col-lg-3 col-md-6">
+                <div class="facility-card glass">
+                  <div class="icon-wrapper orange"><i class="fa-solid fa-flask"></i></div>
+                  <h3>Science Lab</h3>
+                  <p>Well-equipped lab promoting scientific curiosity and hands-on experimentation safely.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <style>
+              /* Facilities */
+          section.s_school_facilities{ background:#7085a3; }
+          .facilities-heading{ font-size:34px; font-weight:800; color:#0066cc; display:inline-flex; align-items:center; gap:10px;}
+          .heading-line{ width:70px; height:3px; background:#7ec6ff; margin:8px auto 24px; border-radius:2px;}
+          .facility-card{ background:rgba(255,255,255,.5); border-radius:22px; padding:28px 24px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow:0 8px 20px rgba(0,0,0,.12); color:#2b3a4a; transition:.35s;}
+          .facility-card:hover{ transform: translateY(-6px); box-shadow:0 14px 30px rgba(0,0,0,.18); }
+          .icon-wrapper{ width:78px; height:78px; border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:32px; color:#fff; margin:0 auto 12px; box-shadow:0 6px 12px rgba(0,0,0,.18); transition:.35s;}
+          .facility-card:hover .icon-wrapper{ transform:scale(1.06) rotate(3deg); }
+          .icon-wrapper.pink{ background:linear-gradient(135deg,#ff85b3,#ff5c93); }
+          .icon-wrapper.blue{ background:linear-gradient(135deg,#7ec6ff,#4aa6ff); }
+          .icon-wrapper.green{ background:linear-gradient(135deg,#41e39b,#1fcf7a); }
+          .icon-wrapper.orange{ background:linear-gradient(135deg,#ffc073,#ff9739); }
+          .facility-card h3{ font-size:19px; font-weight:800; color:#123a66; margin-top:6px; }
+          .facility-card p{ font-size:15px; color:#4b5d73; line-height:1.6; }
+
+
+            /* ===========================================================
+   UNIVERSAL MOBILE FIXES
+   =========================================================== */
+
+@media (max-width: 768px) {
+
+  /* ================= VIDEO SECTION ================= */
+  .school-video-split {
+      flex-direction: column;
+      height: auto !important;
+      border-radius: 20px !important;
+  }
+
+  .split-left,
+  .split-right {
+      width: 100% !important;
+      height: 230px !important;
+      border-radius: 0 !important;
+      padding: 0 !important;
+  }
+
+  .video-wrapper,
+  .school-video-yu {
+      border-radius: 0 !important;
+      height: 100% !important;
+  }
+
+  .video-caption-sc {
+      font-size: 12px !important;
+      bottom: 8px !important;
+      padding: 2px 8px !important;
+  }
+
+  /* Right announcements card */
+  .split-right .mis-frost-card {
+      min-height: 260px !important;
+  }
+
+
+
+
+  /* =============== HERO SECTION =============== */
+  .mis-hero-second {
+      padding: 25px 10px !important;
+  }
+
+  .glass-box {
+      width: 100% !important;
+      padding: 18px !important;
+      border-radius: 18px !important;
+  }
+
+  .hero-title {
+      font-size: 24px !important;
+      line-height: 1.3 !important;
+  }
+
+
+
+  .rainbow {
+      font-size: inherit !important;
+  }
+
+
+  /* =============== PREMIUM LAYOUT (Birthdays + Cube) =============== */
+  .mis-premium-layout {
+      flex-direction: column !important;
+      gap: 20px !important;
+  }
+
+  .left-features {
+      display: none !important; /* hide left column on small devices */
+  }
+
+
+  /* Cube slider */
+  .right-cube {
+      width: 100% !important;
+      padding: 0 !important;
+      margin: 0 auto !important;
+  }
+
+  .cube-container {
+      max-width: 95% !important;
+      height: 280px !important;
+  }
+
+  .cube-face {
+      border-radius: 14px !important;
+  }
+
+  .cube-title {
+      font-size: 10px !important;
+      padding: 3px 6px !important;
+  }
+
+  .cube-face.front,
+  .cube-face.right,
+  .cube-face.back,
+  .cube-face.left {
+      transform: translateZ(180px) !important;
+  }
+
+
+  /* =============== FACILITIES GRID =============== */
+  .s_school_facilities .facility-card {
+      margin-bottom: 20px !important;
+  }
+
+  .facilities-heading {
+      font-size: 26px !important;
+  }
+
+  .facility-card h3 {
+      font-size: 17px !important;
+  }
+
+  .facility-card p {
+      font-size: 14px !important;
+  }
+
+  .icon-wrapper {
+      width: 60px !important;
+      height: 60px !important;
+      font-size: 26px !important;
+  }
+
+
+  /* =============== SPACING CLEANUP =============== */
+  .mis-divider {
+      margin-bottom: 15px !important;
+  }
+
+  .mis-section-title {
+      font-size: 20px !important;
+  }
+
+  .birthday-floating-text h2 {
+      font-size: 20px !important;
+  }
+
+  .birthday-floating-text p {
+      font-size: 14px !important;
+  }
+
+}
+
+
+          </style>
+
+<!--          Menebers-->
+
+
+        <!-- ========== Team (Profile Spotlight) ========== -->
+        <section class="s_company_team" style="background:#7085a3;">
+          <div class="container">
+
+              <div class="event-header-wrapper">
+            <h2 class="event-header">
+                <span class="event-title-ocean" style="color:#a5c0cc;">Our Leadership Team</span>
+
+            </h2>
+        </div>
+              <p class="mis-team-subtitle">Guiding Mary Immaculate School with Vision &amp; Values</p>
+
+            <div class="row g-4 s_nb_column_fixed">
+
+              <!-- President -->
+              <div class="col-lg-6">
+                <div class="mis-profile-card">
+                  <t t-set="president" t-value="member_id.member_line_ids.filtered(lambda x: x.designation == 'president')"/>
+                  <div class="mis-profile-photo">
+                    <img t-att-src="image_data_uri(president.image)"/>
+                  </div>
+                  <div class="mis-profile-info">
+                    <h4><b><t t-esc="president.name"/></b></h4>
+                    <p>President of OMI group of schools,<br/>St. Joseph Bhavan, Rudra Road,<br/>St. Thomas Mount, Chennai.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Secretary -->
+              <div class="col-lg-6">
+                <div class="mis-profile-card">
+                  <t t-set="secretary" t-value="member_id.member_line_ids.filtered(lambda x: x.designation == 'secretary')"/>
+                  <div class="mis-profile-photo">
+                    <img t-att-src="image_data_uri(secretary.image)"/>
+                  </div>
+                  <div class="mis-profile-info">
+                    <h4><b><t t-esc="secretary.name"/></b></h4>
+                    <p>Secretary, OMI group of Schools,<br/>St. Eugene English Medium School</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Principal -->
+              <div class="col-lg-6">
+                <div class="mis-profile-card">
+                  <t t-set="principal" t-value="member_id.member_line_ids.filtered(lambda x: x.designation == 'principal')"/>
+                  <div class="mis-profile-photo">
+                    <img t-att-src="image_data_uri(principal.image)"/>
+                  </div>
+                  <div class="mis-profile-info">
+                    <h4><b><t t-esc="principal.name"/></b></h4>
+                    <p>Principal,<br/>Mary Immaculate School,<br/>Patilachandra, Basirhat.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Manager -->
+              <div class="col-lg-6">
+                <div class="mis-profile-card">
+                  <t t-set="manager" t-value="member_id.member_line_ids.filtered(lambda x: x.designation == 'manager')"/>
+                  <div class="mis-profile-photo">
+                    <img t-att-src="image_data_uri(manager.image)"/>
+                  </div>
+                  <div class="mis-profile-info">
+                    <h4><b><t t-esc="manager.name"/></b></h4>
+                    <p>Manager,<br/>Mary Immaculate School,<br/>Patilachandra, Basirhat.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Administrator -->
+              <div class="col-lg-12">
+
+
+                <div class="mis-profile-card wide">
+                  <t t-set="administrator" t-value="member_id.member_line_ids.filtered(lambda x: x.designation == 'administrator')"/>
+                  <div class="mis-profile-photo">
+                    <img t-att-src="image_data_uri(administrator.image)"/>
+                  </div>
+                  <div class="mis-profile-info">
+                    <h4><b><t t-esc="administrator.name"/></b></h4>
+                    <p>Administrator,<br/>Mary Immaculate School,<br/>Patilachandra, Basirhat.</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+         <style>
+
+             /* ===========================================
+   TEAM SECTION HEADING
+=========================================== */
+
+.mis-team-header {
+    text-align: center;
+    margin-bottom: 45px;
+    animation: fadeIn 1s ease-out;
+}
+
+.mis-team-title {
+    font-size: 38px;
+    font-weight: 800;
+    color: #004d80;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+    position: relative;
+}
+
+.mis-team-title::after {
+    content: "";
+    width: 90px;
+    height: 4px;
+    background: linear-gradient(90deg, #00a6ff, #00e0ff);
+    display: block;
+    margin: 12px auto 0;
+    border-radius: 5px;
+    box-shadow: 0 0 12px rgba(0,160,255,0.6);
+}
+
+.mis-team-subtitle {
+    font-size: 16px;
+    color: #d13d4d;
+             font-weight:bold;
+             text-align: center;
+    margin-top: 6px;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ===========================================
+   MEMBER CARDS (GLASS EFFECT)
+=========================================== */
+
+.mis-profile-card {
+    background: rgba(255, 255, 255, 0.50);
+    backdrop-filter: blur(10px);
+    border-radius: 22px;
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    transition: all 0.35s ease;
+    position: relative;
+}
+
+/* Hover animation */
+.mis-profile-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 45px rgba(0,0,0,0.15);
+}
+
+/* Photo wrapper (square centered) */
+.mis-profile-photo {
+    width: 160px !important;
+    height: 160px !important;
+    border-radius: 22px !important;
+    overflow: hidden !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255,255,255,0.45);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+}
+
+/* Force image PERFECT fit */
+.mis-profile-photo img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    max-width: none !important;
+    max-height: none !important;
+    display: block !important;
+}
+
+/* TEXT DETAILS */
+.mis-profile-info h4 {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    color: #003b66;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.mis-profile-info p {
+    margin: 0;
+    font-size: 15px;
+    color: #2c3e50;
+    line-height: 1.45;
+}
+
+/* ===========================================
+   FINAL ROW (ADMIN CARD) CENTER ALIGN
+=========================================== */
+.mis-profile-card.wide {
+    max-width: 650px;
+    margin: 0 auto;
+    justify-content: flex-start;
+}
+
+/* ===========================================
+   MOBILE RESPONSIVENESS
+=========================================== */
+
+@media (max-width: 768px) {
+
+    .mis-team-title { font-size: 28px; }
+    .mis-team-subtitle { font-size: 14px; }
+
+    .mis-profile-card {
+        flex-direction: column !important;
+        text-align: center;
+        padding: 30px 20px !important;
+    }
+
+    .mis-profile-photo {
+        width: 150px !important;
+        height: 150px !important;
+        margin-bottom: 12px;
+    }
+
+    .mis-profile-info h4 {
+        font-size: 20px !important;
+        color: #ffffff !important;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    .mis-profile-info p {
+        color: #e8f3ff !important;
+        font-size: 14px !important;
+        max-width: 260px;
+        margin: auto;
+    }
+
+    .mis-profile-card.wide {
+        max-width: 100% !important;
+    }
+}
+
+             /* =============================================
+   TEAM PROFILE – GLASS CARD BASE STYLE
+=============================================*/
+.mis-profile-card {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(10px);
+    border-radius: 22px;
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    transition: all 0.35s ease;
+    position: relative;
+    width: 100%;
+}
+
+.mis-profile-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+}
+
+/* Photo */
+.mis-profile-photo img {
+    width: 110px;
+    height: 110px;
+    border-radius: 18px;
+    object-fit: cover;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+}
+
+/* Text */
+.mis-profile-info h4 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #003b66;
+}
+
+.mis-profile-info p {
+    font-size: 15px;
+    margin: 0;
+    line-height: 1.45;
+    color: #2c3e50;
+}
+
+/* Center the final full-width card */
+.mis-profile-card.wide {
+    max-width: 650px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+/* =============================================
+   RESPONSIVE — MERGED FINAL BLOCK
+   (This block overrides everything above)
+=============================================*/
+@media (max-width: 768px) {
+
+    .mis-profile-card {
+        flex-direction: column !important;
+        justify-content: center !important;
+        text-align: center !important;
+        padding: 28px 18px !important;
+        border-radius: 25px !important;
+        gap: 15px !important;
+    }
+
+    .mis-profile-photo img {
+        width: 150px !important;
+        height: 150px !important;
+        border-radius: 22px !important;
+        object-fit: cover !important;
+        margin-bottom: 10px !important;
+    }
+
+    .mis-profile-info h4 {
+        font-size: 22px !important;
+        font-weight: 800 !important;
+        color: #ffffff !important;
+        text-shadow: 0px 3px 8px rgba(0,0,0,0.4);
+    }
+
+    .mis-profile-info p {
+        font-size: 15px !important;
+        color: #eef6ff !important;
+        max-width: 320px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    /* Fix Bootstrap column padding issue on mobile */
+    .s_company_team .col-lg-6,
+    .s_company_team .col-lg-12 {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+             background: #7085a3;
+    }
+
+    /* Final card center alignment */
+    .mis-profile-card.wide {
+        width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+    .mis-profile-photo img {
+        width: 130px !important;
+        height: 130px !important;
+    }
+}
+/* FIX PROFILE IMAGE DISTORTION */
+/* PERFECT SQUARE CROPPING FIX */
+.mis-profile-photo {
+    width: 140px !important;
+    height: 140px !important;
+    border-radius: 28px !important;
+    overflow: hidden !important;       /* CRITICAL: Hides tall parts */
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    background: #ddd;
+}
+
+.mis-profile-photo img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;     /* fill + crop */
+    object-position: center !important;
+
+    max-width: none !important;        /* BREAK bootstrap limits */
+    max-height: none !important;       /* BREAK bootstrap limits */
+
+    display: block !important;
+}
+
+
+
+.mis-profile-photo img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;  /* ensures square crop */
+    object-position: center !important;
+    border-radius: 20px !important;
+}
+
+             @media (max-width: 768px) {
+    @media (max-width: 768px) {
+    .mis-profile-photo {
+        width: 160px !important;
+        height: 160px !important;
+    }
+}
+
+    .mis-profile-photo img {
+        border-radius: 22px !important;
+    }
+}
+
+         </style>
+
+
+           <section class="s_timeline pt48 pb64 " style="background: #7085a3;">
+               <div class="event-header-wrapper">
+            <h2 class="event-header">
+                <span class="event-title-ocean" style="color:#a5c0cc;">Our Journey Through The Years</span>
+
+            </h2>
+        </div>
+        <p class="mis-timeline-sub">A legacy built on excellence, growth &amp; values</p>
+          <div class="container s_timeline_line">
+
+            <div class="s_timeline_row d-block d-md-flex flex-row">
+              <div class="s_timeline_date"><b>2025</b></div>
+              <div class="s_timeline_content d-flex">
+                <div class="s_timeline_card s_card card bg-white w-100 mis-soft-card">
+                  <div class="card-body">
+                    <h5 class="card-title">ICSE 1st Batch (Class: X)</h5>
+                  </div>
+                </div>
+                <i class="fa fa-1x fa-child bg-o-color-2 rounded-circle s_timeline_icon"></i>
+              </div>
+              <div class="s_timeline_content"></div>
+            </div>
+
+            <div class="s_timeline_row d-block d-md-flex flex-row">
+              <div class="s_timeline_date"><b>2022</b></div>
+              <div class="s_timeline_content d-flex">
+                <div class="s_timeline_card s_card card bg-white w-100 mis-soft-card">
+                  <div class="card-body">
+                    <h5 class="card-title">Best School in Basirhat, North 24 PGS...</h5>
+                  </div>
+                </div>
+                <i class="fa fa-1x fa-graduation-cap bg-o-color-2 rounded-circle s_timeline_icon"></i>
+              </div>
+              <div class="s_timeline_content d-flex">
+                <i class="fa fa-1x fa-asterisk bg-o-color-2 rounded-circle s_timeline_icon"></i>
+                <div class="s_timeline_card s_card card bg-white w-100 mis-soft-card">
+                  <div class="card-body">
+                    <h5 class="card-title">Affiliated to ICSE</h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="s_timeline_row d-block d-md-flex flex-row-reverse">
+              <div class="s_timeline_date"><b>2014</b></div>
+              <div class="s_timeline_content d-flex">
+                <div class="s_timeline_card s_card card bg-white w-100 mis-soft-card">
+                  <div class="card-body">
+                    <h5 class="card-title">Mary Immaculate School Established</h5>
+                  </div>
+                </div>
+                <i class="fa fa-1x fa-bolt bg-o-color-2 rounded-circle s_timeline_icon"></i>
+              </div>
+              <div class="s_timeline_content"></div>
+
+            </div>
+
+          </div>
+<!--        </section>-->
+
+<!--         <section class="s_timeline pt48 pb64" style="background:#7085a3;">-->
+    <div class="container-fluid">
+
+        <div class="row align-items-center">
+
+            <!-- MAP LEFT -->
+            <div class="col-lg-7 school-map-box">
+
+                <t t-set="map_location"
+                   t-value="request.env['ir.config_parameter'].sudo().get_param('website.google_map_link')"/>
+
+                <iframe
+                    t-att-src="'https://maps.google.com/maps?q=' + map_location + '&amp;z=16&amp;output=embed'"
+                    width="100%"
+                    height="350"
+                    style="border:0;border-radius:10px;"
+                    loading="lazy">
+                </iframe>
+
+            </div>
+
+
+            <!-- SCHOOL INFO RIGHT -->
+            <div class="col-lg-5 school-contact-box">
+
+                <t t-set="company" t-value="request.env.company"/>
+
+<h2 t-esc="company.name"/>
+
+<div class="contact-item">
+    <img src="/ala_website/static/src/img/location.png"/>
+    <span t-esc="company.partner_id.contact_address"/>
+</div>
+
+<div class="contact-item">
+    <img src="/ala_website/static/src/img/phone.png"/>
+    <span t-esc="company.phone"/>
+</div>
+
+<div class="contact-item">
+    <img src="/ala_website/static/src/img/email.png"/>
+    <span t-esc="company.email"/>
+</div>
+
+                <div class="social-icons">
+
+                    <a t-att-href="request.env['ir.config_parameter'].sudo().get_param('website.facebook_link')" target="_blank">
+                        <img src="/ala_website/static/src/img/facebook.png"/>
+                    </a>
+
+                    <a t-att-href="request.env['ir.config_parameter'].sudo().get_param('website.instagram_link')" target="_blank">
+                        <img src="/ala_website/static/src/img/instagram.png"/>
+                    </a>
+
+                    <a t-att-href="request.env['ir.config_parameter'].sudo().get_param('website.youtube_link')" target="_blank">
+                        <img src="/ala_website/static/src/img/youtube.png"/>
+                    </a>
+
+                    <a t-att-href="request.env['ir.config_parameter'].sudo().get_param('website.twitter_link')" target="_blank">
+                        <img src="/ala_website/static/src/img/twitter.png"/>
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+          <style>
+
+
+.school-contact-section{
+    background:#7085a3;
+    padding:40px 40px;
+}
+
+.school-map-box iframe{
+    width:100%;
+    height:350px;
+}
+
+.school-contact-box{
+    color:white;
+    padding-left:40px;
+}
+
+.school-contact-box h2{
+    margin-bottom:20px;
+    font-weight:600;
+}
+
+.contact-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:15px;
+}
+
+.contact-item img{
+    width:18px;
+}
+
+.social-icons{
+    margin-top:20px;
+    display:flex;
+    gap:15px;
+}
+
+.social-icons img{
+    width:30px;
+    transition:transform 0.2s;
+}
+
+.social-icons img:hover{
+    transform:scale(1.15);
+}
+              .mis-timeline-heading {
+    font-size: 34px;
+    font-weight: 800;
+    color: #ffffff;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+.mis-timeline-sub {
+    color: #d13d4d;
+    font-size: 20px;
+              font-weight:bold;
+              text-align: center;
+
+
+}
+
+              /* =============================================
+   ✨ TIMELINE PREMIUM EFFECTS
+=============================================*/
+
+/* Main timeline vertical line */
+.s_timeline_line {
+    position: relative;
+    padding-left: 10px;
+}
+
+.s_timeline_line::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(#00e0ff, #0077c8, #004d80);
+    transform: translateX(-50%);
+    border-radius: 6px;
+    animation: lineGrow 1.5s ease-out forwards;
+}
+
+@keyframes lineGrow {
+    from { height: 0; }
+    to   { height: 100%; }
+}
+
+/* Dates */
+.s_timeline_date b {
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 800;
+    text-shadow: 0 0 8px rgba(255,255,255,0.4);
+}
+
+/* Cards (Glass effect) */
+.mis-soft-card {
+    background: rgba(255,255,255,0.75) !important;
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+    transition: all 0.35s ease;
+    border: none;
+}
+
+.mis-soft-card:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+}
+
+/* Card Title */
+.s_timeline .card-title {
+    color: #003b66;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/* Floating  Glowing Icons */
+.s_timeline_icon {
+    width: 42px;
+    height: 42px;
+    font-size: 18px !important;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: linear-gradient(145deg, #009dff, #00c8ff);
+    box-shadow: 0 0 12px rgba(0,190,255,0.6);
+    animation: iconFloat 3s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+    100% { transform: translateY(0); }
+}
+
+/* ✨ Fade-in slide animation for each row */
+.s_timeline_row {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeSlide 0.8s ease-out forwards;
+}
+
+.s_timeline_row:nth-child(1) { animation-delay: 0.2s; }
+.s_timeline_row:nth-child(2) { animation-delay: 0.4s; }
+.s_timeline_row:nth-child(3) { animation-delay: 0.6s; }
+
+@keyframes fadeSlide {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* =============================================
+   📱 Responsive Fixes
+=============================================*/
+@media(max-width: 768px) {
+    .s_timeline_line::before {
+        left: 10px !important;
+    }
+
+    .s_timeline_date {
+        margin-left: 35px;
+        margin-bottom: 10px;
+    }
+
+    .s_timeline_icon {
+        margin-left: 10px;
+    }
+
+    .mis-soft-card {
+        margin-left: 20px;
+    }
+}
+
+          </style>
+
+
+
+
+
+
+
+
+      </div>
+    </t>
+  </template>
+</odoo>

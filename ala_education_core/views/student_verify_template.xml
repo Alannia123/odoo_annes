@@ -1,0 +1,48 @@
+<odoo>
+    <template id="student_qr_verify_template" name="Student QR Verification">
+        <t t-call="website.layout">
+            <div class="container my-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-body p-4">
+                                <t t-if="is_valid">
+                                    <div class="text-center mb-3">
+        <img t-if="student.image_1920"
+             t-attf-src="data:image/png;base64,{{student.image_1920}}"
+             class="student-photo"/>
+
+        <img t-else=""
+             src="/web/static/src/img/placeholder.png"
+             class="student-photo"/>
+    </div>
+                                    <style>
+.student-photo {
+    width: 100px;          /* fixed width */
+    height: 120px;         /* ID card ratio */
+    object-fit: cover;     /* crop properly */
+
+    border-radius: 10px;   /* slightly rounded corners */
+    border: 3px solid #1e3c72;  /* professional blue border */
+
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+</style>
+                                    <h2 class="mb-3 text-success">Student ID Verified</h2>
+                                    <p><strong>Name:</strong> <t t-esc="student.name"/></p>
+                                    <p><strong>Register No:</strong> <t t-esc="student.register_no"/></p>
+                                    <p><strong>Class:</strong> <t t-esc="student.class_division_id.name if student.class_division_id else ''"/></p>
+                                    <p><strong>Mobile:</strong> <t t-esc="student.mobile or ''"/></p>
+                                </t>
+                                <t t-else="">
+                                    <h2 class="mb-3 text-danger">Invalid QR Code</h2>
+                                    <p>The student verification link is invalid or expired.</p>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

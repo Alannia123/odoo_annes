@@ -29,7 +29,7 @@ class EducationClassDivision(models.Model):
         return {
             'domain': [('id', 'in', students_list)],
             'name': _('Students'),
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'ala.education.student',
             'view_id': False,
             'context': {'default_class_id': self.id},
@@ -93,6 +93,10 @@ class EducationClassDivision(models.Model):
     #         if rec.actual_strength <= 0:
     #             raise ValidationError(_('Strength must be a Non-Zero value'))
 
+    def action_generate_qr_code(self):
+        for student in self.student_ids:
+            student.action_generate_qr_code()
+
     def generate_portal_user(self):
         print('ffffffffffff')
         portal_group = self.env.ref('base.group_portal')
@@ -115,7 +119,7 @@ class EducationClassDivision(models.Model):
                 'login': login,
                 'password': password,
                 'partner_id': student.partner_id.id if student.partner_id else False,
-                'groups_id': [(6, 0, [portal_group.id])],
+                'group_ids': [(6, 0, [portal_group.id])],
             })
 
             # Link to student

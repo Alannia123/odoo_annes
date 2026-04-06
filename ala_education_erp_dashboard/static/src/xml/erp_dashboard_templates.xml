@@ -4,12 +4,12 @@
         <div class="edu-dashboard p-3">
     <!-- Header Section -->
     <div class="dashboard-header mb-4 text-center">
-        <!-- Logo + Animation -->
         <div class="logo-wrapper mb-2">
-            <img src="/ala_education_erp_dashboard/static/src/img/logo.png"
-                 alt="School Logo"
-                 class="edu-logo animate-glow"></img>
-        </div>
+    <img t-if="companyId"
+         t-att-src="'/web/image/res.company/' + companyId + '/logo'"
+         alt="Company Logo"
+         class="edu-logo animate-glow"/>
+</div>
 
         <h2 class="mb-1" style="font-weight:700;color:#2c3e50;">
             🎓 Educational Dashboard

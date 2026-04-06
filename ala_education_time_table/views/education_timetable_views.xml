@@ -155,7 +155,7 @@
         </field>
     </record>
 
-    <menuitem id="education_time_table_main_menu" web_icon="ala_education_time_table,static/description/icon.png" name="ALA Timetable"/>
+    <menuitem id="education_time_table_main_menu" web_icon="ala_education_time_table,static/description/icon.png" name="School Timetable"/>
     <menuitem id="education_time_table_sub_menu" name="Timetable" parent="education_time_table_main_menu" sequence="1"/>
     <menuitem id="education_time_table_sub_sub_menu" name="Timetable" parent="education_time_table_sub_menu" action="education_time_table_action"/>
 </odoo>

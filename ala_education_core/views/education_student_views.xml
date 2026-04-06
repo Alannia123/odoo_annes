@@ -206,7 +206,18 @@
                                     <field name="mother_occupation"/>
                                 </group>
                             </group>
-                            <group name="amenity_info">
+                            <group name="qr_info">
+                                <group>
+                                    <field name="qr_token"/>
+                                <field name="qr_url"/>
+                                </group>
+                                <group>
+                                    <field name="qr_code"
+                                           widget="image"
+                                           class="qr-small"
+                                           style="max-width:120px; max-height:120px;"
+                                           options="{'preview_image': 'qr_code'}"/>
+                                </group>
                             </group>
                             <separator string="Contact Info"/>
                             <group>

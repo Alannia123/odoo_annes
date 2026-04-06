@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Login Page Customization -->
+     <template id="custom_login" inherit_id="web.login" name="Custom Login Odoo 19">
+
+        <xpath expr="//div[contains(@class, 'field-login')]" position="before">
+            <div t-attf-class="text-center pb-3 border-bottom #{'mb-3' if form_small else 'mb-4'}">
+
+                <img t-if="request.env.company.logo"
+                     t-att-src="'/web/image/res.company/%s/logo' % request.env.company.id"
+                     alt="Company Logo"
+                     style="max-height:120px; max-width:100%; width:auto;"/>
+
+                <img t-else=""
+                     src="/ala_website/static/src/img/logo.png"
+                     alt="Default Logo"
+                     style="max-height:120px; max-width:100%; width:auto;"/>
+
+            </div>
+
+            <t t-if="not is_mobile">
+                <div class="welcome-text text-center mb-3">
+                    <span class="welcome-line">WELCOME TO</span><br/>
+                    <span class="welcome-school">ST. ANNE'S</span>
+                </div>
+            </t>
+            <t t-else="">
+                <div class="welcome-text text-center mb-3">
+                    <span class="welcome-line">WELCOME TO</span><br/>
+                    <span class="welcome-school">ST. ANNE'S APP</span>
+                </div>
+            </t>
+        </xpath>
+
+
+        <!-- Replace login field block safely -->
+        <xpath expr="//div[contains(@class, 'field-login')]//label" position="replace">
+    <label for="login" class="form-label d-flex justify-content-between">
+        Username
+    </label>
+</xpath>
+
+      
+
+    </template>
+
+    <!-- Brand Promotion Message -->
+    <template id="brand_promotion_message_custom" inherit_id="web.brand_promotion_message" name="Brand Promotion Message Custom">
+        <xpath expr="." position="replace">
+            <template id="brand_promotion_message_custom_inner">
+                <span>Powered by </span>
+                <span>
+                    <img class="o_company_logo_small"
+                         src="/ala_website/static/src/img/Alanniainfotechz.png"
+                         style="height:35px; width:90px;"
+                         alt="Logo"/>
+                </span>
+            </template>
+        </xpath>
+    </template>
+
+</odoo>

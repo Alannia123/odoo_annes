@@ -12,7 +12,7 @@
     'author': 'Alanniainfotechz',
     'company': 'Alanniainfotechz',
     'maintainer': 'Alanniainfotechz',
-    'depends': ['ala_education_core', 'ala_school_calendar'],
+    'depends': ['ala_education_core', 'ala_school_calender'],
     'data': [
         'data/ir_cron.xml',
         'security/security.xml',

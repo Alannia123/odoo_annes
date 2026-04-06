@@ -65,7 +65,7 @@
     <!--  Menu items  -->
     <menuitem
             id="education_year_ending_menu" name="Year Ending"
-            parent="ala_education_core.menu_education_root" sequence="5"/>
+            parent="ala_education_core.menu_education_root" sequence="120"/>
     <menuitem
             id="education_promotion_sub_menu" name="Promotion"
             parent="education_year_ending_menu"

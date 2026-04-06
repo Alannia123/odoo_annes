@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+<template id="program_events_gallery" name="Program and Events">
+  <t t-call="website.layout">
+<!-- === ELEGANT SCHOOL PHOTO GALLERY HEADER === -->
+<section class="school-gallery-header">
+  <div class="glow-gradient-border"></div>
+  <div class="sparkle-layer"></div>
+
+  <div class="container text-center position-relative py-4">
+    <h1 class="gallery-heading">School Photo Gallery</h1>
+    <p class="gallery-subheading">Where Every Memory Shines Bright</p>
+  </div>
+</section>
+
+<style>
+/* === HEADER BASE === */
+.school-gallery-header {
+  position: relative;
+  height: 190px;
+  background: linear-gradient(135deg, #0066ff, #0099ff, #33ccff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom-left-radius: 45px;
+  border-bottom-right-radius: 45px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+/* === Animated Glow Border === */
+.glow-gradient-border {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, #00c6ff, #0072ff, #33ccff, #00f0ff);
+  background-size: 300% 300%;
+  animation: borderFlow 10s linear infinite;
+  filter: blur(18px);
+  opacity: 0.6;
+  z-index: 0;
+}
+@keyframes borderFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* === Subtle Sparkle Layer === */
+.sparkle-layer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px);
+  background-size: 80px 80px;
+  animation: sparkleMove 25s linear infinite;
+  z-index: 1;
+}
+@keyframes sparkleMove {
+  from { transform: translate(0, 0); }
+  to { transform: translate(-100px, -100px); }
+}
+
+/* === TEXT STYLING === */
+.gallery-heading {
+  position: relative;
+  z-index: 2;
+  font-size: 34px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: linear-gradient(90deg, #ffffff, #d9f0ff, #cce6ff, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 10px rgba(0, 102, 255, 0.25);
+  animation: shimmerText 8s ease-in-out infinite;
+}
+@keyframes shimmerText {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.gallery-subheading {
+  position: relative;
+  z-index: 2;
+  font-size: 17px;
+  font-weight: 500;
+  color: #eaf6ff;
+  letter-spacing: 0.5px;
+  margin-top: 8px;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.15);
+  animation: fadeInUp 1.5s ease forwards;
+}
+
+/* === FADE IN === */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .school-gallery-header { height: 160px; border-radius: 0 0 30px 30px; }
+  .gallery-heading { font-size: 26px; }
+  .gallery-subheading { font-size: 14px; }
+}
+</style>
+
+    <!-- === GALLERY WRAPPER === -->
+    <div class="container glow-background my-5">
+      <div class="row" id="galleryGrid">
+        <t t-foreach="request.env['program.gallery.aws'].sudo().search([])" t-as="gallery">
+          <t t-if="gallery.attach_count != 0">
+            <h3><span t-out="gallery.event_id.name"/></h3>
+            <div class="row g-4">
+              <t t-foreach="gallery.aws_url_ids" t-as="photo">
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                  <div class="card animated-image">
+                    <img t-att-src="photo.url" alt="School Event" class="gallery-img"
+                         t-att-data-gallery="gallery.id"/>
+                  </div>
+                </div>
+              </t>
+            </div>
+          </t>
+        </t>
+      </div>
+    </div>
+
+    <!-- === FULLSCREEN LIGHTBOX === -->
+    <div id="lightboxOverlay" class="lightbox-overlay" style="display:none;">
+      <span class="close-btn">&amp;times;</span>
+      <img id="lightboxImg" class="lightbox-img" src="" alt="Expanded Photo"/>
+      <div class="lightbox-footer text-center">
+        <button id="backToGallery" class="btn-back">← Back to Gallery</button>
+      </div>
+    </div>
+
+    <!-- === JS FUNCTIONALITY === -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const overlay = document.getElementById("lightboxOverlay");
+        const imgEl = document.getElementById("lightboxImg");
+        const closeBtn = document.querySelector(".close-btn");
+        const backBtn = document.getElementById("backToGallery");
+
+        document.querySelectorAll(".gallery-img").forEach(img => {
+          img.addEventListener("click", () => {
+            overlay.style.display = "flex";
+            imgEl.src = img.src;
+            document.body.style.overflow = "hidden";
+          });
+        });
+
+        const closeLightbox = () => {
+          overlay.style.display = "none";
+          document.body.style.overflow = "auto";
+        };
+
+        closeBtn.onclick = closeLightbox;
+        backBtn.onclick = closeLightbox;
+        overlay.onclick = (e) => {
+          if (e.target === overlay) closeLightbox();
+        };
+      });
+    </script>
+
+    <!-- === STYLES === -->
+    <style>
+      /* HEADER */
+      .school-gallery-hero {
+        height: 180px;
+        background: linear-gradient(135deg, #0047ab, #007bff, #33ccff);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-bottom-left-radius: 40px;
+        border-bottom-right-radius: 40px;
+        box-shadow: 0 5px 18px rgba(0,0,0,0.1);
+        overflow: hidden;
+      }
+      .hero-title {
+        font-size: 30px;
+        font-weight: 800;
+        background: linear-gradient(90deg, #fff, #aee0ff, #fff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .hero-subtitle {
+        color: #f1f1f1;
+        font-size: 15px;
+      }
+
+      /* BACKGROUND EFFECT */
+      .glow-background {
+        background: linear-gradient(145deg, #f8fbff, #eef5ff);
+        border-radius: 16px;
+        padding: 30px 20px;
+        box-shadow: inset 0 0 15px rgba(255,255,255,0.6),
+                    0 6px 20px rgba(0,0,0,0.05);
+      }
+
+      /* SECTION HEADINGS */
+      h3 {
+        font-size: 26px;
+        font-weight: 800;
+        color: #0047ab;
+        text-align: center;
+        margin: 35px 0 20px;
+        position: relative;
+      }
+      h3::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -6px;
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(90deg, #0047ab, #0099ff);
+        border-radius: 3px;
+      }
+
+      /* IMAGES */
+      .animated-image {
+        overflow: hidden;
+        border-radius: 14px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        transition: all 0.4s;
+      }
+      .animated-image img {
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+        transition: transform 0.5s ease-in-out;
+        cursor: pointer;
+      }
+      .animated-image:hover img {
+        transform: scale(1.12);
+      }
+
+      /* LIGHTBOX */
+      .lightbox-overlay {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.85);
+        z-index: 9999;
+        flex-direction: column;
+        animation: fadeIn 0.3s ease;
+      }
+      .lightbox-img {
+        max-width: 90%;
+        max-height: 80vh;
+        border-radius: 12px;
+        box-shadow: 0 0 25px rgba(255,255,255,0.2);
+      }
+      .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 25px;
+        font-size: 35px;
+        color: #fff;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+      .close-btn:hover { color: #00aaff; }
+
+      /* BACK BUTTON */
+      .btn-back {
+        background: linear-gradient(90deg, #0047ab, #0099ff);
+        color: #fff;
+        border: none;
+        border-radius: 25px;
+        padding: 8px 20px;
+        margin-top: 20px;
+        cursor: pointer;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(0,102,255,0.4);
+        transition: all 0.3s ease;
+      }
+      .btn-back:hover {
+        background: linear-gradient(90deg, #0099ff, #0047ab);
+        transform: translateY(-2px);
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      @media (max-width: 768px) {
+        .hero-title { font-size: 22px; }
+        .animated-image img { height: 180px; }
+      }
+    </style>
+  </t>
+</template>
+
+
+
+</odoo>
