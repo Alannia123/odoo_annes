@@ -17,6 +17,6 @@ from . import education_student
 from . import education_subject
 # from . import education_syllabus
 from . import hr_applicant
-from . import res_company
+# from . import res_company
 # from . import res_partner
 from . import student_green_book
