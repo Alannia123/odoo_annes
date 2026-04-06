@@ -16,6 +16,7 @@ class ResCompany(models.Model):
     higher_class_id = fields.Many2one('ala.education.class',
                                       string="Higher class",
                                       help="Highest class of institute")
+    principal_signature = fields.Binary("Principal Signature")
 
 #
 # class Resusers(models.Model):

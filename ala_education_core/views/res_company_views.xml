@@ -12,6 +12,8 @@
                     <group name="container_education">
                         <group name="registration_info"
                                string="Registration Info">
+
+                            <field name="principal_signature" widget="signature"/>
                             <field name="affiliation"/>
                             <field name="register_num"/>
                         </group>
