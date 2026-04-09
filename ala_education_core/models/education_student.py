@@ -28,7 +28,7 @@ class EducationStudent(models.Model):
     _inherit = ['mail.thread']
     _inherits = {'res.partner': 'partner_id'}
     _description = 'Student Record'
-    # _order = "roll_no asc"
+    _order = 'division_sequence, roll_no_int, roll_no, name'
     _rec_name = "name"
 
     def action_student_documents(self):
@@ -197,6 +197,26 @@ class EducationStudent(models.Model):
     qr_code = fields.Binary("QR Code", readonly=True, attachment=True)
     qr_token = fields.Char("QR Token", readonly=True, copy=False, index=True)
     qr_url = fields.Char("QR Url", readonly=True, copy=False, index=True)
+    division_sequence = fields.Integer(
+        related='class_division_id.sequence',
+        store=True,
+        index=True,
+    )
+    roll_no_int = fields.Integer(
+        string="Roll No Sort",
+        compute="_compute_roll_no_int",
+        store=True,
+        index=True,
+    )
+
+    @api.depends('roll_no')
+    def _compute_roll_no_int(self):
+        for rec in self:
+            val = (rec.roll_no or '').strip()
+            if val.isdigit():
+                rec.roll_no_int = int(val)
+            else:
+                rec.roll_no_int = 999999
 
     def _build_qr_verify_url(self):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
