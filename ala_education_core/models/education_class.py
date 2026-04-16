@@ -10,9 +10,11 @@ class EducationClass(models.Model):
 
     name = fields.Char(string='Name', required=True,
                        help="Enter the Name of the Class")
-    type = fields.Selection([('lkg', 'LKG'),('ukg', 'UKG'), ('onetwo', '1-2 STD'), ('threefive', '3-5 STD'),
-                                    ('sixeight', '6-8 STD'), ('ninten', '9-10 STD')],
-                            'Report Card', required=False)
+    type = fields.Selection(
+        [('nur', 'NUR'), ('lkg', 'LKG'), ('ukg', 'UKG'), ('onetwo', '1-2 STD'), ('threefour', '3-4 STD'),
+         ('five', '5 STD'),
+         ('sixeight', '6-8 STD'), ('ninten', '9-10 STD')],
+        'Report Card', required=False)
     subject_ids = fields.One2many('ala.education.class.subject',
                                    'class_id',
                                    string="Syllabus",
