@@ -11,7 +11,7 @@ class EducationSubject(models.Model):
 
     name = fields.Char(string='Name', required=True,
                        help="Name of the Subject")
-    type = fields.Selection([('lkg', 'LKG'),('ukg', 'UKG'), ('onetwo', '1-2 STD'), ('threefive', '3-5 STD'),
+    type = fields.Selection([('nur', 'NUR'),('lkg', 'LKG'),('ukg', 'UKG'), ('onetwo', '1-2 STD'), ('threefour', '3-4 STD'), ('five', '5 STD'),
                              ('sixeight', '6-8 STD'), ('ninten', '9-10 STD')],
                             'Report Card', required=False)
     group_id = fields.Many2one(

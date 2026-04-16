@@ -1,0 +1,23 @@
+<odoo>
+    <record id="view_ala_binance_market_snapshot_tree" model="ir.ui.view">
+        <field name="name">ala.binance.market.snapshot.tree</field>
+        <field name="model">ala.binance.market.snapshot</field>
+        <field name="arch" type="xml">
+            <list create="0" delete="0" edit="0">
+                <field name="snapshot_time"/>
+                <field name="symbol"/>
+                <field name="price"/>
+                <field name="mark_price"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_ala_binance_market_snapshot" model="ir.actions.act_window">
+        <field name="name">Market Snapshots</field>
+        <field name="res_model">ala.binance.market.snapshot</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <menuitem id="menu_ala_binance_market_snapshot" name="Market Snapshots"
+              parent="menu_ala_binance_root" action="action_ala_binance_market_snapshot"/>
+</odoo>

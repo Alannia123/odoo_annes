@@ -1,0 +1,70 @@
+<odoo>
+    <record id="view_ala_binance_paper_trade_tree" model="ir.ui.view">
+        <field name="name">ala.binance.paper.trade.tree</field>
+        <field name="model">ala.binance.paper.trade</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="entry_time"/>
+                <field name="symbol"/>
+                <field name="side"/>
+                <field name="entry_price"/>
+                <field name="current_price"/>
+                <field name="tp_price"/>
+                <field name="sl_price"/>
+                <field name="pnl_amount"/>
+                <field name="pnl_percent"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ala_binance_paper_trade_form" model="ir.ui.view">
+        <field name="name">ala.binance.paper.trade.form</field>
+        <field name="model">ala.binance.paper.trade</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="config_id"/>
+                            <field name="symbol"/>
+                            <field name="side"/>
+                            <field name="state"/>
+                        </group>
+                        <group>
+                            <field name="entry_time"/>
+                            <field name="exit_time"/>
+                            <field name="entry_price"/>
+                            <field name="current_price"/>
+                            <field name="exit_price"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="quantity"/>
+                            <field name="notional"/>
+                        </group>
+                        <group>
+                            <field name="tp_price"/>
+                            <field name="sl_price"/>
+                            <field name="pnl_amount"/>
+                            <field name="pnl_percent"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ala_binance_paper_trade" model="ir.actions.act_window">
+        <field name="name">Paper Trades</field>
+        <field name="res_model">ala.binance.paper.trade</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_ala_binance_paper_trade" name="Paper Trades"
+              parent="menu_ala_binance_root" action="action_ala_binance_paper_trade"/>
+</odoo>

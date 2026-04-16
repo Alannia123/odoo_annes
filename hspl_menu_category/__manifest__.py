@@ -26,6 +26,7 @@
         "hspl_menu_category/static/src/js/hspl_web_navbar.esm.js",
         "hspl_menu_category/static/src/js/hspl_apps_menu.esm.js",
         "hspl_menu_category/static/src/xml/apps_category.xml",
+        # 'your_module/static/src/js/mobile_menu_fix.js',
     ],
 },
     "images": ["static/description/heliconia_menu_category.gif"],
