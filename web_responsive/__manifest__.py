@@ -48,10 +48,9 @@
             "/web_responsive/static/src/components/control_panel/*",
             "/web_responsive/static/src/components/command_palette/*",
             "/web_responsive/static/src/views/form/*",
-            # 'web_responsive/static/src/js/mobile_apps_menu_fix.js',
         ],
         "web.assets_clickbot": [
-            # "/web_responsive/static/src/clickbot/clickbot.esm.js",
+            "/web_responsive/static/src/clickbot/clickbot.esm.js",
         ],
         "web.qunit_suite_tests": [
             "/web_responsive/static/tests/apps_menu_tests.esm.js",

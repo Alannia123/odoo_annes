@@ -196,10 +196,7 @@ patch(BurgerMenu.prototype, {
         super.setup();
     },
 
-    _openAppMenuSidebarMobile(ev) {
-        if (!ev || !ev.isTrusted) {
-            return;
-        }
-            this.env.bus.trigger("APP_MENU:TOGGLE_SIDEBAR");
-        },
+    _openAppMenuSidebarMobile() {
+        this.env.bus.trigger("APP_MENU:TOGGLE_SIDEBAR");
+    },
 });
