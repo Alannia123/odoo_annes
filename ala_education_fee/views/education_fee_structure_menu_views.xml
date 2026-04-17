@@ -20,7 +20,8 @@
 
     <menuitem
             id="education_fee_structure_menu_root" action="education_fee_structure_action"
-            parent="education_fee_menu_root" name="Configuration" groups="ala_education_core.group_education_principal"
+            parent="education_fee_menu_root" name="Configuration"
+            groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
             sequence="4"/>
 
     <menuitem
