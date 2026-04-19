@@ -20,6 +20,7 @@ export class EducationalDashboard extends Component {
             canViewStudents: false,
             canViewExams: false,
             canViewAmenities: false,
+            currentAcademicYearId: false,
         });
 
         onWillStart(async () => {
@@ -74,6 +75,8 @@ export class EducationalDashboard extends Component {
             return;
         }
 
+        const currentAcademicYearId = this.state.currentAcademicYearId; // make sure this is loaded in state
+
         const actionMap = {
             faculties: {
                 name: "Faculties",
@@ -82,10 +85,18 @@ export class EducationalDashboard extends Component {
             students: {
                 name: "Students",
                 res_model: "ala.education.student",
+                domain: [
+                    ["tc_issued", "=", false],
+                    ["drop_out", "=", false],
+                    ["active", "=", true],
+                ],
             },
             exams: {
                 name: "Exams",
                 res_model: "ala.education.exam",
+                domain: currentAcademicYearId
+                    ? [["academic_year_id", "=", currentAcademicYearId]]
+                    : [],
             },
             amenities: {
                 name: "Amenities",
@@ -128,6 +139,7 @@ export class EducationalDashboard extends Component {
         this._setText("#today_homeworks", result.today_homeworks || "--");
         this._setText("#today_absent", result.today_absent || "--");
 
+        this.state.currentAcademicYearId = result.current_academic_year_id || false;
         const updatedDiv = result.updated_divisions || 0;
         const totalDiv = result.total_divisions || 0;
         const percent = totalDiv > 0 ? ((updatedDiv / totalDiv) * 100).toFixed(0) : 0;

@@ -24,7 +24,7 @@ class EducationClassDivision(models.Model):
         """Return the list of current students in this class"""
         self.ensure_one()
         students = self.env['ala.education.student'].search(
-            [('class_division_id', '=', self.id)])
+            [('class_division_id', '=', self.id), ('tc_issued', '=', False), ('drop_out', '=', False)])
         students_list = students.mapped('id')
         return {
             'domain': [('id', 'in', students_list)],

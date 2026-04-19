@@ -5,7 +5,10 @@
     <t t-call="web.html_container">
         <div class="page">
             <table class="id-sheet">
-                <t t-foreach="range(0, len(doc.student_ids), 3)" t-as="i">
+                <t t-set="students"
+                    t-value="doc.student_ids.filtered(lambda s: not s.tc_issued and not s.drop_out).sorted(key=lambda s: s.roll_no or '')"/>
+
+                <t t-foreach="range(0, len(students), 3)" t-as="i">
                     <tr>
                         <td class="id-cell">
                             <t t-if="i &lt; len(doc.student_ids)">
@@ -340,7 +343,7 @@
         text-align: center;
         font-size: 8.8pt;
         font-weight: 900;
-        color: #0f2e67;
+        color: #a3141f;
         text-transform: uppercase;
         line-height: 1.1;
         margin-bottom: 0.7mm;
@@ -425,10 +428,11 @@
 
     .compact-sign .principal-text {
         font-size: 7.8px;
-        font-weight: 800;
+        font-weight: 550;
         line-height: 1;
         color: #000000;
-        text-align: end;
+        padding-left :35px;
+<!--        text-align: end;-->
     }
 
     .id-bottom-section {
@@ -493,18 +497,25 @@
         z-index: 3;
     }
 
-    .bottom-left-info {
-        float: left;
-        width: 74%;
-        text-align: left;
-        padding-top: 4.5mm;
-    }
+        .bottom-left-info {
+    float: left;
+    width: 74%;
+    text-align: left;
+    padding-top: 1.5mm;
+    padding-left: 2.5mm;
+
+    background: #e6f5fa;   /* semi transparent overlay */
+    border-radius: 2mm;
+
+    backdrop-filter: blur(1px);        /* optional (works in browser, limited in PDF) */
+        line-height: 1.6;
+}
 
     .bottom-right-qr {
         float: right;
         width: 21%;
         text-align: right;
-        padding-top: 4.5mm;
+<!--        padding-top: 1mm;-->
     }
 
     .bottom-line {
@@ -517,14 +528,14 @@
     }
 
     .bottom-lbl {
-        color: #d6a800;
+        color: #471242;
         font-weight: 900;
         margin-right: 0.8mm;
     }
 
     .bottom-val {
-        color: #f4f4f4;
-        font-weight: 800;
+        color: #993357;
+        font-weight: 900;
     }
 
     .bottom-qr-image {
@@ -538,6 +549,18 @@
         border-radius: 1mm;
         border: 0.25mm solid #ffffff;
     }
+        .bottom-visit {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.2mm;
+    text-align: center;
+    font-size: 2.1mm;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: 0.2px;
+    z-index: 4;
+}
 </style>
     </t>
   </template>
@@ -577,7 +600,7 @@
 
             <div class="academic-year-row">
                 <span class="academic-year-badge">
-                    SESSION : <t t-esc="doc.academic_year_id.name if doc.academic_year_id else '2025-26'"/>
+                    SESSION : <t t-esc="student.class_division_id.academic_year_id.name if student.class_division_id.academic_year_id else '2025-26'"/>
                 </span>
             </div>
         </div>
@@ -656,10 +679,10 @@
         <td class="lbl right-lbl">Blood Group</td>
         <td class="sep">:</td>
         <td class="val blood-group-val">
-    <t t-if="student.blood_group">
-        <span t-field="student.blood_group"/>
-    </t>
-</td>
+            <t t-if="student.blood_group != 'none'">
+                <span t-field="student.blood_group"/>
+            </t>
+        </td>
     </tr>
 
 
@@ -687,24 +710,33 @@
         <div class="bottom-left-info">
             <div class="bottom-line" t-if="student.father_name">
                 <span class="bottom-lbl">Father</span>
-                <span class="bottom-val"><t t-esc="student.father_name"/></span>
+                <span class="bottom-val" style="padding-left: 6px"><b><t t-esc="student.father_name"/></b></span>
             </div>
-
-            <div class="bottom-line" t-if="student.mother_name">
-                <span class="bottom-lbl">Mother</span>
-                <span class="bottom-val"><t t-esc="student.mother_name"/></span>
-            </div>
-
             <div class="bottom-line" t-if="student.mobile">
-                <span class="bottom-lbl">Mobile Number</span>
-                <span class="bottom-val"><t t-esc="student.mobile"/></span>
+                <span class="bottom-lbl">Mobile</span>
+                <span class="bottom-val" style="padding-left: 5px"><b><t t-esc="student.mobile"/></b></span>
             </div>
 
-            <div class="bottom-line" t-if="student.street or student.city">
-                <span class="bottom-lbl">Address</span>
-                <span class="bottom-val">
-                    <t t-esc="', '.join([x for x in [student.street, student.city] if x])"/>
+            <div class="bottom-line"
+                 t-if="student.street or student.street2 or student.city or student.state_id or student.zip">
+                <span class="bottom-lbl" >Address</span>
+                <strong><span class="bottom-val address-val" >
+                    <t t-esc="', '.join([x for x in [
+                        student.street,
+
+                    ] if x])"/>
+                </span><br/>
+                <span class="bottom-val address-val" style="padding-left: 28px">
+                    <t t-esc="', '.join([x for x in [
+                        student.street2,student.city
+                    ] if x])"/></span><br/>
+                    <span class="bottom-val address-val" style="padding-left: 28px">
+                    <t t-esc="', '.join([x for x in [
+                        student.state_id.name if student.state_id else False,
+                        student.zip, student.country_id.name if student.country_id else False,
+                    ] if x])"/>
                 </span>
+                </strong>
             </div>
         </div>
 
@@ -716,6 +748,9 @@
 
         <div class="clearfix"></div>
     </div>
+    <div class="bottom-visit">
+    Visit us: <t t-esc="company.website or 'https://www.misbasirhat.com'"/>
+</div>
 </div>
     </div>
   </template>
@@ -727,6 +762,18 @@
         <div class="id-grid">
           <t t-foreach="docs" t-as="doc">
             <t t-call="mis_education_core.student_id_card_student_template_document"/>
+          </t>
+        </div>
+      </div>
+    </t>
+  </template>
+
+    <template id="student_id_card_student_template">
+    <t t-call="web.html_container">
+      <div class="page">
+        <div class="id-grid">
+          <t t-foreach="docs" t-as="doc">
+            <t t-call="mis_education_core.student_id_card_single_card"/>
           </t>
         </div>
       </div>

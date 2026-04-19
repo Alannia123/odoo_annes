@@ -11,6 +11,7 @@
                 <field name="scheduled_date" widget="remaining_days" invisible="state in ['done']"/>
                 <field name="completion_date"  />
                 <field name="task_desc"  />
+                <field name="academic_year_id"  />
                 <field name="state" widget="badge"
                     decoration-success="state == 'done'"
                     decoration-muted="state == 'draft'"
@@ -62,6 +63,7 @@
                             <field name="user_id" options="{'no_create':True,'no_open':True}" required="1" groups="ala_education_core.group_education_principal" readonly="state != 'draft'"/>
                             <field name="scheduled_date" required="1" readonly="state != 'draft'"/>
                             <field name="completion_date"  readonly="1" invisible="state != 'done'"/>
+                            <field name="academic_year_id"  readonly="1" options="{'no_create':True,'no_open':True}"/>
                         </group>
                     </group>
                 </sheet>
