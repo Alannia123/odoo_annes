@@ -24,11 +24,11 @@ class AlaTask(models.Model):
     state = fields.Selection([('draft', 'Draft'), ('assigned', 'Assigned'), ('in_progress', 'In Progress'), ('done', 'Completed')],
                                         default='draft', string="State", help="Stages of attendance" , tracking=True)
     academic_year_id = fields.Many2one(
-        'education.academic.year',
+        'ala.education.academic.year',
         string='Academic Year',
         help="Select the Academic Year",
         required=True,
-        default=lambda self: self.env['education.academic.year'].search(
+        default=lambda self: self.env['ala.education.academic.year'].search(
             [('enable', '=', True)], limit=1
         )
     )

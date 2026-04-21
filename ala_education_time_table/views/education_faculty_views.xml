@@ -7,8 +7,8 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='image']" position="before">
                 <div class="oe_button_box" name="button_box">
-                    <button name="%(ala_education_time_table.action_education_time_table_view_faculty_wise)d"
-                            type="action" class="oe_stat_button" icon="fa-calendar" string="Timetable"/>
+                    <button name="view_faculty_time_table"
+                            type="object" class="oe_stat_button" icon="fa-calendar" string="Timetable"/>
                 </div>
             </xpath>
         </field>

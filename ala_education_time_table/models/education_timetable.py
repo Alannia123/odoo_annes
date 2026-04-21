@@ -18,7 +18,7 @@ class AlaEducationTimetable(models.Model):
     name = fields.Char(string='Name', tracking=True, help='Generated name based on class, division and academic year.')
     class_division_id = fields.Many2one(
         'ala.education.class.division',
-        string='Class',
+        string='Division',
         required=True,
         help='Select the class and division for the timetable.',
     )
@@ -39,11 +39,13 @@ class AlaEducationTimetable(models.Model):
     academic_year_id = fields.Many2one(
         'ala.education.academic.year',
         string='Academic Year',
-        related='class_division_id.academic_year_id',
-        store=True,
-        readonly=True,
-        help='Academic year of the class.',
+        help="Select the Academic Year",
+        required=True,
+        default=lambda self: self.env['ala.education.academic.year'].search(
+            [('enable', '=', True)], limit=1
+        )
     )
+
     timetable_mon_ids = fields.One2many('ala.education.timetable.schedule', 'timetable_id', string='Monday Timetable', domain=[('week_day', '=', '0')])
     timetable_tue_ids = fields.One2many('ala.education.timetable.schedule', 'timetable_id', string='Tuesday Timetable', domain=[('week_day', '=', '1')])
     timetable_wed_ids = fields.One2many('ala.education.timetable.schedule', 'timetable_id', string='Wednesday Timetable', domain=[('week_day', '=', '2')])

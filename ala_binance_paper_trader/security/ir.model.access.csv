@@ -1,5 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_ala_binance_strategy_config,access.ala.binance.strategy.config,model_ala_binance_strategy_config,base.group_user,1,1,1,1
-access_ala_binance_market_snapshot,access.ala.binance.market.snapshot,model_ala_binance_market_snapshot,base.group_user,1,0,0,0
-access_ala_binance_paper_trade,access.ala.binance.paper.trade,model_ala_binance_paper_trade,base.group_user,1,1,1,1
-access_ala_binance_trade_journal,access.ala.binance.trade.journal,model_ala_binance_trade_journal,base.group_user,1,1,1,1

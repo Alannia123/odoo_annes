@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- Copyright 2018 Tecnativa - Jairo Llopis
-     Copyright 2021 ITerra - Sergey Shebanin
-     Copyright 2023 Onestein - Anjeel Haria
-     Copyright 2023 Taras Shabaranskyi
-     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl). -->
+
 <templates>
     <t t-inherit="web.NavBar.AppsMenu" t-inherit-mode="extension">
         <!-- odoo 18 has created a left sidebar where the button of all apps
@@ -63,11 +59,27 @@
             <!-- Remove the burger menu icon -->
         </xpath>
 
-        <xpath expr="//div[hasclass('o_app_menu_sidebar')]" position="attributes">
-            <attribute
-                name="class"
-            >o_app_menu_sidebar position-fixed top-0 bottom-0 start-100 d-flex flex-column flex-nowrap</attribute>
-        </xpath>
+       <xpath expr="//div[hasclass('o_app_menu_sidebar')]" position="attributes">
+    <attribute name="class" add="position-fixed top-0 bottom-0 d-flex flex-column flex-nowrap" separator=" "/>
+</xpath>
+
+<!--        <xpath expr="//div[hasclass('o_app_menu_sidebar')]" position="attributes">-->
+<!--            <attribute-->
+<!--                name="class"-->
+<!--            >o_app_menu_sidebar position-fixed top-0 bottom-0 start-100 d-flex flex-column flex-nowrap</attribute>-->
+<!--        </xpath>-->
+
+<!--        <xpath expr="//div[hasclass('o_app_menu_sidebar')]" position="attributes">-->
+<!--    <attribute name="class">o_app_menu_sidebar position-fixed top-0 bottom-0 flex-column flex-nowrap</attribute>-->
+
+<!--    <attribute name="t-att-class">-->
+<!--        {-->
+<!--            'd-flex': ui.isSmall and state.open,-->
+<!--            'd-none': !state.open,-->
+<!--            'opened': state.open-->
+<!--        }-->
+<!--    </attribute>-->
+<!--</xpath>-->
     </t>
 
     <!-- Section Menu Items -->

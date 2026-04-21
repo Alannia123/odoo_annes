@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="education_time_table_view_form" model="ir.ui.view">
-        <field name="name">ala.education.timetable.view.form</field>
-        <field name="model">ala.education.timetable</field>
+    <record id="education_time_table_faculty_view_form" model="ir.ui.view">
+        <field name="name">ala.education.faculty.timetable.view.form</field>
+        <field name="model">ala.education.faculty.timetable</field>
         <field name="arch" type="xml">
             <form string="Education Timetable">
                 <header>
@@ -16,20 +16,17 @@
                             <field name="name" default_focus="1" placeholder="Name" readonly="1"/>
                         </h1>
                     </div>
-                    <div class="oe_button_box" name="button_box">
-                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
-                            <field name="active" widget="boolean_button" options="{'terminology': 'archive'}" groups="ala_education_core.group_education_principal"/>
-                        </button>
-                    </div>
+<!--                    -->
                     <group>
                         <group>
-                            <field name="class_division_id" options="{'no_open': True, 'no_create': True}" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"/>
-                            <field name="academic_year_id" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="faculty_id" options="{'no_open': True, 'no_create': True}"  readonly="state != 'draft'"
+                                   groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"/>
+                            <field name="academic_year_id" readonly="1" options="{'no_open': True, 'no_create': True}"/>
                         </group>
                         <group>
-                            <field name="facebook_photo_url" invisible="1"/>
+                            <field name="class_division_id" options="{'no_open': True, 'no_create': True}" readonly="1" />
                             <field name="file_name" invisible="1"/>
-                            <field name="pdf_file" filename="file_name" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"/>
+                            <field name="pdf_file" filename="file_name" readonly="state != 'draft'"  groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                     </group>
@@ -53,13 +50,13 @@
         </field>
     </record>
 
-    <record id="education_time_table_view_list" model="ir.ui.view">
-        <field name="name">ala.education.timetable.view.list</field>
-        <field name="model">ala.education.timetable</field>
+    <record id="education_time_table_faculty_view_list" model="ir.ui.view">
+        <field name="name">ala.education.timetable.faculty.view.list</field>
+        <field name="model">ala.education.faculty.timetable</field>
         <field name="arch" type="xml">
             <list string="Education Timetable">
                 <field name="name"/>
-                <field name="class_division_id"/>
+                <field name="faculty_id"/>
                 <field name="academic_year_id"/>
                 <field name="company_id" groups="base.group_multi_company"/>
                 <field name="state"/>
@@ -67,16 +64,15 @@
         </field>
     </record>
 
-    <record id="education_time_table_action" model="ir.actions.act_window">
-        <field name="name">Education Timetable</field>
-        <field name="res_model">ala.education.timetable</field>
+    <record id="education_time_table_faculty_action" model="ir.actions.act_window">
+        <field name="name">Faculty Timetable</field>
+        <field name="res_model">ala.education.faculty.timetable</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">You haven't created any timetable yet.</p>
         </field>
     </record>
 
-    <menuitem id="education_time_table_main_menu" web_icon="ala_education_time_table,static/description/icon.png" name="School Timetable"/>
-    <menuitem id="education_time_table_sub_menu" name="Timetable" parent="education_time_table_main_menu" sequence="1"/>
-    <menuitem id="education_time_table_sub_sub_menu" name="Timetable" parent="education_time_table_sub_menu" action="education_time_table_action"/>
+    <menuitem id="education_time_table_faculty_main_menu" web_icon="ala_education_time_table,static/description/fapng.png" name="Faculty Timetable"/>
+    <menuitem id="education_time_table_faculty_sub_sub_menu" name="Timetable" parent="education_time_table_faculty_main_menu" action="education_time_table_faculty_action"/>
 </odoo>

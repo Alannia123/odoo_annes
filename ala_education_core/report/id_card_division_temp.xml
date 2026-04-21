@@ -8,7 +8,7 @@
                 <t t-set="students"
                     t-value="doc.student_ids.filtered(lambda s: not s.tc_issued and not s.drop_out).sorted(key=lambda s: s.roll_no or '')"/>
 
-                <t t-foreach="range(0, len(students), 3)" t-as="i">
+                <t t-foreach="range(0, len(students[0]), 3)" t-as="i">
                     <tr>
                         <td class="id-cell">
                             <t t-if="i &lt; len(doc.student_ids)">
@@ -689,9 +689,11 @@
 </table>
           <div class="principal-sign-row" t-if="company.principal_signature">
     <div class="principal-sign-block compact-sign">
-        <img class="principal-sign-img"
-             t-att-src="image_data_uri(company.principal_signature)"
-             alt="Principal Signature"/>
+<!--        <img class="principal-sign-img"-->
+<!--             t-att-src="image_data_uri(company.principal_signature)"-->
+<!--             alt="Principal Signature"/>-->
+        <img t-att-src="'data:image/png;base64,%s' % (company.principal_signature.decode())"
+                                                             style="max-height:25px; max-width:140px;"/>
         <div class="principal-line"></div>
         <div class="principal-text">Principal</div>
     </div>

@@ -1,0 +1,32 @@
+/* Container to match your website's scroll-zoom-wrapper */
+.o_timetable_container {
+    overflow: auto !important;
+    height: 70vh;
+    width: 100%;
+    background: #fafafa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    display: block;
+    /* Center the scaled image initially if desired */
+    text-align: center;
+}
+
+/* Force the image to maintain its original size to enable scrolling */
+.custom_timetable_img img {
+    max-width: none !important;
+    width: auto !important;
+    height: auto !important;
+    cursor: zoom-in;
+
+    /* REDUCE INITIAL ZOOM HERE */
+    transform: scale(0.8); /* Starts at 80% size */
+    transform-origin: center center; /* Ensures it zooms from the middle */
+
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Apply the zoom effect when clicked/held */
+.custom_timetable_img img:active {
+    transform: scale(1.5); /* Increase to your preferred zoom level */
+    cursor: zoom-out;
+}

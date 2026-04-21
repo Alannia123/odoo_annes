@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="school_timetable_rule_principal_all" model="ir.rule">
+        <field name="name">School Timetable: Principal All Access</field>
+        <field name="model_id" ref="model_ala_education_timetable"/>
+        <field name="groups" eval="[(4, ref('ala_education_core.group_education_principal'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="school_timetable_rule_faculty_own" model="ir.rule">
+        <field name="name">School Timetable: Own Records Only</field>
+        <field name="model_id" ref="model_ala_education_timetable"/>
+        <field name="groups" eval="[(4, ref('ala_education_core.group_education_faculty'))]"/>
+        <field name="domain_force">[('class_division_id.faculty_id.user_id', '=', user.id)]</field>
+    </record>
+
+
+    <record id="faculty_timetable_rule_principal_all" model="ir.rule">
+        <field name="name">Faculty Timetable: Principal All Access</field>
+        <field name="model_id" ref="model_ala_education_faculty_timetable"/>
+        <field name="groups" eval="[(4, ref('ala_education_core.group_education_principal'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="faculty_timetable_rule_faculty_own" model="ir.rule">
+        <field name="name">Faculty Timetable: Own Records Only</field>
+        <field name="model_id" ref="model_ala_education_faculty_timetable"/>
+        <field name="groups" eval="[(4, ref('ala_education_core.group_education_faculty'))]"/>
+        <field name="domain_force">[('faculty_id.user_id', '=', user.id)]</field>
+    </record>
+
+</odoo>

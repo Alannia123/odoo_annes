@@ -1,0 +1,28 @@
+@media (min-width: 768px) {
+    .o_form_renderer.o_tspl_chatter_right_layout {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: stretch;
+        height: 100%;
+
+        > .o_form_sheet_bg {
+            order: 1;
+        }
+
+        > .o-mail-Form-chatter.o-aside,
+        > .o-mail-ChatterContainer.o-aside {
+            order: 2;
+            flex-grow: 1;
+            flex-shrink: 0;
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        > .o_form_sheet_bg {
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+            flex: 2 1 $o-form-sheet-min-width;
+        }
+    }
+}

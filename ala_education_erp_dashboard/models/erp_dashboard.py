@@ -15,36 +15,36 @@ class ErpDashboard(models.Model):
         students, number of faculties, number of amenities and number of
         exams """
         # applications = self.env['education.application'].search([])
-        student_count = self.env['education.student'].search_count(
+        student_count = self.env['ala.education.student'].search_count(
             [('tc_issued', '=', False), ('drop_out', '=', False)])
-        male_student_count = self.env['education.student'].search_count([('gender', '=', 'male'),
+        male_student_count = self.env['ala.education.student'].search_count([('gender', '=', 'male'),
                                                                          ('tc_issued', '=', False),
                                                                          ('drop_out', '=', False)])
-        female_student_count = self.env['education.student'].search_count([('gender', '=', 'female'),
+        female_student_count = self.env['ala.education.student'].search_count([('gender', '=', 'female'),
                                                                            ('tc_issued', '=', False),
                                                                            ('drop_out', '=', False)])
-        faculty_count = self.env['education.faculty'].search_count([])
-        fa_male_count = self.env['education.faculty'].search_count([('gender', '=', 'male')])
-        fa_female_count = self.env['education.faculty'].search_count([('gender', '=', 'female')])
-        amenities_indoor = self.env['education.amenities'].search_count([('in_out_door', '=', 'indoor')])
-        amenities_outdoor = self.env['education.amenities'].search_count([('in_out_door', '=', 'outdoor')])
-        current_year = self.env['education.academic.year'].search([
+        faculty_count = self.env['ala.education.faculty'].search_count([])
+        fa_male_count = self.env['ala.education.faculty'].search_count([('gender', '=', 'male')])
+        fa_female_count = self.env['ala.education.faculty'].search_count([('gender', '=', 'female')])
+        amenities_indoor = self.env['ala.education.amenities'].search_count([('in_out_door', '=', 'indoor')])
+        amenities_outdoor = self.env['ala.education.amenities'].search_count([('in_out_door', '=', 'outdoor')])
+        current_year = self.env['ala.education.academic.year'].search([
             ('enable', '=', True)
         ], limit=1)
-        on_exam_count = self.env['education.exam'].search_count(
+        on_exam_count = self.env['ala.education.exam'].search_count(
             [('state', '=', 'ongoing'), ('academic_year_id', '=', current_year.id)])
-        cl_exam_count = self.env['education.exam'].search_count(
+        cl_exam_count = self.env['ala.education.exam'].search_count(
             [('state', '=', 'close'), ('academic_year_id', '=', current_year.id)])
-        today_attendances = self.env['education.attendance.line'].search(
+        today_attendances = self.env['ala.education.attendance.line'].search(
             [('date', '=', fields.Date.today()), ('state', '=', 'done')])
-        today_homeworks = self.env['student.homework.line'].sudo().search(
+        today_homeworks = self.env['ala.student.homework.line'].sudo().search(
             [('homework_date', '=', fields.Date.today()), ('state', '=', 'post')])
         # total_students = len(students)
         presents_today = len(today_attendances.filtered(lambda a: a.present_morning))
         absents_today = len(today_attendances.filtered(lambda a: not a.present_morning))
         # Division-wise breakdown
         # Division-wise breakdown
-        divisions = self.env['education.class.division'].search([('current_year', '=', True)])
+        divisions = self.env['ala.education.class.division'].search([('current_year', '=', True)])
 
         # Define order priority for class names
         class_order = {
@@ -69,7 +69,7 @@ class ErpDashboard(models.Model):
 
         for div in divisions:
             # 🔍 Get today's attendance (ANY state)
-            div_attendance = self.env['education.attendance'].sudo().search([
+            div_attendance = self.env['ala.education.attendance'].sudo().search([
                 ('date', '=', today),
                 ('division_id', '=', div.id),
             ], limit=1)
@@ -130,7 +130,7 @@ class ErpDashboard(models.Model):
         # ✅ Calculate counts
         total_divisions = len(divisions)
 
-        teacher_tasks = self.env['task.management'].search(
+        teacher_tasks = self.env['ala.task.management'].search(
             [('state', 'in', ('assigned', 'in_progress')), ('academic_year_id', '=', current_year.id)],
             order='scheduled_date desc'
         )
@@ -142,7 +142,7 @@ class ErpDashboard(models.Model):
             'state': dict(t._fields['state'].selection).get(t.state),
         } for t in teacher_tasks]
 
-        exam_valuations = self.env['education.exam.valuation'].search(
+        exam_valuations = self.env['ala.education.exam.valuation'].search(
             [('state', '=', 'draft'), ('academic_year_id', '=', current_year.id)],
             order='id desc'
         )
