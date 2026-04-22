@@ -5,6 +5,8 @@ from odoo.exceptions import ValidationError
 import base64
 import logging
 import requests
+from odoo.exceptions import UserError
+
 
 _logger = logging.getLogger(__name__)
 
@@ -44,6 +46,17 @@ class AlaEducationFacTimetable(models.Model):
     preview_image = fields.Binary(string='PDF Preview', readonly=True)
     pre_file_name = fields.Char('Preview File Name')
     state = fields.Selection([('draft', 'Draft'), ('done', 'Done')], default='draft', tracking=True)
+
+    def action_preview_timetable(self):
+        self.ensure_one()
+        if not self.pdf_file:
+            raise UserError(_("Please upload timetable image first."))
+
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/faculty_timetable/preview/%s' % self.id,
+            'target': 'current',
+        }
 
     def action_set_to_post(self):
         for rec in self:

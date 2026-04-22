@@ -18,6 +18,7 @@
         'views/education_class_division_views.xml',
         'views/education_faculty_views.xml',
         'views/timetable_period_views.xml',
+        'views/faculty_timetable_preview_template.xml',
     ],
 
     'assets': {
