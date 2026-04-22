@@ -26,7 +26,7 @@
                         <group>
                             <field name="class_division_id" options="{'no_open': True, 'no_create': True}" readonly="1" />
                             <field name="file_name" invisible="1"/>
-                            <field name="pdf_file" filename="file_name" readonly="state != 'draft'"  groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"/>
+                            <field name="pdf_file" filename="file_name" widget="binary_preview" readonly="state != 'draft'"  groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"/>
                             <button name="action_preview_timetable"
         string="Preview Timetable"
         type="object"
