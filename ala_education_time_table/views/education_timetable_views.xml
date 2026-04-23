@@ -16,11 +16,11 @@
                             <field name="name" default_focus="1" placeholder="Name" readonly="1"/>
                         </h1>
                     </div>
-                    <div class="oe_button_box" name="button_box">
-                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
-                            <field name="active" widget="boolean_button" options="{'terminology': 'archive'}" groups="ala_education_core.group_education_principal"/>
-                        </button>
-                    </div>
+<!--                    <div class="oe_button_box" name="button_box">-->
+<!--                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">-->
+<!--                            <field name="active" widget="boolean_button" options="{'terminology': 'archive'}" groups="ala_education_core.group_education_principal"/>-->
+<!--                        </button>-->
+<!--                    </div>-->
                     <group>
                         <group>
                             <field name="class_division_id" options="{'no_open': True, 'no_create': True}" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"/>
@@ -29,24 +29,24 @@
                         <group>
                             <field name="facebook_photo_url" invisible="1"/>
                             <field name="file_name" invisible="1"/>
-                            <field name="pdf_file" filename="file_name" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"/>
+                            <field name="pdf_file" filename="file_name" widget="binary_preview" readonly="state != 'draft'"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                     </group>
-                    <notebook>
-                        <page string="Time Table">
-                            <div class="o_timetable_container">
-                                <group>
-                                    <field name="pre_file_name" invisible="1"/>
-                                    <field name="preview_image"
-                                           widget="image"
-                                           string=""
-                                           class="custom_timetable_img"
-                                           options="{'preview_image': 'preview_image'}"/>
-                                </group>
-                            </div>
-                        </page>
-                    </notebook>
+<!--                    <notebook>-->
+<!--                        <page string="Time Table">-->
+<!--                            <div class="o_timetable_container">-->
+<!--                                <group>-->
+<!--                                    <field name="pre_file_name" invisible="1"/>-->
+<!--                                    <field name="preview_image"-->
+<!--                                           widget="image"-->
+<!--                                           string=""-->
+<!--                                           class="custom_timetable_img"-->
+<!--                                           options="{'preview_image': 'preview_image'}"/>-->
+<!--                                </group>-->
+<!--                            </div>-->
+<!--                        </page>-->
+<!--                    </notebook>-->
                 </sheet>
                 <chatter/>
             </form>
@@ -61,8 +61,10 @@
                 <field name="name"/>
                 <field name="class_division_id"/>
                 <field name="academic_year_id"/>
-                <field name="company_id" groups="base.group_multi_company"/>
-                <field name="state"/>
+                <field name="company_id" column_invisible="1"/>
+                <field name="file_name" column_invisible="1"/>
+                <field name="pdf_file" filename="file_name" widget="binary_preview"   />
+                <field name="state" widget="badge" decoration-success="state == 'done'" decoration-info="state == 'draft'"/>
             </list>
         </field>
     </record>

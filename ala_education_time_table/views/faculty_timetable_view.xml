@@ -26,28 +26,24 @@
                         <group>
                             <field name="class_division_id" options="{'no_open': True, 'no_create': True}" readonly="1" />
                             <field name="file_name" invisible="1"/>
-                            <field name="pdf_file" filename="file_name" widget="binary_preview" readonly="state != 'draft'"  groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"/>
-                            <button name="action_preview_timetable"
-        string="Preview Timetable"
-        type="object"
-        class="btn-primary"/>
+                            <field name="pdf_file" filename="file_name" widget="binary_preview" readonly="state != 'draft'"  />
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                     </group>
-                    <notebook>
-                        <page string="Time Table">
-                            <div class="o_timetable_container">
-                                <group>
-                                    <field name="pre_file_name" invisible="1"/>
-                                    <field name="preview_image"
-                                           widget="image"
-                                           string=""
-                                           class="custom_timetable_img"
-                                           options="{'preview_image': 'preview_image'}"/>
-                                </group>
-                            </div>
-                        </page>
-                    </notebook>
+<!--                    <notebook>-->
+<!--                        <page string="Time Table">-->
+<!--                            <div class="o_timetable_container">-->
+<!--                                <group>-->
+<!--                                    <field name="pre_file_name" invisible="1"/>-->
+<!--                                    <field name="preview_image"-->
+<!--                                           widget="image"-->
+<!--                                           string=""-->
+<!--                                           class="custom_timetable_img"-->
+<!--                                           options="{'preview_image': 'preview_image'}"/>-->
+<!--                                </group>-->
+<!--                            </div>-->
+<!--                        </page>-->
+<!--                    </notebook>-->
                 </sheet>
                 <chatter/>
             </form>
@@ -62,12 +58,10 @@
                 <field name="name"/>
                 <field name="faculty_id"/>
                 <field name="academic_year_id"/>
-                <field name="company_id" groups="base.group_multi_company"/>
-                 <button name="action_preview_timetable"
-        string="Preview Timetable"
-        type="object"
-        class="btn-primary"/>
-                <field name="state"/>
+                <field name="company_id" column_invisible="1"/>
+                <field name="file_name" column_invisible="1"/>
+                <field name="pdf_file" filename="file_name" widget="binary_preview"   />
+                <field name="state" widget="badge" decoration-success="state == 'done'" decoration-info="state == 'draft'"/>
             </list>
         </field>
     </record>
