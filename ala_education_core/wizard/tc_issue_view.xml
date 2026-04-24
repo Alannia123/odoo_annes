@@ -35,6 +35,22 @@
         </field>
     </record>
 
+    <record id="view_student_faculty_left_wizard_form" model="ir.ui.view">
+        <field name="name">ala.faculty.left.form</field>
+        <field name="model">ala.faculty.left</field>
+        <field name="arch" type="xml">
+            <form string="Faculty Left Reason">
+                <group>
+                    <field name="faculty_left_reason_id"/>
+                </group>
+                <footer>
+                    <button string="Confirm" type="object" name="action_faculty_left_reason_apply" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
 
 
 </odoo>

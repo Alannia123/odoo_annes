@@ -85,8 +85,10 @@
         <field name="arch" type="xml">
             <form string="Student">
                 <header>
-                        <button name="tc_issue_reason_wizard" string="TC Issue" invisible="tc_issued or drop_out" type="object" class="oe_highlight"/>
-                        <button name="dropout_reason_wizard" string="Student Dropout" invisible="tc_issued or drop_out" type="object" class="oe_highlight"/>
+                        <button name="tc_issue_reason_wizard" string="TC Issue" invisible="tc_issued or drop_out" type="object" class="oe_highlight"
+                                groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"/>
+                        <button name="dropout_reason_wizard" string="Student Dropout" invisible="tc_issued or drop_out" type="object" class="oe_highlight"
+                                groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"/>
                 </header>
                 <sheet>
 
@@ -173,8 +175,8 @@
                             <field name="student_html" widget="html" readonly="1" no_label="1" groups="ala_education_core.group_education_principal"/>
 <!--                        </div>-->
                     </group>
-                    <notebook>
-                        <page string="Student Details">
+                    <notebook groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin">
+                        <page string="Student Details" >
 <!--                            <separator string="Basic Details"/>-->
                             <group >
                                 <group>
@@ -439,7 +441,7 @@
 
     <menuitem id="education_student_root_menu" name="Student Information" sequence="10"
                 web_icon="ala_education_core,static/description/stu_nfo.png"
-             groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin" action="education_student_action"/>
+             action="education_student_action"/>
     <menuitem id="education_student_tc_root_menu" name="TC &amp; Dropouts" sequence="10"
                 web_icon="ala_education_core,static/description/tc.png"
              groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin" action="education_student_tc_issued_action"/>

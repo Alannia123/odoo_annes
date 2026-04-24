@@ -1016,7 +1016,7 @@
             <div id="o_main_nav" t-att-id="None" style="background:#f2f2f2;" class="o_main_nav container flex-wrap justify-content-between">
 
                 <img  t-attf-src="/ala_student_portal/static/src/img/icon.png" width="50" height="60" alt="Document" />
-                <h3 class="animated-heading-mob" style="padding-right:100 px">ST.Anne's School</h3>
+                <h3 class="animated-heading-mob" style="padding-right:100 px">St.Anne's School</h3>
                 <a href="/web/session/logout" class="logout-btn">
                     <i class="fa fa-angle-double-right"></i>
                 </a>

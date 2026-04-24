@@ -72,3 +72,5 @@ class EducationFaculty(models.Model):
         # domain="[('groups_id', 'in', [ref('base.group_user')])]"
     )
     signature = fields.Binary("Signature")
+    faculty_left_reason_id = fields.Many2one('ala.faculty.left.reason', string="Left Reason")
+    faculty_left = fields.Char(string="Faculty Left")

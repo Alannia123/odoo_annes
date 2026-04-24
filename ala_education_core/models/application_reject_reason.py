@@ -30,3 +30,11 @@ class DropWizReason(models.Model):
 
     name = fields.Char(string="Reason", required=True,
                        help="Possible Reason for TC issue")
+
+
+
+class AlaFacultyLeftReason(models.Model):
+    _name = 'ala.faculty.left.reason'
+    _description = 'Faculty Left Reason'
+
+    name = fields.Char(required=True)

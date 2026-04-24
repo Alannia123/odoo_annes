@@ -44,3 +44,24 @@ class Dropout(models.TransientModel):
             'drop_out_reason_id': self.drop_out_reason_id.id,
         })
         return {'type': 'ir.actions.act_window_close'}
+
+
+
+class FacultyLeft(models.TransientModel):
+    """This model for providing a rejection explanation while
+            rejecting an application."""
+    _name = 'ala.faculty.left'
+    _description = 'Faculty Left Reason'
+
+    faculty_left_reason_id = fields.Many2one('ala.faculty.left.reason', string="Left Reason")
+
+    def action_faculty_left_reason_apply(self):
+        active_ids = self.env.context.get('active_ids', [])
+        if not active_ids:
+            raise UserError(_("No Faculties selected."))
+        students = self.env['ala.education.faculty'].browse(active_ids)
+        students.write({
+            'faculty_left': True,
+            'faculty_left_reason_id': self.faculty_left_reason_id.id,
+        })
+        return {'type': 'ir.actions.act_window_close'}
