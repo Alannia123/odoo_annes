@@ -110,7 +110,7 @@
     <div class="col-12 col-md-8 student-name-section text-center text-md-start">
 
         <h3 class="student-adno">
-            <field name="admission_no" />
+            <field name="admission_no" invisible="admission_no == False"/>
         </h3>
 
         <h1 class="student-fullname">
