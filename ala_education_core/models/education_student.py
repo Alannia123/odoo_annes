@@ -123,8 +123,9 @@ class EducationStudent(models.Model):
     admission_class_id = fields.Many2one('ala.education.class',
                                          string="Class",
                                          help="Admission taken class")
-    ad_no = fields.Char(string="Admission Number", readonly=True,
-                        help="Admission number of student")
+    ad_no = fields.Char(string="Admission Number", help="Admission number of student")
+    admission_no = fields.Char(string="Admission Number", help="Admission number of student")
+
     gender = fields.Selection([('male', 'Male'), ('female', 'Female'),
                                ('other', 'Other')], string='Gender',
                               required=True, default='male',

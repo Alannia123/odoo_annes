@@ -61,6 +61,7 @@
         <field name="model">ala.education.student</field>
         <field name="arch" type="xml">
             <list string="Student">
+                <field name="admission_no"/>
                 <field name="register_no"/>
                 <field name="name"/>
                 <field name="last_name"/>
@@ -70,7 +71,7 @@
                 <field name="date_of_birth"/>
                 <field name="blood_group"/>
                 <field name="email"/>
-                <field name="phone"/>
+                <field name="mobile"/>
                 <field name="no_of_discipline_history" groups="ala_education_core.group_education_principal"/>
                 <field name="hide_result" groups="ala_education_core.group_education_principal" widget="boolean_toggle"/>
                 <field name="promoted" groups="ala_education_core.group_education_principal" widget="boolean_toggle"/>
@@ -109,7 +110,7 @@
     <div class="col-12 col-md-8 student-name-section text-center text-md-start">
 
         <h3 class="student-adno">
-            <field name="ad_no" invisible="ad_no == False"/>
+            <field name="admission_no" />
         </h3>
 
         <h1 class="student-fullname">
@@ -120,7 +121,7 @@
 
             <field name="last_name"
                    placeholder="Last Name"
-                   required="1"/>
+                   required="0"/>
         </h1>
 
     </div>
@@ -232,7 +233,6 @@
                                 </group>
                                 <group>
                                     <field name="mobile" required="1" string="Mobile(WhatsApp)"/>
-                                    <field name="phone" required="0" string="Alternate Number"/>
                                 </group>
                             </group>
                             <group>
@@ -361,16 +361,8 @@
         <field name="res_model">ala.education.student</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="education_student_search"/>
-        <field name="context">{'search_default_class': 1, 'create': True}</field>
+        <field name="context">{'search_default_group_by_division': 1}</field>
         <field name="domain">[('tc_issued', '=', False), ('drop_out', '=', False)]</field>
-
-        <!-- Force first view -->
-        <field name="view_id" ref="ala_education_core.education_student_view_tree"/>
-
-        <field name="views" eval="[
-            (ref('ala_education_core.education_student_view_tree'), 'list'),
-            (ref('ala_education_core.education_student_view_form'), 'form')
-        ]"/>
     </record>
 
 

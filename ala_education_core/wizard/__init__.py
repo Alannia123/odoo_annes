@@ -3,4 +3,5 @@
 from . import application_reject
 from . import tc_issue_reason
 from . import id_card_wizard
+from . import import_admission_no_wizard
 # from . import rank_card_wizard
