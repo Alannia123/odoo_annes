@@ -17,9 +17,14 @@ class ImportAdmissionNoWizard(models.TransientModel):
         if not self.file:
             raise UserError(_("Please upload Excel file."))
 
-        # 🔥 Normalize function (remove spaces + lowercase)
-        def normalize(value):
-            return ''.join(str(value or '').split()).lower()
+        def format_admission_no(value):
+            value = str(value or '').strip()
+            if '/' in value:
+                left, right = value.rsplit('/', 1)
+                right = right.strip()
+                if len(right) == 2 and right.isdigit():
+                    value = "%s/20%s" % (left.strip(), right)
+            return value
 
         try:
             data = base64.b64decode(self.file)
@@ -28,7 +33,6 @@ class ImportAdmissionNoWizard(models.TransientModel):
         except Exception as e:
             raise UserError(_("Invalid Excel file: %s") % e)
 
-        # Read headers
         headers = {}
         for col in range(1, sheet.max_column + 1):
             value = sheet.cell(row=1, column=col).value
@@ -40,10 +44,9 @@ class ImportAdmissionNoWizard(models.TransientModel):
             if col not in headers:
                 raise UserError(_("Missing column in Excel: %s") % col)
 
-        Student = self.env['ala.education.student'].sudo()
+        Student = self.env['ala.education.student']
 
         updated = 0
-        skipped = 0
         not_found = []
 
         for row in range(2, sheet.max_row + 1):
@@ -51,87 +54,58 @@ class ImportAdmissionNoWizard(models.TransientModel):
             registration_no = sheet.cell(row=row, column=headers['registration number']).value
             admission_no = sheet.cell(row=row, column=headers['admission no']).value
 
-            # Skip empty rows
             if not name or not registration_no or not admission_no:
-                skipped += 1
                 continue
 
             name = str(name).strip()
             registration_no = str(registration_no).strip()
-            admission_no = self.format_admission_no(admission_no)
+            admission_no = format_admission_no(admission_no)
 
-            name_clean = normalize(name)
-            reg_clean = normalize(registration_no)
-
-            # 🔍 Step 1: search loosely
             students = Student.search([
-                ('name', 'ilike', name[:5])  # partial search for performance
+                ('register_no', '=', registration_no),
             ])
 
             if not students:
-                not_found.append(f"Row {row}: Name not found - {name}")
+                not_found.append("Row %s: Name not found - %s" % (row, name))
                 continue
 
-            # 🔍 Step 2: strict match (ignore spaces + case)
             student = students.filtered(
-                lambda s:
-                normalize(s.name) == name_clean and
-                normalize(s.register_no) == reg_clean
+                lambda s: str(s.register_no or '').strip() == registration_no
             )
 
             if not student:
                 not_found.append(
-                    f"Row {row}: Not matched - {name} / {registration_no}"
+                    "Row %s: Registration number not matched for %s" % (row, name)
                 )
                 continue
 
-            student_rec = student[0]
+            student_rec = student[0].sudo()
 
-            before_value = student_rec.admission_no
+            print("BEFORE:", student_rec.id, student_rec.admission_no)
 
-            # ✅ Update field (IMPORTANT: change to ad_no if needed)
             student_rec.write({
                 'admission_no': admission_no
             })
 
+            self.env.cr.commit()
+
             student_rec.invalidate_recordset(['admission_no'])
 
-            after_value = student_rec.admission_no
+            print("AFTER WRITE:", student_rec.admission_no)
 
-            print(
-                "UPDATED:",
-                f"Row={row}",
-                f"ID={student_rec.id}",
-                f"Name={student_rec.name}",
-                f"RegNo={student_rec.register_no}",
-                f"Before={before_value}",
-                f"Excel={admission_no}",
-                f"After={after_value}"
-            )
+            self.env.cr.execute("""
+                SELECT admission_no 
+                FROM ala_education_student 
+                WHERE id = %s
+            """, [student_rec.id])
+
+            print("DB VALUE:", self.env.cr.fetchone())
 
             updated += 1
 
-        # Final message
-        message = (
-            f"✅ Admission No Import Completed\n\n"
-            f"✔ Updated: {updated}\n"
-            f"⏭ Skipped: {skipped}\n"
-            f"❌ Not Matched: {len(not_found)}"
-        )
+        message = "Admission No updated successfully: %s" % updated
 
         if not_found:
-            message += "\n\nDetails:\n" + "\n".join(not_found[:50])
+            message += "\n\nNot matched:\n" + "\n".join(not_found[:50])
 
         raise UserError(_(message))
-
-    def format_admission_no(self,value):
-        value = str(value or '').strip()
-
-        if '/' in value:
-            left, right = value.rsplit('/', 1)
-            right = right.strip()
-
-            if len(right) == 2 and right.isdigit():
-                value = "%s/20%s" % (left.strip(), right)
-
-        return value
