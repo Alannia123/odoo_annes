@@ -124,7 +124,7 @@ class ImportAdmissionNoWizard(models.TransientModel):
 
         raise UserError(_(message))
 
-    def format_admission_no(value):
+    def format_admission_no(self,value):
         value = str(value or '').strip()
 
         if '/' in value:
