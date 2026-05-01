@@ -58,7 +58,7 @@ class ImportAdmissionNoWizard(models.TransientModel):
 
             name = str(name).strip()
             registration_no = str(registration_no).strip()
-            admission_no = str(admission_no).strip()
+            admission_no = self.format_admission_no(admission_no)
 
             name_clean = normalize(name)
             reg_clean = normalize(registration_no)
@@ -123,3 +123,15 @@ class ImportAdmissionNoWizard(models.TransientModel):
             message += "\n\nDetails:\n" + "\n".join(not_found[:50])
 
         raise UserError(_(message))
+
+    def format_admission_no(value):
+        value = str(value or '').strip()
+
+        if '/' in value:
+            left, right = value.rsplit('/', 1)
+            right = right.strip()
+
+            if len(right) == 2 and right.isdigit():
+                value = "%s/20%s" % (left.strip(), right)
+
+        return value
