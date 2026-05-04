@@ -22,7 +22,7 @@
         'wizard/application_reject_views.xml',
         'wizard/tc_issue_view.xml',
         'wizard/id_card_wizard_view.xml',
-        'wizard/ad_no_import_view.xml',
+        # 'wizard/ad_no_import_view.xml',
         'views/education_main_menu.xml',
         # 'wizard/rank_card_wizard_view.xml',
         # 'views/res_partner_views.xml',
