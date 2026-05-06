@@ -94,7 +94,7 @@ class ErpDashboard(models.Model):
                     COUNT(al.id) FILTER (WHERE a.state = 'done') AS total,
                     COUNT(al.id) FILTER (
                         WHERE a.state = 'done'
-                        AND al.presentg = true
+                        AND al.present = true
                     ) AS present,
                     COUNT(al.id) FILTER (
                         WHERE a.state = 'done'
