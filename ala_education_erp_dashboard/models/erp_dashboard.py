@@ -68,8 +68,8 @@ class ErpDashboard(models.Model):
 
         self.env.cr.execute("""
                 SELECT
-                    COUNT(*) FILTER (WHERE present_morning = true) AS present,
-                    COUNT(*) FILTER (WHERE COALESCE(present_morning, false) = false) AS absent
+                    COUNT(*) FILTER (WHERE present = true) AS present,
+                    COUNT(*) FILTER (WHERE COALESCE(present, false) = false) AS absent
                 FROM ala_education_attendance_line
                 WHERE date = %s
                 AND state = 'done'
@@ -94,11 +94,11 @@ class ErpDashboard(models.Model):
                     COUNT(al.id) FILTER (WHERE a.state = 'done') AS total,
                     COUNT(al.id) FILTER (
                         WHERE a.state = 'done'
-                        AND al.present_morning = true
+                        AND al.presentg = true
                     ) AS present,
                     COUNT(al.id) FILTER (
                         WHERE a.state = 'done'
-                        AND COALESCE(al.present_morning, false) = false
+                        AND COALESCE(al.present, false) = false
                     ) AS absent,
 
                     COALESCE(hw.total_homeworks, 0) AS div_homeworks
