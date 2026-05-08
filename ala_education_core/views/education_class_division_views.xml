@@ -116,7 +116,11 @@
                                 <list string="Students" editable="bottom"
                                       create="false">
                                     <field name="name"/>
+                                    <field name="admission_no"/>
                                     <field name="register_no"/>
+                                    <field name="roll_no"/>
+                                    <field name="tc_issued" readonly="1"/>
+                                    <field name="drop_out" readonly="1"/>
                                     <field name="class_division_id"/>
                                     <field name="gender"/>
                                     <field name="date_of_birth"/>

@@ -40,7 +40,7 @@ class EducationClassDivision(models.Model):
         """Return the number of students in the class"""
         for rec in self:
             students = self.env['ala.education.student'].search(
-                [('class_division_id', '=', rec.id)])
+                [('class_division_id', '=', rec.id), ('drop_out', '=', False), ('tc_issued', '=', False)])
             student_count = len(students) if students else 0
             rec.update({
                 'student_count': student_count,
@@ -98,32 +98,53 @@ class EducationClassDivision(models.Model):
             student.action_generate_qr_code()
 
     def generate_portal_user(self):
-        print('ffffffffffff')
         portal_group = self.env.ref('base.group_portal')
-        created_users = []
 
         for student in self.student_ids:
+
+            # Only active students
+            if student.drop_out or student.tc_issued:
+                continue
+
+            if not student.register_no:
+                continue
+
+            if not student.date_of_birth:
+                continue
+
             login = student.register_no
 
-            # Determine password
-            if student.aadhar_no and len(student.aadhar_no) >= 4:
-                password = student.aadhar_no[-4:]
-            elif student.date_of_birth:
-                password = student.date_of_birth.strftime('%d%m%Y')
-            else:
-                continue  # Skip if neither Aadhaar nor birthdate
+            # DOB password: date + month only, always 4 digits
+            # Example: 5 Jan = 0501
+            password = student.date_of_birth.strftime('%d%m')
 
-            # Create user
-            user = self.env['res.users'].create({
+            vals = {
                 'name': student.name,
                 'login': login,
                 'password': password,
-                'partner_id': student.partner_id.id if student.partner_id else False,
                 'group_ids': [(6, 0, [portal_group.id])],
-            })
+            }
 
-            # Link to student
-            student.user_id = user.id
+            if student.partner_id:
+                vals['partner_id'] = student.partner_id.id
+
+            # If user already exists, update it
+            if student.user_id:
+                student.user_id.write(vals)
+                user = student.user_id
+            else:
+                # Avoid duplicate login error
+                existing_user = self.env['res.users'].sudo().search([
+                    ('login', '=', login)
+                ], limit=1)
+
+                if existing_user:
+                    existing_user.write(vals)
+                    user = existing_user
+                else:
+                    user = self.env['res.users'].sudo().create(vals)
+
+                student.user_id = user.id
+
             student.login = login
             student.ch_password = password
-

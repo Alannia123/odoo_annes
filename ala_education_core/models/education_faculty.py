@@ -73,4 +73,4 @@ class EducationFaculty(models.Model):
     )
     signature = fields.Binary("Signature")
     faculty_left_reason_id = fields.Many2one('ala.faculty.left.reason', string="Left Reason")
-    faculty_left = fields.Char(string="Faculty Left")
+    faculty_left = fields.Boolean(string="Faculty Left")
