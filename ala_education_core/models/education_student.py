@@ -453,13 +453,13 @@ class EducationStudent(models.Model):
          "Another Student already exists with this register number!"),
     ]
 
-    @api.onchange('class_division_id')
-    def _onchange_class_division_id(self):
-        """Method for checking the maximum number of students in a class"""
-        for rec in self:
-            if rec.class_division_id.actual_strength<len(rec.class_division_id.student_ids):
-                raise ValidationError("The number of students exceeds the "
-                                      "maximum strength of the class division.")
+    # @api.onchange('class_division_id')
+    # def _onchange_class_division_id(self):
+    #     """Method for checking the maximum number of students in a class"""
+    #     for rec in self:
+    #         if rec.class_division_id.actual_strength<len(rec.class_division_id.student_ids):
+    #             raise ValidationError("The number of students exceeds the "
+    #                                   "maximum strength of the class division.")
 
     def update_password(self):
         if not self.user_id:
