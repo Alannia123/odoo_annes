@@ -462,8 +462,48 @@ class EducationStudent(models.Model):
     #                                   "maximum strength of the class division.")
 
     def update_password(self):
-        if not self.user_id:
-            raise ValidationError("User Not Found . Please Assign user")
-        else:
-            self.user_id.password = self.ch_password
-            self.user_id.login = self.login or self.register_no
+        portal_group = self.env.ref('base.group_portal')
+
+        for student in self:
+            if student.drop_out or student.tc_issued:
+                continue
+
+            if not student.register_no:
+                raise ValidationError("Register No not found for student %s" % student.name)
+
+            if not student.date_of_birth:
+                raise ValidationError("Date of Birth not found for student %s" % student.name)
+
+            login = student.register_no
+            password = student.date_of_birth.strftime('%d%m')  # Example: 05 Jan = 0501
+
+            vals = {
+                'name': student.name,
+                'login': login,
+                'password': password,
+                'groups_id': [(6, 0, [portal_group.id])],
+            }
+
+            if student.partner_id:
+                vals['partner_id'] = student.partner_id.id
+
+            if student.user_id:
+                student.user_id.sudo().write(vals)
+                user = student.user_id
+            else:
+                existing_user = self.env['res.users'].sudo().search([
+                    ('login', '=', login)
+                ], limit=1)
+
+                if existing_user:
+                    raise ValidationError(
+                        "Login '%s' already exists for user '%s'. "
+                        "Please change the Register No."
+                        % (login, existing_user.name)
+                    )
+
+                user = self.env['res.users'].sudo().create(vals)
+                student.user_id = user.id
+
+            student.login = login
+            student.ch_password = password
