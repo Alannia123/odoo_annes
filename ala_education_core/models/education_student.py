@@ -481,7 +481,7 @@ class EducationStudent(models.Model):
                 'name': student.name,
                 'login': login,
                 'password': password,
-                'groups_id': [(6, 0, [portal_group.id])],
+                'group_ids': [(6, 0, [portal_group.id])],
             }
 
             if student.partner_id:
