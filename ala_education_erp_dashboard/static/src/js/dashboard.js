@@ -80,27 +80,25 @@ export class EducationalDashboard extends Component {
         });
     }
 
-    // ─── Two-phase fetch ──────────────────────────────────────────────────────
+    // ─── Two-phase fetch ──────────────────────────────────────────────────────────
 
     async _fetchCritical() {
         const result = await this.orm.call("ala.erp.dashboard", "erp_data", []);
         this._renderCritical(result);
 
-        // Defer non-critical data to after paint, so mobile doesn't block
         if ("requestIdleCallback" in window) {
-            requestIdleCallback(() => this._fetchDeferred(), { timeout: 2000 });
+            requestIdleCallback(() => this._fetchDeferred(result.students), { timeout: 2000 });
         } else {
-            setTimeout(() => this._fetchDeferred(), 300);
+            setTimeout(() => this._fetchDeferred(result.students), 300);
         }
     }
 
-    async _fetchDeferred() {
+    async _fetchDeferred(totalStudents) {
         const result = await this.orm.call("ala.erp.dashboard", "erp_data_deferred", []);
-        this.renderTeacherTasks(result.teacher_tasks || []);
-        this.renderValuationSummary(result.valuation_summary || []);
+        this._renderDeferred(result, totalStudents);
     }
 
-    // ─── Render critical ─────────────────────────────────────────────────────
+    // ─── Render critical (counts only — no attendance, no divisions) ──────────────
 
     _renderCritical(result) {
         this._setHTML("#all_students",      `<span>${result.students || 0}</span>`);
@@ -110,19 +108,26 @@ export class EducationalDashboard extends Component {
         this._setHTML("#faculty_male",      `<span>${result.faculty_male || 0}</span>`);
         this._setHTML("#faculty_female",    `<span>${result.faculty_female || 0}</span>`);
         this._setHTML("#all_amenities",     `<span>${result.amenities || 0}</span>`);
-        this._setHTML("#amenities_outdoor", `<span>${result.amenities_outdoor || 0}</span>`);
         this._setHTML("#amenities_indoor",  `<span>${result.amenities_indoor || 0}</span>`);
+        this._setHTML("#amenities_outdoor", `<span>${result.amenities_outdoor || 0}</span>`);
         this._setHTML("#all_exams",         `<span>${result.exams || 0}</span>`);
         this._setHTML("#exam_ongoing",      `<span>${result.exam_ongoing || 0}</span>`);
         this._setHTML("#exam_closed",       `<span>${result.exam_closed || 0}</span>`);
 
-        this._setText("#total_students",  result.total_students || result.students || "--");
-        this._setText("#today_present",   result.today_present || "--");
-        this._setText("#today_homeworks", result.today_homeworks || "--");
-        this._setText("#today_absent",    result.today_absent || "--");
-
         this.state.currentAcademicYearId = result.current_academic_year_id || false;
+        // attendance stats stay as skeleton until deferred resolves
+    }
 
+    // ─── Render deferred (attendance + divisions + tasks + valuations) ────────────
+
+    _renderDeferred(result, totalStudents) {
+        // Attendance summary row
+        this._setText("#total_students",  totalStudents || "--");
+        this._setText("#today_present",   result.today_present   || "--");
+        this._setText("#today_absent",    result.today_absent    || "--");
+        this._setText("#today_homeworks", result.today_homeworks || "--");
+
+        // Division progress bar
         const updatedDiv = result.updated_divisions || 0;
         const totalDiv   = result.total_divisions   || 0;
         const percent    = totalDiv > 0 ? ((updatedDiv / totalDiv) * 100).toFixed(0) : 0;
@@ -134,7 +139,10 @@ export class EducationalDashboard extends Component {
         );
         this._setStyle("#division_progress_bar", "width", `${percent}%`);
 
-        this.renderDivisionSummary(result.division_summary || []);
+        // Render all three deferred sections
+        this.renderDivisionSummary(result.division_summary   || []);
+        this.renderTeacherTasks(result.teacher_tasks         || []);
+        this.renderValuationSummary(result.valuation_summary || []);
     }
 
     // ─── DOM helpers ─────────────────────────────────────────────────────────
