@@ -22,6 +22,9 @@ export class FeeOverview extends Component {
             loading: false,
             payment_date: new Date().toISOString().split("T")[0],
             payment_mode: "cash",
+            // per student values
+            payment_dates: {},
+            payment_modes: {},
         });
 
         onWillStart(async () => {
@@ -29,6 +32,16 @@ export class FeeOverview extends Component {
             await this.loadAcademicYears();
             await this.loadFees();
         });
+    }
+
+    onPaymentModeChange(ev) {
+        const studentId = parseInt(ev.target.dataset.student);
+        this.state.payment_modes[studentId] = ev.target.value;
+    }
+
+    onPaymentDateChange(ev) {
+        const studentId = parseInt(ev.target.dataset.student);
+        this.state.payment_dates[studentId] = ev.target.value;
     }
 
     openStudentFees(ev) {
@@ -210,8 +223,8 @@ export class FeeOverview extends Component {
             "action_pay_selected_fees",
             [selectedFees],
             {
-                payment_date: this.state.payment_date,
-                payment_mode: this.state.payment_mode,
+                payment_date: this.state.payment_dates[studentId] || this.state.payment_date,
+                payment_mode: this.state.payment_modes[studentId] || this.state.payment_mode,
             }
         );
 

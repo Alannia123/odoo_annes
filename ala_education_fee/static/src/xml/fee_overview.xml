@@ -1,601 +1,621 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-<t t-name="ala_education_fee.FeeOverview">
-
-<div class="o_control_panel glossy-container p-3">
-
-    <!-- ================= GLOSSY STYLES ================= -->
-    <style>
-        /* ================= FIX ODOO LAYOUT ================= */
-.o_control_panel.glossy-container {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-/* ================= PAGE CONTAINER ================= */
-.glossy-container {
-    background: linear-gradient(145deg, #f0f4f8, #e6edf5);
-    border-radius: 12px;
-    padding: 14px;
-}
-
-.page-heading {
-    font-size: 22px;
-}
-
-.glossy-table th {
-    font-size: 13px;
-}
-
-.glossy-table td {
-    font-size: 13px;
-}
-
-.fee-box {
-    font-size: 13px;
-}
-
-.student-name {
-    font-size: 13px;
-}
-
-.student-division {
-    font-size: 12px;
-}
-
-
-/* ================= FILTER BAR ================= */
-.glossy-filter-bar {
-    background: linear-gradient(145deg, #ffffff, #f8fafc);
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    padding: 10px 14px;
-    margin-bottom: 10px;
-}
-
-.glossy-filter-bar .row {
-    row-gap: 6px;
-}
-
-.filter-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: #334155;
-    margin-bottom: 2px;
-}
-
-.glossy-input {
-    border-radius: 8px;
-    font-size: 12px;
-    height: 30px;
-    padding: 4px 8px;
-}
-
-.glossy-input:focus {
-    box-shadow: 0 0 0 2px rgba(75,108,183,0.25);
-    border-color: #4b6cb7;
-}
-
-/* ================= TABLE WRAPPER ================= */
-.glossy-table-wrapper {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.07);
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 0; /* IMPORTANT */
-}
-
-/* ================= SCROLL FIX ================= */
-.glossy-table-scroll {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-bottom: 20px;
-}
-
-/* Custom Scrollbar */
-.glossy-table-scroll::-webkit-scrollbar {
-    width: 6px;
-}
-
-.glossy-table-scroll::-webkit-scrollbar-thumb {
-    background: #94a3b8;
-    border-radius: 10px;
-}
-
-/* ================= TABLE ================= */
-.glossy-table {
-    margin-bottom: 0;
-}
-
-.glossy-table th {
-    background: linear-gradient(90deg, #3a6073, #16222a);
-    color: white;
-    font-weight: 500;
-    padding: 8px 10px;
-    font-size: 12px;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-}
-
-.glossy-table td {
-    padding: 8px 10px;
-    vertical-align: top;
-    font-size: 12px;
-}
-
-.glossy-table tbody tr {
-    border-bottom: 1px solid #e5e7eb;
-}
-
-/* ================= STUDENT CARD ================= */
-.student-card {
-    background: linear-gradient(145deg, #f8fafc, #e2e8f0);
-    border-radius: 10px;
-    padding: 8px;
-}
-
-.student-name {
-    background: linear-gradient(90deg, #4b6cb7, #182848);
-    color: white;
-    border-radius: 18px;
-    padding: 4px 10px;
-    font-size: 12px;
-    display: inline-block;
-    margin-top: 4px;
-}
-
-.student-division {
-    background: #cbd5e1;
-    border-radius: 18px;
-    padding: 3px 8px;
-    font-size: 11px;
-    display: inline-block;
-    margin-top: 4px;
-}
-
-/* ================= FEE GRID ================= */
-.fee-grid-compact {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    gap: 6px;
-}
-
-/* ================= FEE CARD ================= */
-.fee-box {
-    background: linear-gradient(145deg, #ffffff, #f1f5f9);
-    border-radius: 8px;
-    padding: 6px 6px;
-    font-size: 11px;
-    min-height: 65px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.04);
-    transition: 0.2s ease;
-}
-
-.fee-box:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
-}
-
-.paid-box {
-    background: linear-gradient(145deg, #e6f6ea, #d8f1df);
-}
-
-.fee-title {
-    max-width: 80px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-weight: 500;
-}
-
-/* ================= ACTION SECTION ================= */
-.action-section {
-    margin-top: 10px;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 8px;
-}
-
-.action-section select,
-.action-section input[type="file"] {
-    height: 30px;
-    font-size: 12px;
-}
-
-.pay-btn {
-    background: linear-gradient(90deg, #4b6cb7, #182848);
-    border: none;
-    padding: 5px 18px;
-    border-radius: 18px;
-    color: white;
-    font-size: 12px;
-    transition: 0.2s ease;
-}
-
-.pay-btn:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
-}
-
-        /* ================= MODERN CHECKBOX ================= */
-.modern-checkbox {
-    position: relative;
-    display: inline-block;
-    width: 18px;
-    height: 18px;
-}
-
-.modern-checkbox input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.modern-checkbox .checkmark {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 18px;
-    width: 18px;
-    background-color: #ffffff;
-    border: 2px solid #94a3b8;
-    border-radius: 5px;
-    transition: 0.2s ease;
-}
-
-/* Checked */
-.modern-checkbox input:checked + .checkmark {
-    background: linear-gradient(90deg, #4b6cb7, #182848);
-    border-color: #4b6cb7;
-}
-
-/* Check icon */
-.modern-checkbox .checkmark:after {
-    content: "";
-    position: absolute;
-    display: none;
-}
-
-.modern-checkbox input:checked + .checkmark:after {
-    display: block;
-}
-
-.modern-checkbox .checkmark:after {
-    left: 5px;
-    top: 2px;
-    width: 5px;
-    height: 9px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-}
-
-/* Disabled */
-.modern-checkbox input:disabled + .checkmark {
-    background-color: #e2e8f0;
-    border-color: #cbd5e1;
-    cursor: not-allowed;
-}
-.fee-summary-top {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-}
-
-.summary-box {
-    background: #f8f9fa;
-    padding: 10px;
-    border-radius: 10px;
-    font-size: 13px;
-    text-align: center;
-}
-
-.summary-box.payable { background: #e3f2fd; }
-.summary-box.paid { background: #e8f5e9; }
-.summary-box.unpaid { background: #fff3cd; }
-.summary-box.overdue { background: #fdecea; }
-
-        .academic-summary {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    flex-wrap: wrap;
-    padding: 8px 0;
-    border-top: 1px dashed #ddd;
-}
-
-.academic-item {
-    font-size: 13px;
-}
-    </style>
-
-    <!-- ================= HEADING ================= -->
-    <div class="d-flex justify-content-between align-items-center mb-2">
-
-    <div class="page-heading">
-        Fees Collection Overview
-    </div>
-
-    <span class="badge">
-            <t t-if="state.fees.length">
-        Showing <t t-esc="state.fees.length"/> Students
-    </t>
-    <t t-else="">
-        No Students Found
-    </t>
-        </span>
-
-    </div>
-
-
-    <div class="glossy-filter-bar">
-
-    <div class="row g-2 align-items-end">
-
-        <div class="col-md-4">
-            <label class="filter-label">Search</label>
-            <input type="text"
-                   class="form-control form-control-sm glossy-input"
-                   placeholder="Register No / Name"
-                   t-on-keyup="onSearch"/>
-        </div>
-
-        <div class="col-md-3">
-            <label class="filter-label">Division</label>
-            <select class="form-select form-select-sm glossy-input"
-                    t-on-change="onDivisionChange">
-                <option value="">All</option>
-                <t t-foreach="state.divisions"
-                   t-as="div"
-                   t-key="div.id">
-                    <option t-att-value="div.id">
-                        <t t-esc="div.name"/>
-                    </option>
-                </t>
-            </select>
-        </div>
-
-        <div class="col-md-3">
-            <label class="filter-label">Year</label>
-            <select class="form-select form-select-sm glossy-input"
-                    t-on-change="onYearChange">
-                <option value="">All</option>
-                <t t-foreach="state.academic_years"
-                   t-as="year"
-                   t-key="year.id">
-                    <option t-att-value="year.id">
-                        <t t-esc="year.name"/>
-                    </option>
-                </t>
-            </select>
-        </div>
-
-    </div>
-
-</div>
-    <!-- ================= TABLE ================= -->
-<!-- TABLE WRAPPER -->
-<div class="glossy-table-wrapper">
-
-    <div class="glossy-table-scroll">
-
-        <table class="table mb-0 glossy-table">
-
-
-            <thead>
-                <tr>
-                    <th style="width:220px;">Register No</th>
-                    <th>Details</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-                <t t-foreach="state.fees"
-                   t-as="student"
-                   t-key="student.id">
-
-                    <tr>
-
-                        <!-- Left Column -->
-                        <td>
-                            <div class="student-card">
-
-                                <div class="fw-semibold text-muted">
-                                    <t t-esc="student.register_number"/>
-                                </div>
-
-                                <div class="mt-2">
-                                    <span class="student-name">
-                                        <t t-esc="student.student"/>
-                                    </span>
-                                </div>
-
-                                <div>
-                                    <span class="student-division">
-                                        <t t-esc="student.division"/>
-                                    </span>
-                                </div>
-
-                            </div>
-                        </td>
-
-                        <!-- Right Column -->
-                        <td>
-<!-- Fee Summary Header -->
-<div class="fee-summary-top mb-2">
-
-    <div class="summary-box payable">
-        <div>Total Payable</div>
-        <strong>₹ <t t-esc="student.total_payable"/></strong>
-    </div>
-
-    <div class="summary-box paid">
-        <div>Total Paid</div>
-        <strong>₹ <t t-esc="student.total_paid"/></strong>
-    </div>
-
-    <div class="summary-box unpaid">
-        <div>Total Unpaid</div>
-        <strong>₹ <t t-esc="student.total_unpaid"/></strong>
-    </div>
-
-    <div class="summary-box overdue">
-        <div>Total Overdue</div>
-        <strong>₹ <t t-esc="student.total_overdue"/></strong>
-    </div>
-
-</div>
-                            <!-- Fees -->
-                            <div class="fee-grid-compact">
-
-                                <t t-foreach="ala.student.fees"
-                                   t-as="fee"
-                                   t-key="fee.id">
-
-                                    <div class="fee-box"
-                                         t-att-class="fee.payment_status === 'paid' ? 'paid-box' : ''">
-
-                                        <div class="d-flex justify-content-between">
-                                                                            <span class="fee-title px-2 py-1 rounded"
-                                      t-att-class="
-                                        fee.fee_type === 'admission' ? 'type-admission-bg' :
-                                        fee.fee_type === 're_admission' ? 'type-readmission-bg' :
-                                        fee.fee_type === 'monthly' ? 'type-monthly-bg' :
-                                        'type-other-bg'
-                                      ">
-                                    <t t-esc="fee.name"/>
-                                </span>
-                                            <span class="fw-bold">
-                                                ₹ <t t-esc="fee.amount"/>
-                                            </span>
+    <t t-name="ala_education_fee.FeeOverview">
+        <div class="glossy-container p-3">
+
+            <style>
+                .o_action {
+                    height: 100%;
+                }
+
+                .o_action_manager {
+                    height: 100%;
+                }
+
+                .o_content {
+                    height: 100%;
+                }
+
+                .glossy-container {
+                    display: flex;
+                    flex-direction: column;
+                    height: 100%;
+                    min-height: 0;
+                    background: linear-gradient(145deg, #eef3fb, #e2ebf7 60%);
+                    border: 1px solid rgba(148,163,184,0.25);
+                    border-radius: 16px;
+                    box-shadow: 0 12px 28px rgba(30,41,59,0.08);
+                    padding: 16px;
+                }
+
+                .glossy-table-wrapper {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    min-height: 0;
+                    background: #ffffff;
+                    border-radius: 16px;
+                    border: 1px solid rgba(148,163,184,0.25);
+                    box-shadow: 0 14px 28px rgba(30,41,59,0.08);
+                }
+
+                .glossy-table-scroll {
+                    flex: 1;
+                    overflow-y: auto;
+                    min-height: 0;
+                    padding-bottom: 20px;
+                }
+
+                .page-heading {
+                    font-size: 26px;
+                    font-weight: 700;
+                    color: #1e3a5f;
+                }
+
+                .students-count-badge {
+                    background: linear-gradient(90deg,#305ca8,#1d3f72);
+                    color: #fff;
+                    border-radius: 999px;
+                    padding: 8px 14px;
+                    font-weight: 600;
+                }
+
+                .filter-label {
+                    font-size: 13px;
+                    font-weight: 600;
+                    color: #1f3a5b;
+                }
+
+                .glossy-input {
+                    border-radius: 10px;
+                    border: 1px solid #cbd5e1;
+                    font-size: 13px;
+                    height: 36px;
+                }
+
+                .glossy-input:focus {
+                    border-color: #2f6edb;
+                    box-shadow: 0 0 0 2px rgba(47,110,219,0.25);
+                }
+
+                .glossy-table th {
+                    background: linear-gradient(90deg,#284b63,#102a43);
+                    color: #fff;
+                    font-weight: 600;
+                    padding: 10px 12px;
+                    font-size: 13px;
+                    position: sticky;
+                    top: 0;
+                    z-index: 5;
+                }
+
+                .glossy-table td {
+                    padding: 10px 12px;
+                    font-size: 13px;
+                    border-bottom: 1px solid #e5e7eb;
+                    vertical-align: top;
+                }
+
+                .glossy-table tbody tr:hover {
+                    background-color: rgba(219,234,254,0.4);
+                }
+
+                .student-card {
+                    background: linear-gradient(145deg,#f8fbff,#e2eaf5);
+                    border: 1px solid rgba(148,163,184,0.3);
+                    border-radius: 12px;
+                    padding: 10px;
+                }
+
+                .student-name {
+                    background: linear-gradient(90deg,#355c9b,#1d3d73);
+                    color: #fff;
+                    border-radius: 18px;
+                    padding: 4px 10px;
+                    font-size: 12px;
+                    display: inline-block;
+                }
+
+                .student-division {
+                    background: #d8e2ef;
+                    border-radius: 18px;
+                    padding: 3px 8px;
+                    font-size: 11px;
+                    display: inline-block;
+                }
+
+                .student-avatar-small {
+                    width: 55px;
+                    height: 55px;
+                    border-radius: 10px;
+                    object-fit: cover;
+                    border: 1px solid #dbe5f2;
+                    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+                }
+
+                .fee-summary-top-compact {
+                    display: flex;
+                    gap: 12px;
+                    flex-wrap: wrap;
+                    margin-bottom: 10px;
+                    align-items: center;
+                }
+
+                .summary-badge {
+                    padding: 6px 14px;
+                    border-radius: 20px;
+                    font-size: 13px;
+                    font-weight: 600;
+                    display: inline-block;
+                }
+
+                .summary-badge.payable {
+                    background: #e3f2fd;
+                    color: #0d6efd;
+                }
+
+                .summary-badge.paid {
+                    background: #e8f5e9;
+                    color: #2e7d32;
+                }
+
+                .summary-badge.unpaid {
+                    background: #fff3cd;
+                    color: #856404;
+                }
+
+                .summary-badge.overdue {
+                    background: #fdecea;
+                    color: #c62828;
+                }
+
+                .view-fee-btn {
+                    background: #f8f9ff;
+                    border: 1px solid #dfe3ff;
+                    border-radius: 20px;
+                    color: #2c3e50;
+                    font-weight: 500;
+                    transition: all 0.2s ease;
+                }
+
+                .view-fee-btn:hover {
+                    background: #e9ecff;
+                    transform: translateX(2px);
+                }
+
+                .fee-grid-compact {
+                    display: grid;
+                    gap: 8px;
+                    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                }
+
+                .fee-box {
+                    background: linear-gradient(145deg,#ffffff,#f3f8ff);
+                    border: 1px solid #111827;
+                    border-radius: 10px;
+                    padding: 10px;
+                    min-height: 80px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    transition: all 0.2s ease;
+                }
+
+                .fee-box:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 14px rgba(30,64,175,0.15);
+                }
+
+                .paid-box {
+                    background: linear-gradient(145deg,#e9f9ef,#d8f3e3);
+                    border-color: #a7e1bf;
+                }
+
+                .action-section {
+                    margin-top: 12px;
+                    display: flex;
+                    justify-content: flex-end;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                    padding-top: 8px;
+                    border-top: 1px dashed #cbd5e1;
+                    align-items: center;
+                }
+
+                .pay-btn {
+                    background: linear-gradient(90deg,#305ca8,#1d3f72);
+                    border: none;
+                    border-radius: 18px;
+                    padding: 7px 20px;
+                    font-size: 13px;
+                    font-weight: 600;
+                    color: #fff;
+                    transition: 0.2s ease;
+                }
+
+                .pay-btn:hover {
+                    transform: scale(1.02);
+                    opacity: 0.95;
+                }
+
+                .academic-summary-compact {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                    font-size: 13px;
+                    margin-bottom: 8px;
+                }
+
+                .mini-badge {
+                    padding: 4px 10px;
+                    border-radius: 14px;
+                    font-weight: 500;
+                }
+
+                .mini-badge.success {
+                    background: #e8f5e9;
+                    color: #2e7d32;
+                }
+
+                .mini-badge.warning {
+                    background: #fff3cd;
+                    color: #856404;
+                }
+
+                .mini-badge.info {
+                    background: #e3f2fd;
+                    color: #0d6efd;
+                }
+
+                .mini-badge.dark {
+                    background: #f1f1f1;
+                    color: #333;
+                }
+
+                .highlight-selected {
+                    background-color: #f8d7da;
+                    border: 2px solid #ffc107;
+                    padding: 8px 12px;
+                    border-radius: 6px;
+                    box-shadow: 0 0 10px rgba(139,0,0,0.3);
+                    color: #8b0000;
+                    font-weight: bold;
+                }
+
+                .modern-checkbox {
+                    display: inline-block;
+                    position: relative;
+                    cursor: pointer;
+                    user-select: none;
+                }
+
+                .modern-checkbox input {
+                    position: absolute;
+                    opacity: 0;
+                    cursor: pointer;
+                }
+
+                .modern-checkbox .checkmark {
+                    width: 20px;
+                    height: 20px;
+                    background: #ebebe0;
+                    border: 2px solid #ccc;
+                    border-radius: 6px;
+                    display: inline-block;
+                    transition: all 0.25s ease;
+                    position: relative;
+                }
+
+                .modern-checkbox:hover .checkmark {
+                    border-color: #007bff;
+                    box-shadow: 0 0 5px rgba(0,123,255,0.4);
+                }
+
+                .modern-checkbox input:checked + .checkmark {
+                    background-color: #fff3cd;
+                    border-color: #111827;
+                }
+
+                .modern-checkbox .checkmark:after {
+                    content: "";
+                    position: absolute;
+                    display: none;
+                    left: 6px;
+                    top: 2px;
+                    width: 5px;
+                    height: 10px;
+                    border: solid #4d004d;
+                    border-width: 0 2px 2px 0;
+                    transform: rotate(45deg);
+                }
+
+                .modern-checkbox input:checked + .checkmark:after {
+                    display: block;
+                }
+
+                .modern-checkbox input:disabled + .checkmark {
+                    background: #e9ecef;
+                    border-color: #adb5bd;
+                    cursor: not-allowed;
+                }
+
+                .type-admission-bg {
+                    background: #9a76ad;
+                    border-radius: 10px;
+                    color: #001242;
+                }
+
+                .type-re_admission-bg {
+                    background: #9a76ad;
+                    border-radius: 10px;
+                    color: #001242;
+                }
+
+                .type-monthly-bg {
+                    background: #ffb8ad;
+                    border-radius: 10px;
+                    color: #171738;
+                }
+
+                .type-other-bg {
+                    color: #700070;
+                }
+
+                @media (max-width: 1200px) {
+                    .fee-grid-compact {
+                        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                    }
+                }
+
+                @media (max-width: 768px) {
+                    .page-heading {
+                        font-size: 22px;
+                    }
+                }
+            </style>
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <div class="page-heading">Fees Collection Overview</div>
+                </div>
+
+                <div class="d-flex align-items-end gap-2 flex-wrap">
+                    <div>
+                        <label class="filter-label d-block">Search</label>
+                        <input type="text"
+                               class="form-control form-control-sm glossy-input"
+                               style="width:200px;"
+                               placeholder="Register No / Name"
+                               t-on-keyup="onSearch"/>
+                    </div>
+
+                    <div>
+                        <label class="filter-label d-block">Division</label>
+                        <select class="form-select form-select-sm glossy-input"
+                                style="width:150px;"
+                                t-on-change="onDivisionChange">
+                            <option value="">All</option>
+                            <t t-foreach="state.divisions" t-as="div" t-key="div.id">
+                                <option t-att-value="div.id">
+                                    <t t-esc="div.name"/>
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="filter-label d-block">Roll No</label>
+                        <input type="number"
+                               class="form-control form-control-sm glossy-input"
+                               style="width:120px;"
+                               placeholder="Roll No"
+                               t-on-keyup="onRollSearch"/>
+                    </div>
+
+                    <div>
+                        <label class="filter-label d-block">Year</label>
+                        <select class="form-select form-select-sm glossy-input"
+                                style="width:150px;"
+                                t-on-change="onYearChange">
+                            <option value="">All</option>
+                            <t t-foreach="state.academic_years" t-as="year" t-key="year.id">
+                                <option t-att-value="year.id">
+                                    <t t-esc="year.name"/>
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="students-count-badge">
+                        <t t-if="state.fees.length">
+                            Showing <t t-esc="state.fees.length"/> Students
+                        </t>
+                        <t t-else="">
+                            No Students Found
+                        </t>
+                    </span>
+                </div>
+            </div>
+
+            <div class="glossy-table-wrapper">
+                <div class="glossy-table-scroll">
+                    <table class="table mb-0 glossy-table">
+                        <thead>
+                            <tr>
+                                <th style="width:220px;">Register No</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <t t-foreach="state.fees" t-as="student" t-key="student.id">
+                                <tr>
+                                    <td>
+                                        <div class="student-card d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <div>
+                                                    <span class="student-name">
+                                                        <t t-esc="student.student || ''"/>
+                                                    </span>
+                                                </div>
+
+                                                <div class="fw-semibold mt-1">
+                                                    <t t-esc="student.register_number || ''"/>
+                                                </div>
+
+                                                <div class="mt-1">
+                                                    <span class="student-division">
+                                                        <t t-esc="student.division || ''"/>
+                                                    </span>
+                                                    <span class="student-division">
+                                                        <t t-esc="student.roll_no || ''"/>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div class="ms-3">
+                                                <img t-att-src="'/web/image/ala.education.student/' + student.id + '/image_128'"
+                                                     class="student-avatar-small"
+                                                     loading="lazy"
+                                                     onerror="this.src='/web/static/img/placeholder.png'"/>
+                                            </div>
                                         </div>
+                                    </td>
 
-                                        <div class="d-flex justify-content-between align-items-center mt-1">
-
-                                            <span t-att-class="
-                                                fee.payment_status === 'paid' ? 'badge bg-success small' :
-                                                fee.payment_status === 'over_due' ? 'badge bg-danger small' :
-                                                fee.payment_status === 'unpaid' ? 'badge bg-warning text-dark small' :
-                                                'badge bg-info text-dark small'
-                                            ">
-                                                <t t-esc="
-                                                    fee.payment_status === 'paid' ? 'Paid' :
-                                                    fee.payment_status === 'over_due' ? 'Over Due' :
-                                                    fee.payment_status === 'unpaid' ? 'Un Paid' :
-                                                    'Upcoming'
-                                                "/>
+                                    <td>
+                                        <div class="fee-summary-top-compact">
+                                            <span class="summary-badge payable">
+                                                Payable ₹ <t t-esc="student.total_payable || 0"/>
                                             </span>
 
-                                            <label class="modern-checkbox">
-                                                <input type="checkbox"
-                                                       t-att-disabled="fee.payment_status === 'paid'"
-                                                       t-att-data-id="fee.id"
-                                                       t-att-checked="state.selected_fee_ids.includes(fee.id)"
-                                                       t-on-change="toggleFee"/>
-                                                <span class="checkmark"></span>
-                                            </label>
+                                            <span class="summary-badge paid">
+                                                Paid ₹ <t t-esc="student.total_paid || 0"/>
+                                            </span>
 
+                                            <span class="summary-badge unpaid">
+                                                Unpaid ₹ <t t-esc="student.total_unpaid || 0"/>
+                                            </span>
 
+                                            <span class="summary-badge overdue">
+                                                Overdue ₹ <t t-esc="student.total_overdue || 0"/>
+                                            </span>
+
+                                            <button type="button"
+                                                    class="btn btn-sm d-flex align-items-center gap-2 px-3 py-1 shadow-sm view-fee-btn"
+                                                    t-att-data-id="student.student_fee_id"
+                                                    t-on-click="openStudentFees">
+                                                <span>View Fee details</span>
+                                                <i class="fa fa-arrow-right"/>
+                                            </button>
                                         </div>
 
-                                    </div>
+                                        <div class="fee-grid-compact">
+                                            <t t-if="student.fees and student.fees.length">
+                                                <t t-foreach="student.fees" t-as="fee" t-key="fee.id">
+                                                    <div class="fee-box"
+                                                         t-att-class="fee.payment_status === 'paid' ? 'paid-box' : ''">
+                                                        <div class="d-flex justify-content-between">
+                                                            <span t-attf-class="badge small px-2 py-1 rounded-pill #{fee.fee_type == 'admission' ? 'type-admission-bg' : fee.fee_type == 're_admission' ? 'type-re_admission-bg' : fee.fee_type == 'monthly' ? 'type-monthly-bg' : 'type-other-bg'}">
+                                                                <t t-esc="fee.name || ''"/>
+                                                            </span>
 
-                                </t>
+                                                            <span class="fw-bold">
+                                                                ₹ <t t-esc="fee.amount || 0"/>
+                                                            </span>
+                                                        </div>
 
-                            </div>
+                                                        <div class="d-flex justify-content-between align-items-center mt-1">
+                                                            <span t-att-class="
+                                                                fee.payment_status === 'paid' ? 'badge bg-success small' :
+                                                                fee.payment_status === 'over_due' ? 'badge bg-danger small' :
+                                                                fee.payment_status === 'unpaid' ? 'badge bg-warning text-dark small' :
+                                                                'badge bg-info text-dark small'
+                                                            ">
+                                                                <t t-esc="
+                                                                    fee.payment_status === 'paid' ? 'Paid' :
+                                                                    fee.payment_status === 'over_due' ? 'Over Due' :
+                                                                    fee.payment_status === 'unpaid' ? 'Un Paid' :
+                                                                    'Upcoming'
+                                                                "/>
+                                                            </span>
 
-                            <!-- Payment Section -->
-                            <div class="action-section">
+                                                            <label class="modern-checkbox">
+                                                                <input type="checkbox"
+                                                                       t-att-disabled="fee.payment_status === 'paid'"
+                                                                       t-att-data-id="fee.id"
+                                                                       t-att-checked="state.selected_fee_ids.includes(fee.id)"
+                                                                       t-on-change="toggleFee"/>
+                                                                <span class="checkmark"/>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </t>
+                                        </div>
 
-                                <!-- Academic Summary -->
-<div class="academic-summary mb-2">
+                                        <div class="action-section">
+                                            <div class="academic-summary-compact">
+                                                <span class="mini-badge success">
+                                                    No of Paid Months: <t t-esc="student.paid_months || 0"/>
+                                                </span>
 
-    <div class="academic-item">
-        Paid Months:
-        <strong><t t-esc="student.paid_months"/></strong>
-    </div>
+                                                <span class="mini-badge warning">
+                                                    No of Remaining Months: <t t-esc="student.remaining_months || 0"/>
+                                                </span>
 
-    <div class="academic-item">
-        Remaining Months:
-        <strong><t t-esc="student.remaining_months"/></strong>
-    </div>
+                                                <span class="mini-badge info">
+                                                    Concession ₹ <t t-esc="getSelectedConTotal(student).toFixed(2)"/>
+                                                </span>
 
-    <div class="academic-item">
-        Concession:
-        ₹ <strong><t t-esc="student.concession_amount"/></strong>
-    </div>
+                                                <span class="mini-badge dark">
+                                                    Extra ₹ <t t-esc="getSelectedFine(student).toFixed(2)"/>
+                                                </span>
+                                            </div>
 
-    <div class="academic-item">
-        Extra:
-        ₹ <strong><t t-esc="student.extra_amount"/></strong>
-    </div>
+                                            <div class="selected-total-box highlight-selected">
+                                                Selected Total:
+                                                <span style="color:#8b0000;font-weight:700;">
+                                                    ₹ <t t-esc="getSelectedTotal(student).toFixed(2)"/>
+                                                </span>
+                                            </div>
 
-    <!-- View Bill Button -->
-    <button class="btn btn-sm btn-outline-primary"
-            t-att-data-student="student.id"
-            t-on-click="viewStudentBill">
-        View Bill
-    </button>
+                                            <input type="date"
+                                                   style="width:150px;"
+                                                   class="form-control form-control-sm"
+                                                   t-model="state.payment_date"/>
 
-</div>
+                                            <select class="form-select form-select-sm"
+                                                    style="width:120px;"
+                                                    t-model="state.payment_mode">
+                                                <option value="cash">Cash</option>
+                                                <option value="bank">Bank</option>
+                                            </select>
 
-                                <!-- Selected Total -->
-    <div class="selected-total-box">
-        <span class="fw-bold text-primary">
-            Selected Total:
-            ₹ <t t-esc="selectedTotal.toFixed(2)"/>
-        </span>
-    </div>
+                                            <button class="pay-btn"
+                                                    t-att-data-student="student.id"
+                                                    t-on-click="payStudentFees">
+                                                Pay
+                                            </button>
 
-                                <!-- Payment Date -->
-                                <input type="date"
-                                       style="width:150px;"
-                                       class="form-control form-control-sm"
-                                       t-model="state.payment_date"/>
+                                            <button class="btn btn-link p-0 ms-2"
+                                                    t-att-data-fee="student.last_fee_line_id"
+                                                    t-on-click="viewStudentBill"
+                                                    title="View Last Bill">
+                                                <i class="fa fa-file-pdf-o text-danger" style="font-size:18px;"/>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-                                <!-- Payment Mode -->
-                                <select class="form-select form-select-sm"
-                                        style="width:120px;"
-                                        t-model="state.payment_mode">
-                                    <option value="cash">Cash</option>
-                                    <option value="bank">Bank</option>
-                                </select>
-
-                                <!-- Pay Button -->
-                                <button class="pay-btn"
-                                        t-att-data-student="student.id"
-                                        t-on-click="payStudentFees">
-                                    Pay
-                                </button>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-                </t>
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-    </div>
-
-</div>
-
-</t>
+        </div>
+    </t>
 </templates>

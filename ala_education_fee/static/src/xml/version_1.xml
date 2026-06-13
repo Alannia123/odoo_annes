@@ -584,13 +584,17 @@
                                             </div>
 
                                             <input type="date"
-                                                   style="width:150px;"
-                                                   class="form-control form-control-sm"
-                                                   t-model="state.payment_date"/>
+                                               style="width:150px;"
+                                               class="form-control form-control-sm"
+                                               t-att-value="state.payment_dates[student.id] || state.payment_date"
+                                               t-att-data-student="student.id"
+                                               t-on-change="onPaymentDateChange"/>
 
                                             <select class="form-select form-select-sm"
-                                                    style="width:120px;"
-                                                    t-model="state.payment_mode">
+                                                style="width:120px;"
+                                                t-att-value="state.payment_modes[student.id] || state.payment_mode"
+                                                t-att-data-student="student.id"
+                                                t-on-change="onPaymentModeChange">
                                                 <option value="cash">Cash</option>
                                                 <option value="bank">Bank</option>
                                             </select>
