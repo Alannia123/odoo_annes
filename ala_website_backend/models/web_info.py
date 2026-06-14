@@ -26,7 +26,7 @@ class WebAnouInfo(models.Model):
                 "SAS School"
             )
 
-            response = self.env['firebase.notification'].send_android_notification(
+            response = self.env['ala.firebase.notification'].send_android_notification(
                             title="📢 ST.ANNE'S School Announcement",
                             body=message_body
                                 )

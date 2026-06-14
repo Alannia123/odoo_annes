@@ -11,10 +11,10 @@ class AlaFirebaseNotification(models.Model):
     def send_android_notification(self, title, body, data=None):
         access_token = self._get_firebase_access_token()
 
-        FIREBASE_PROJECT_ID = "ala-school-4ef4b"
+        project_id = self._get_firebase_project_id()
         print('ACESSSS=================',access_token)
 
-        url = f"https://fcm.googleapis.com/v1/projects/{FIREBASE_PROJECT_ID}/messages:send"
+        url = f"https://fcm.googleapis.com/v1/projects/{project_id}/messages:send"
 
         payload = {
             "message": {

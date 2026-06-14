@@ -59,28 +59,34 @@
             <!-- Remove the burger menu icon -->
         </xpath>
 
-       <xpath expr="//div[hasclass('o_app_menu_sidebar')]" position="attributes">
-    <attribute name="class" add="position-fixed top-0 bottom-0 d-flex flex-column flex-nowrap" separator=" "/>
-</xpath>
+        <!-- Override the sidebar positioning: remove end-100, anchor to left -->
+    <xpath expr="//div[hasclass('o_app_menu_sidebar')]" position="attributes">
+        <attribute name="class">o_app_menu_sidebar position-fixed top-0 bottom-0 start-0 d-flex flex-column flex-nowrap</attribute>
+    </xpath>
 
-<!--        <xpath expr="//div[hasclass('o_app_menu_sidebar')]" position="attributes">-->
-<!--            <attribute-->
-<!--                name="class"-->
-<!--            >o_app_menu_sidebar position-fixed top-0 bottom-0 start-100 d-flex flex-column flex-nowrap</attribute>-->
+<!--       <xpath expr="//div[hasclass('o_app_menu_sidebar')]" position="attributes">-->
+<!--            <attribute name="class" add="position-fixed top-0 bottom-0 d-flex flex-column flex-nowrap" separator=" "/>-->
 <!--        </xpath>-->
-
-<!--        <xpath expr="//div[hasclass('o_app_menu_sidebar')]" position="attributes">-->
-<!--    <attribute name="class">o_app_menu_sidebar position-fixed top-0 bottom-0 flex-column flex-nowrap</attribute>-->
-
-<!--    <attribute name="t-att-class">-->
-<!--        {-->
-<!--            'd-flex': ui.isSmall and state.open,-->
-<!--            'd-none': !state.open,-->
-<!--            'opened': state.open-->
-<!--        }-->
-<!--    </attribute>-->
-<!--</xpath>-->
+<!--        -->
+<!--                <xpath expr="//div[hasclass('o_app_menu_sidebar')]" position="attributes">-->
+<!--                    <attribute-->
+<!--                        name="class"-->
+<!--                    >o_app_menu_sidebar position-fixed top-0 bottom-0 start-100 d-flex flex-column flex-nowrap</attribute>-->
+<!--                </xpath>-->
+<!--        -->
+<!--                <xpath expr="//div[hasclass('o_app_menu_sidebar')]" position="attributes">-->
+<!--            <attribute name="class">o_app_menu_sidebar position-fixed top-0 bottom-0 flex-column flex-nowrap</attribute>-->
+<!--        -->
+<!--            <attribute name="t-att-class">-->
+<!--                {-->
+<!--                    'd-flex': ui.isSmall and state.open,-->
+<!--                    'd-none': !state.open,-->
+<!--                    'opened': state.open-->
+<!--                }-->
+<!--            </attribute>-->
+<!--        </xpath>-->
     </t>
+
 
     <!-- Section Menu Items -->
     <t t-inherit="web.SectionMenu" t-inherit-mode="extension">
