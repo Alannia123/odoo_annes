@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- =========================================================
+         FEE STRUCTURE / PRICING   ->  /fees
+         IMPORTANT: Replace every "₹ ____" with your school's
+         actual board-approved fees before submitting to Razorpay.
+         Do NOT leave blanks live — Razorpay needs to see real INR amounts.
+         ========================================================= -->
+    <template id="fees_page" name="Fee Structure">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <section class="s_text_block pt32 pb32">
+                    <div class="container">
+                        <h1 class="mb8">Fee Structure</h1>
+                        <p class="text-muted">St. Anne's Convent School, Chotojagulia (Affiliated to ICSE)</p>
+                        <p>All fees are quoted in Indian Rupees (INR / ₹) and are payable through the
+                           school's online payment portal, powered by Razorpay.</p>
+
+                        <h3 class="mt32">Annual / Term Fees</h3>
+                        <div class="table-responsive">
+                            <table class="table table-bordered align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Class</th>
+                                        <th>Admission Fee (one-time)</th>
+                                        <th>Tuition Fee (per term)</th>
+                                        <th>Annual / Development Fee</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Pre-Primary (Nursery / KG)</td><td>₹ ____</td><td>₹ ____</td><td>₹ ____</td></tr>
+                                    <tr><td>Classes I – IV</td><td>₹ ____</td><td>₹ ____</td><td>₹ ____</td></tr>
+                                    <tr><td>Classes V – VIII</td><td>₹ ____</td><td>₹ ____</td><td>₹ ____</td></tr>
+                                    <tr><td>Classes IX – X</td><td>₹ ____</td><td>₹ ____</td><td>₹ ____</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3 class="mt32">Other Charges (if applicable)</h3>
+                        <ul>
+                            <li>Examination fee: ₹ ____ per term</li>
+                            <li>Transport fee: ₹ ____ per month (route-dependent)</li>
+                            <li>Books, uniform and stationery: as per actuals</li>
+                        </ul>
+
+                        <h3 class="mt32">Payment Schedule</h3>
+                        <p>Term fees are payable in advance, on or before the dates published in the
+                           School Calendar each academic year. A late-payment fine of ₹ ____ may apply
+                           after the due date.</p>
+
+                        <p class="text-muted mt32"><small>
+                            Fees are reviewed by the school management and are subject to revision at
+                            the start of each academic session. For the exact, current fee applicable
+                            to your child's class, please contact the school office.
+                            Last updated: ____ / ____ / 20____.
+                        </small></p>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <!-- =========================================================
+         CANCELLATION & REFUNDS POLICY   ->  /refund-policy
+         ========================================================= -->
+    <template id="refund_policy_page" name="Cancellation and Refunds Policy">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <section class="s_text_block pt32 pb32">
+                    <div class="container">
+                        <h1 class="mb8">Cancellation &amp; Refunds Policy</h1>
+                        <p class="text-muted">St. Anne's Convent School, Chotojagulia</p>
+
+                        <p>This policy explains how cancellations and refunds of fees paid through our
+                           online payment portal are handled. By making an online payment you agree to
+                           the terms below.</p>
+
+                        <h3 class="mt32">1. Refund Eligibility</h3>
+                        <ul>
+                            <li><strong>Duplicate / failed payments:</strong> If an amount is debited
+                                more than once for the same fee, or is debited but the transaction
+                                fails, the excess or failed amount is refunded in full.</li>
+                            <li><strong>Excess payment:</strong> If a parent pays more than the fee due,
+                                the excess is either refunded or adjusted against the next term's fee,
+                                at the parent's option.</li>
+                            <li><strong>Withdrawal / cancellation of admission:</strong> Tuition and
+                                term fees already paid for a completed or ongoing term are
+                                non-refundable. Admission, development and one-time fees are
+                                non-refundable once admission is confirmed, except where required by law.</li>
+                        </ul>
+
+                        <h3 class="mt32">2. Refund Timeline</h3>
+                        <p>Approved refunds are processed back to the original payment method
+                           (card, UPI, net-banking or wallet) within <strong>7–10 business days</strong>
+                           of the refund being approved by the school office. The time taken for the
+                           amount to reflect in your account thereafter depends on your bank and is
+                           normally an additional 2–5 business days.</p>
+
+                        <h3 class="mt32">3. How to Request a Refund</h3>
+                        <p>To request a refund, email
+                           <a href="mailto:st.annes@gmail.com">st.annes@gmail.com</a> or call the
+                           school office (see Contact Us) with the student's name, class, payment date,
+                           amount and transaction/reference ID. Requests are reviewed and you will be
+                           informed of the decision within 7 business days.</p>
+
+                        <h3 class="mt32">4. Cancellation</h3>
+                        <p>Once a fee payment is successfully completed it cannot be cancelled by the
+                           parent through the portal. Any cancellation request is treated as a refund
+                           request and handled per Section 1 above.</p>
+
+                        <p class="text-muted mt32"><small>Last updated: 15/06/2026.</small></p>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <!-- =========================================================
+         PRIVACY POLICY   ->  /privacy-policy
+         ========================================================= -->
+    <template id="privacy_policy_page" name="Privacy Policy">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <section class="s_text_block pt32 pb32">
+                    <div class="container">
+                        <h1 class="mb8">Privacy Policy</h1>
+                        <p class="text-muted">St. Anne's Convent School, Chotojagulia</p>
+
+                        <p>St. Anne's Convent School ("we", "us", "the School") is committed to
+                           protecting the privacy of students, parents and guardians who use this
+                           website and our online payment portal. This policy explains what information
+                           we collect, why, and how we use and protect it.</p>
+
+                        <h3 class="mt32">1. Information We Collect</h3>
+                        <ul>
+                            <li>Student details: name, class, admission/roll number, date of birth.</li>
+                            <li>Parent/guardian details: name, address, email and phone number.</li>
+                            <li>Payment information needed to process fees, such as the amount, date,
+                                and transaction reference.</li>
+                        </ul>
+
+                        <h3 class="mt32">2. Payment Data</h3>
+                        <p>Online fee payments are processed by our payment gateway partner,
+                           <strong>Razorpay</strong>. Sensitive payment details such as card numbers,
+                           CVV, UPI PIN or net-banking credentials are entered on Razorpay's secure,
+                           PCI-DSS-compliant systems and are <strong>not stored on our servers</strong>.
+                           We only retain the transaction reference and status needed for our records.</p>
+
+                        <h3 class="mt32">3. How We Use Your Information</h3>
+                        <ul>
+                            <li>To process and record fee payments and issue receipts.</li>
+                            <li>To communicate with parents about admissions, academics and school
+                                notices.</li>
+                            <li>To meet legal, accounting and regulatory obligations.</li>
+                        </ul>
+
+                        <h3 class="mt32">4. Sharing of Information</h3>
+                        <p>We do not sell or rent personal information. We share it only with our
+                           payment gateway to process transactions, and with authorities where required
+                           by law.</p>
+
+                        <h3 class="mt32">5. Data Security &amp; Retention</h3>
+                        <p>We use reasonable technical and organisational measures to protect personal
+                           data and retain it only as long as necessary for school records and legal
+                           requirements.</p>
+
+                        <h3 class="mt32">6. Your Rights &amp; Contact</h3>
+                        <p>To access, correct or request deletion of your information, contact us at
+                           <a href="mailto:st.annes@gmail.com">st.annes@gmail.com</a> or call the
+                           numbers listed on our Contact Us page.</p>
+
+                        <p class="text-muted mt32"><small>Last updated: 15/06/2026.</small></p>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <!-- =========================================================
+         TERMS & CONDITIONS   ->  /terms-and-conditions
+         ========================================================= -->
+    <template id="terms_page" name="Terms and Conditions">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <section class="s_text_block pt32 pb32">
+                    <div class="container">
+                        <h1 class="mb8">Terms &amp; Conditions</h1>
+                        <p class="text-muted">St. Anne's Convent School, Chotojagulia</p>
+
+                        <p>These terms govern the use of this website and the online fee-payment portal
+                           of St. Anne's Convent School. By using the portal you accept these terms.</p>
+
+                        <h3 class="mt32">1. Use of the Portal</h3>
+                        <p>The portal is provided for parents and guardians to pay school fees and view
+                           related information. You agree to provide accurate student and payment
+                           details and to use the portal only for lawful purposes.</p>
+
+                        <h3 class="mt32">2. Payments</h3>
+                        <ul>
+                            <li>All fees are in Indian Rupees (INR) and processed through Razorpay.</li>
+                            <li>A payment is confirmed only after the school receives a successful
+                                transaction status from the payment gateway.</li>
+                            <li>You are responsible for paying any bank or gateway charges that may
+                                apply to a transaction, where notified.</li>
+                        </ul>
+
+                        <h3 class="mt32">3. Refunds</h3>
+                        <p>Refunds, where applicable, are governed by our
+                           <a href="/refund-policy">Cancellation &amp; Refunds Policy</a>.</p>
+
+                        <h3 class="mt32">4. Accuracy of Information</h3>
+                        <p>While we take care to keep fee and other information accurate, the School may
+                           update it at any time. In case of any discrepancy, the records maintained by
+                           the school office prevail.</p>
+
+                        <h3 class="mt32">5. Limitation of Liability</h3>
+                        <p>The School is not liable for failures caused by the payment gateway, banks,
+                           or internet connectivity beyond our reasonable control. Disputes relating to
+                           payments are handled in accordance with our policies and applicable law.</p>
+
+                        <h3 class="mt32">6. Governing Law</h3>
+                        <p>These terms are governed by the laws of India, and any disputes are subject
+                           to the jurisdiction of the courts at North 24 Parganas, West Bengal.</p>
+
+                        <h3 class="mt32">7. Contact</h3>
+                        <p>For any questions about these terms, contact
+                           <a href="mailto:st.annes@gmail.com">st.annes@gmail.com</a>.</p>
+
+                        <p class="text-muted mt32"><small>Last updated: 15/06/2026.</small></p>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <!-- =========================================================
+         SERVICE DELIVERY (SHIPPING) POLICY   ->  /shipping-policy
+         A school ships nothing physical, but Razorpay's form asks for it.
+         ========================================================= -->
+    <template id="shipping_policy_page" name="Service Delivery Policy">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <section class="s_text_block pt32 pb32">
+                    <div class="container">
+                        <h1 class="mb8">Service Delivery Policy</h1>
+                        <p class="text-muted">St. Anne's Convent School, Chotojagulia</p>
+
+                        <p>St. Anne's Convent School provides <strong>educational services</strong>.
+                           Payments made through this portal are towards school fees (such as tuition,
+                           term, examination and related charges). <strong>No physical product is sold
+                           or shipped</strong>, so no shipping or delivery charges apply.</p>
+
+                        <p>On successful payment, the transaction is recorded against the student's
+                           account and a payment confirmation/receipt is made available electronically,
+                           usually immediately and in any case within 24 hours. Receipts can also be
+                           obtained from the school office.</p>
+
+                        <p>For any payment-related query, please see our
+                           <a href="/contactus">Contact Us</a> page.</p>
+
+                        <p class="text-muted mt32"><small>Last updated: 15/06/2026.</small></p>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+</odoo>

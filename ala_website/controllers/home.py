@@ -18,7 +18,7 @@ class home_controller(http.Controller):
 
         # Fetch video + images
         video = request.env['web.video'].sudo().search([('show_website', '=', True)], limit=1)
-        video_urls = request.env['web.video.youtube'].sudo().search([('show_website', '=', True)], limit=1)
+        video_urls = request.env['ala.web.video.youtube'].sudo().search([('show_website', '=', True)], limit=1)
 
         random_images = []
         if video and video.image_ids:
@@ -30,7 +30,7 @@ class home_controller(http.Controller):
 
         # Notices
         print('DDDDDDDDDDDDDD',random_images)
-        notices = request.env['web.info'].sudo().search([('enable', '=', True)], limit=1)
+        notices = request.env['ala.web.info'].sudo().search([('enable', '=', True)], limit=1)
         raw_html = ""
         for notice in notices:
             date = notice.date.strftime('%d-%m-%Y')

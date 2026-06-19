@@ -18,6 +18,7 @@
         'views/academics_template.xml',
         'views/school_commitee_temp.xml',
         'views/events_gallery_s3_temp.xml',
+        'views/razor_pay_templates.xml',
         'views/online_application_templates.xml',
         'views/e_magazine_view.xml',
         'views/web_menu.xml',

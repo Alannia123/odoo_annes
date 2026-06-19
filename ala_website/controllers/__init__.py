@@ -11,3 +11,4 @@ from . import magazine
 from . import school_calender_cont
 from . import certificate_portal
 from . import app_download
+from . import razor_pay_policies
