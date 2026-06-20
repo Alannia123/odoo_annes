@@ -58,7 +58,7 @@ class home_controller(http.Controller):
 
         vals = {
             'today_date': today_date,
-            'banner': request.env['banner.info'].sudo().search([('enable', '=', True)], limit=1),
+            'banner': request.env['ala.banner.info'].sudo().search([('enable', '=', True)], limit=1),
             'notices': raw_html,
             'birth_raw_html': birth_raw_html,
             'today_births': birthday_students,

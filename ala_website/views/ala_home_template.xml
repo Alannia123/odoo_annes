@@ -95,7 +95,7 @@
               </iframe>
               <div class="video-overlay"></div>
               <div class="video-caption-sc">
-                <h3>🎓 Mary Immaculate School</h3>
+                <h3>🎓 St.Anne's School</h3>
                 <p>Where Knowledge Meets Values</p>
               </div>
             </div>
@@ -377,7 +377,7 @@
             and
             <span class="rainbow">Carve</span>
             Your Child's Future with
-            <span class="rainbow">ST>ANNE'S</span>.
+            <span class="rainbow">St.Anne's</span>.
         </h2>
 
         <p class="hero-wave-text">
@@ -1405,7 +1405,7 @@
     <div class="mis-row slide-right">
         <div class="mis-track">
             <t t-set="photos"
-                               t-value="request.env['program.gallery.aws.url']
+                               t-value="request.env['ala.program.gallery.aws.url']
                                         .sudo()
                                         .search([('program_id.show_website', '=', True)])"/>
 
@@ -1563,18 +1563,13 @@
 
           <div class="about-inner">
             <p>
-              Mary Immaculate E.M. School, Basirhat was started on 11 March 2014 at OMI Maria Bhavan
-              with KG 1 as a co-education school. The school received permanent NOC and Certificate
-              of Recognition (Memo No. 20-SC/AIS/NOC AIS/RTE/COMMTT/55/2019, dated 24.01.2023) by
-              the Directorate of School Education, Government of West Bengal.The school follows the
-                proposed syllabus of ICSE Board, New Delhi. "Mary Immaculate English Medium School",
-                Basirhat, is a missionary school, which has its mission and vision according to the Gospel
-                values. We take care of our children's all-round education.
+              We are delighted to welcome you to St. Anne's Convent School, Chotojagulia. Established in 2018, our school is proudly owned by the Society of Sisters of St. Anne, Chennai, a body registered under the Society Registration Act of 1860.
+
+As a Catholic educational institution conducted by the Sisters of St. Anne, Chotojagulia, we are a branch of the Society of Sisters of St. Anne. This esteemed Society is dedicated to educational service throughout India, working through numerous institutions to provide quality education and foster holistic development.
             </p>
 
             <p>
-              The school follows the ICSE syllabus and focuses on the all-round development of every child —
-              academics, values, discipline, leadership, and character formation.
+              We look forward to a year filled with learning, growth, and achievement. Together, we aim to uphold the values and vision of our founding Society, ensuring that every student thrives in a nurturing and academically rigorous environment.
             </p>
           </div>
 
@@ -1933,7 +1928,8 @@
 
 
         <!-- ========== Team (Profile Spotlight) ========== -->
-        <section class="s_company_team" style="background:#7085a3;">
+          <t t-if="member_id">
+              <section class="s_company_team" style="background:#7085a3;">
           <div class="container">
 
               <div class="event-header-wrapper">
@@ -1942,7 +1938,7 @@
 
             </h2>
         </div>
-              <p class="mis-team-subtitle">Guiding Mary Immaculate School with Vision &amp; Values</p>
+              <p class="mis-team-subtitle">Guiding St.Anne's School with Vision &amp; Values</p>
 
             <div class="row g-4 s_nb_column_fixed">
 
@@ -1955,7 +1951,7 @@
                   </div>
                   <div class="mis-profile-info">
                     <h4><b><t t-esc="president.name"/></b></h4>
-                    <p>President of OMI group of schools,<br/>St. Joseph Bhavan, Rudra Road,<br/>St. Thomas Mount, Chennai.</p>
+                    <p>St.Anne's School,<br/>Duttapukur, Basirhat.<br/></p>
                   </div>
                 </div>
               </div>
@@ -1969,7 +1965,7 @@
                   </div>
                   <div class="mis-profile-info">
                     <h4><b><t t-esc="secretary.name"/></b></h4>
-                    <p>Secretary, OMI group of Schools,<br/>St. Eugene English Medium School</p>
+                    <p>St.Anne's School,<br/>Duttapukur, Barasat.<br/></p>
                   </div>
                 </div>
               </div>
@@ -1983,7 +1979,7 @@
                   </div>
                   <div class="mis-profile-info">
                     <h4><b><t t-esc="principal.name"/></b></h4>
-                    <p>Principal,<br/>Mary Immaculate School,<br/>Patilachandra, Basirhat.</p>
+                    <p>St.Anne's School,<br/>Duttapukur, Barasat.<br/></p>
                   </div>
                 </div>
               </div>
@@ -1997,7 +1993,7 @@
                   </div>
                   <div class="mis-profile-info">
                     <h4><b><t t-esc="manager.name"/></b></h4>
-                    <p>Manager,<br/>Mary Immaculate School,<br/>Patilachandra, Basirhat.</p>
+                    <p>St.Anne's School,<br/>Duttapukur, Barasat.<br/></p>
                   </div>
                 </div>
               </div>
@@ -2013,7 +2009,7 @@
                   </div>
                   <div class="mis-profile-info">
                     <h4><b><t t-esc="administrator.name"/></b></h4>
-                    <p>Administrator,<br/>Mary Immaculate School,<br/>Patilachandra, Basirhat.</p>
+                    <p>St.Anne's School,<br/>Duttapukur, Barasat.<br/></p>
                   </div>
                 </div>
               </div>
@@ -2021,6 +2017,9 @@
             </div>
           </div>
         </section>
+
+          </t>
+
 
          <style>
 
@@ -2346,136 +2345,136 @@
          </style>
 
 
-           <section class="s_timeline pt48 pb64 " style="background: #7085a3;">
-               <div class="event-header-wrapper">
-            <h2 class="event-header">
-                <span class="event-title-ocean" style="color:#a5c0cc;">Our Journey Through The Years</span>
+<!--           <section class="s_timeline pt48 pb64 " style="background: #7085a3;">-->
+<!--               <div class="event-header-wrapper">-->
+<!--            <h2 class="event-header">-->
+<!--                <span class="event-title-ocean" style="color:#a5c0cc;">Our Journey Through The Years</span>-->
 
-            </h2>
-        </div>
-        <p class="mis-timeline-sub">A legacy built on excellence, growth &amp; values</p>
-          <div class="container s_timeline_line">
+<!--            </h2>-->
+<!--        </div>-->
+<!--        <p class="mis-timeline-sub">A legacy built on excellence, growth &amp; values</p>-->
+<!--          <div class="container s_timeline_line">-->
 
-            <div class="s_timeline_row d-block d-md-flex flex-row">
-              <div class="s_timeline_date"><b>2025</b></div>
-              <div class="s_timeline_content d-flex">
-                <div class="s_timeline_card s_card card bg-white w-100 mis-soft-card">
-                  <div class="card-body">
-                    <h5 class="card-title">ICSE 1st Batch (Class: X)</h5>
-                  </div>
-                </div>
-                <i class="fa fa-1x fa-child bg-o-color-2 rounded-circle s_timeline_icon"></i>
-              </div>
-              <div class="s_timeline_content"></div>
-            </div>
+<!--            <div class="s_timeline_row d-block d-md-flex flex-row">-->
+<!--              <div class="s_timeline_date"><b>2025</b></div>-->
+<!--              <div class="s_timeline_content d-flex">-->
+<!--                <div class="s_timeline_card s_card card bg-white w-100 mis-soft-card">-->
+<!--                  <div class="card-body">-->
+<!--                    <h5 class="card-title">ICSE 1st Batch (Class: X)</h5>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <i class="fa fa-1x fa-child bg-o-color-2 rounded-circle s_timeline_icon"></i>-->
+<!--              </div>-->
+<!--              <div class="s_timeline_content"></div>-->
+<!--            </div>-->
 
-            <div class="s_timeline_row d-block d-md-flex flex-row">
-              <div class="s_timeline_date"><b>2022</b></div>
-              <div class="s_timeline_content d-flex">
-                <div class="s_timeline_card s_card card bg-white w-100 mis-soft-card">
-                  <div class="card-body">
-                    <h5 class="card-title">Best School in Basirhat, North 24 PGS...</h5>
-                  </div>
-                </div>
-                <i class="fa fa-1x fa-graduation-cap bg-o-color-2 rounded-circle s_timeline_icon"></i>
-              </div>
-              <div class="s_timeline_content d-flex">
-                <i class="fa fa-1x fa-asterisk bg-o-color-2 rounded-circle s_timeline_icon"></i>
-                <div class="s_timeline_card s_card card bg-white w-100 mis-soft-card">
-                  <div class="card-body">
-                    <h5 class="card-title">Affiliated to ICSE</h5>
-                  </div>
-                </div>
-              </div>
-            </div>
+<!--            <div class="s_timeline_row d-block d-md-flex flex-row">-->
+<!--              <div class="s_timeline_date"><b>2022</b></div>-->
+<!--              <div class="s_timeline_content d-flex">-->
+<!--                <div class="s_timeline_card s_card card bg-white w-100 mis-soft-card">-->
+<!--                  <div class="card-body">-->
+<!--                    <h5 class="card-title">Best School in Basirhat, North 24 PGS...</h5>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <i class="fa fa-1x fa-graduation-cap bg-o-color-2 rounded-circle s_timeline_icon"></i>-->
+<!--              </div>-->
+<!--              <div class="s_timeline_content d-flex">-->
+<!--                <i class="fa fa-1x fa-asterisk bg-o-color-2 rounded-circle s_timeline_icon"></i>-->
+<!--                <div class="s_timeline_card s_card card bg-white w-100 mis-soft-card">-->
+<!--                  <div class="card-body">-->
+<!--                    <h5 class="card-title">Affiliated to ICSE</h5>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
 
-            <div class="s_timeline_row d-block d-md-flex flex-row-reverse">
-              <div class="s_timeline_date"><b>2014</b></div>
-              <div class="s_timeline_content d-flex">
-                <div class="s_timeline_card s_card card bg-white w-100 mis-soft-card">
-                  <div class="card-body">
-                    <h5 class="card-title">Mary Immaculate School Established</h5>
-                  </div>
-                </div>
-                <i class="fa fa-1x fa-bolt bg-o-color-2 rounded-circle s_timeline_icon"></i>
-              </div>
-              <div class="s_timeline_content"></div>
+<!--            <div class="s_timeline_row d-block d-md-flex flex-row-reverse">-->
+<!--              <div class="s_timeline_date"><b>2014</b></div>-->
+<!--              <div class="s_timeline_content d-flex">-->
+<!--                <div class="s_timeline_card s_card card bg-white w-100 mis-soft-card">-->
+<!--                  <div class="card-body">-->
+<!--                    <h5 class="card-title">Mary Immaculate School Established</h5>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <i class="fa fa-1x fa-bolt bg-o-color-2 rounded-circle s_timeline_icon"></i>-->
+<!--              </div>-->
+<!--              <div class="s_timeline_content"></div>-->
 
-            </div>
+<!--            </div>-->
 
-          </div>
-<!--        </section>-->
+<!--          </div>-->
+<!--&lt;!&ndash;        </section>&ndash;&gt;-->
 
-<!--         <section class="s_timeline pt48 pb64" style="background:#7085a3;">-->
-    <div class="container-fluid">
+<!--&lt;!&ndash;         <section class="s_timeline pt48 pb64" style="background:#7085a3;">&ndash;&gt;-->
+<!--    <div class="container-fluid">-->
 
-        <div class="row align-items-center">
+<!--        <div class="row align-items-center">-->
 
-            <!-- MAP LEFT -->
-            <div class="col-lg-7 school-map-box">
+<!--            &lt;!&ndash; MAP LEFT &ndash;&gt;-->
+<!--            <div class="col-lg-7 school-map-box">-->
 
-                <t t-set="map_location"
-                   t-value="request.env['ir.config_parameter'].sudo().get_param('website.google_map_link')"/>
+<!--                <t t-set="map_location"-->
+<!--                   t-value="request.env['ir.config_parameter'].sudo().get_param('website.google_map_link')"/>-->
 
-                <iframe
-                    t-att-src="'https://maps.google.com/maps?q=' + map_location + '&amp;z=16&amp;output=embed'"
-                    width="100%"
-                    height="350"
-                    style="border:0;border-radius:10px;"
-                    loading="lazy">
-                </iframe>
+<!--                <iframe-->
+<!--                    t-att-src="'https://maps.google.com/maps?q=' + map_location + '&amp;z=16&amp;output=embed'"-->
+<!--                    width="100%"-->
+<!--                    height="350"-->
+<!--                    style="border:0;border-radius:10px;"-->
+<!--                    loading="lazy">-->
+<!--                </iframe>-->
 
-            </div>
+<!--            </div>-->
 
 
-            <!-- SCHOOL INFO RIGHT -->
-            <div class="col-lg-5 school-contact-box">
+<!--            &lt;!&ndash; SCHOOL INFO RIGHT &ndash;&gt;-->
+<!--            <div class="col-lg-5 school-contact-box">-->
 
-                <t t-set="company" t-value="request.env.company"/>
+<!--                <t t-set="company" t-value="request.env.company"/>-->
 
-<h2 t-esc="company.name"/>
+<!--<h2 t-esc="company.name"/>-->
 
-<div class="contact-item">
-    <img src="/ala_website/static/src/img/location.png"/>
-    <span t-esc="company.partner_id.contact_address"/>
-</div>
+<!--<div class="contact-item">-->
+<!--    <img src="/ala_website/static/src/img/location.png"/>-->
+<!--    <span t-esc="company.partner_id.contact_address"/>-->
+<!--</div>-->
 
-<div class="contact-item">
-    <img src="/ala_website/static/src/img/phone.png"/>
-    <span t-esc="company.phone"/>
-</div>
+<!--<div class="contact-item">-->
+<!--    <img src="/ala_website/static/src/img/phone.png"/>-->
+<!--    <span t-esc="company.phone"/>-->
+<!--</div>-->
 
-<div class="contact-item">
-    <img src="/ala_website/static/src/img/email.png"/>
-    <span t-esc="company.email"/>
-</div>
+<!--<div class="contact-item">-->
+<!--    <img src="/ala_website/static/src/img/email.png"/>-->
+<!--    <span t-esc="company.email"/>-->
+<!--</div>-->
 
-                <div class="social-icons">
+<!--                <div class="social-icons">-->
 
-                    <a t-att-href="request.env['ir.config_parameter'].sudo().get_param('website.facebook_link')" target="_blank">
-                        <img src="/ala_website/static/src/img/facebook.png"/>
-                    </a>
+<!--                    <a t-att-href="request.env['ir.config_parameter'].sudo().get_param('website.facebook_link')" target="_blank">-->
+<!--                        <img src="/ala_website/static/src/img/facebook.png"/>-->
+<!--                    </a>-->
 
-                    <a t-att-href="request.env['ir.config_parameter'].sudo().get_param('website.instagram_link')" target="_blank">
-                        <img src="/ala_website/static/src/img/instagram.png"/>
-                    </a>
+<!--                    <a t-att-href="request.env['ir.config_parameter'].sudo().get_param('website.instagram_link')" target="_blank">-->
+<!--                        <img src="/ala_website/static/src/img/instagram.png"/>-->
+<!--                    </a>-->
 
-                    <a t-att-href="request.env['ir.config_parameter'].sudo().get_param('website.youtube_link')" target="_blank">
-                        <img src="/ala_website/static/src/img/youtube.png"/>
-                    </a>
+<!--                    <a t-att-href="request.env['ir.config_parameter'].sudo().get_param('website.youtube_link')" target="_blank">-->
+<!--                        <img src="/ala_website/static/src/img/youtube.png"/>-->
+<!--                    </a>-->
 
-                    <a t-att-href="request.env['ir.config_parameter'].sudo().get_param('website.twitter_link')" target="_blank">
-                        <img src="/ala_website/static/src/img/twitter.png"/>
-                    </a>
+<!--                    <a t-att-href="request.env['ir.config_parameter'].sudo().get_param('website.twitter_link')" target="_blank">-->
+<!--                        <img src="/ala_website/static/src/img/twitter.png"/>-->
+<!--                    </a>-->
 
-                </div>
+<!--                </div>-->
 
-            </div>
+<!--            </div>-->
 
-        </div>
+<!--        </div>-->
 
-    </div>
-</section>
+<!--    </div>-->
+<!--</section>-->
 
           <style>
 

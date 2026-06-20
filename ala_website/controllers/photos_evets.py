@@ -14,7 +14,7 @@ class program_events_controller(http.Controller):
         """To redirect to contact page."""
 
         vals = {
-            'events': request.env['program.gallery.aws'].sudo().search([]),
+            'events': request.env['ala.program.gallery.aws'].sudo().search([]),
         }
         print('LODFFFFFFFFFFFFFFFFF',vals)
         return request.render('ala_website.program_events_gallery', vals)
@@ -22,7 +22,7 @@ class program_events_controller(http.Controller):
 
     @http.route(['/gallery/photos/<int:event>'], type='http', auth="public", website=True)
     def get_event_galarry(self, event=None, **kw):
-        photo_gallery = request.env['program.gallery.aws'].sudo().search([('id', '=', int(event))])
+        photo_gallery = request.env['ala.program.gallery.aws'].sudo().search([('id', '=', int(event))])
         print('DDDDDDDEEEEEEWWWWWWWWWWW',photo_gallery)
         values = {
                     'gallery': photo_gallery,

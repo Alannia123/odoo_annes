@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <template id="app_release_temp" name="MIS School App Download (Animated)">
+    <template id="app_release_temp" name="St.Anne's School App Download (Animated)">
         <t t-call="website.layout">
             <style>
                 body {
@@ -153,40 +153,40 @@
             </style>
 
             <div class="app-section">
-                <h2>📱 Download MIS School App</h2>
+                <h2>📱 Download St.Annes School App</h2>
                 <p>
                     Experience our smart and seamless <b>School Management App</b>.
                     Stay connected with attendance, homework, notices, and updates — anytime, anywhere!
                 </p>
 
                 <div class="store-badge">
-                    <a href="https://play.google.com/store/apps/details?id=mis.management&amp;hl=en" target="_blank">
+                    <a href="https://play.google.com/store/apps/details?id=annes.management&amp;hl=en_IN" target="_blank">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
                              alt="Get it on Google Play"/>
                     </a>
                 </div>
 
-                <div class="apk-download">
-                    <p>⚡ <b>Your device not supported?</b> No problem!</p>
-                    <p>Scan the QR code or click below to download the APK directly:</p>
-                    <img src="/ala_website/static/apk/ala_apk.png" alt="QR Code"/>
-                    <br/>
-                    <a href="/download/mis-app" class="btn btn-primary">
-                        Download APK
-                    </a>
+<!--                <div class="apk-download">-->
+<!--                    <p>⚡ <b>Your device not supported?</b> No problem!</p>-->
+<!--                    <p>Scan the QR code or click below to download the APK directly:</p>-->
+<!--                    <img src="/ala_website/static/apk/ala_apk.png" alt="QR Code"/>-->
+<!--                    <br/>-->
+<!--                    <a href="/download/mis-app" class="btn btn-primary">-->
+<!--                        Download APK-->
+<!--                    </a>-->
 
-                </div>
+<!--                </div>-->
 
                 <h3>📸 App Screenshots</h3>
                 <div class="app-screenshots">
-                    <img src="/ala_website/static/src/img/splash.jpeg" alt="Splash Screen"/>
-                    <img src="/ala_website/static/src/img/screen_login.jpeg" alt="Login Screen"/>
-                    <img src="/ala_website/static/src/img/screen_dashboard.jpeg" alt="Dashboard Screen"/>
-                    <img src="/ala_website/static/src/img/menu.jpeg" alt="Modules Screen"/>
+                    <img src="/ala_website/static/src/img/splash.png" alt="Splash Screen"/>
+                    <img src="/ala_website/static/src/img/login.jpeg" alt="Login Screen"/>
+                    <img src="/ala_website/static/src/img/fac_dash.jpeg" alt="Dashboard Screen"/>
+                    <img src="/ala_website/static/src/img/stu_dash.jpeg" alt="Modules Screen"/>
                 </div>
 
                 <footer>
-                    <p>© 2025 Mary Immaculate School • Powered by <b>Alanniainfotechz</b></p>
+                    <p>© 2025 St.Anne's School • Powered by <b>Alanniainfotechz</b></p>
                 </footer>
             </div>
         </t>

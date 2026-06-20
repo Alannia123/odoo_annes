@@ -109,7 +109,7 @@
     <!-- === GALLERY WRAPPER === -->
     <div class="container glow-background my-5">
       <div class="row" id="galleryGrid">
-        <t t-foreach="request.env['program.gallery.aws'].sudo().search([])" t-as="gallery">
+        <t t-foreach="request.env['ala.program.gallery.aws'].sudo().search([])" t-as="gallery">
           <t t-if="gallery.attach_count != 0">
             <h3><span t-out="gallery.event_id.name"/></h3>
             <div class="row g-4">
