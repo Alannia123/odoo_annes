@@ -17,7 +17,7 @@ class home_controller(http.Controller):
         today_date = fields.Datetime.now().strftime('%d-%m-%Y')
 
         # Fetch video + images
-        video = request.env['web.video'].sudo().search([('show_website', '=', True)], limit=1)
+        video = request.env['ala.web.video'].sudo().search([('show_website', '=', True)], limit=1)
         video_urls = request.env['ala.web.video.youtube'].sudo().search([('show_website', '=', True)], limit=1)
 
         random_images = []
