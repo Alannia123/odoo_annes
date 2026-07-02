@@ -22,6 +22,7 @@ class EducationSubject(models.Model):
 
 
 
+
 class EducationSubjectGroup(models.Model):
     _name = 'ala.education.subject.group'
     _description = 'Subject Group'

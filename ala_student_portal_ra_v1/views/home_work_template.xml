@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_all_homeworks" name="My Sales Orders">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">All Homeworks</t>
+            </t>
+            <div class="container glow-background">
+            <h5>Today Homeworks</h5>
+            <div t-if="not today_homework" class="alert alert-warning" role="alert" style="font-size: 10 pt">
+                No homeworks for Today.
+            </div>
+            <t t-if="today_homework">
+                <table class="table table-sm table-striped table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th >Homework Desc</th>
+<!--                            <th >File</th>-->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="today_homework.work_line_ids" t-as="line">
+                            <t t-if="line.state == 'post'">
+                                <tr>
+                                    <td><span  t-field="line.subject_id.name"/></td>
+                                    <td >
+                                        <span t-att-id="'speechText_' + str(line.id)"
+                                            t-att-data-speak="'Subject: %s. Homework: %s' % (line.subject_id.name, line.homework)"
+                                            style="background-color:#ffe6ff;">
+                                        <span t-field="line.homework"/>
+                                        </span>
+                                        <button class="btn btn-info btn-sm"
+                                                t-att-onclick="'speakText(%s)' % line.id">
+                                            🔊
+                                        </button>
+                                    </td>
+    <!--                                <td >-->
+    <!--                                    <a t-att-href="'/web/content/%s?download=true' % line.attachment_id.id" ><i class="fa fa-download"/> </a>-->
+    <!--                                </td>-->
+                                </tr>
+                            </t>
+                        </t>
+                    </tbody>
+                </table>
+            </t>
+
+            <h5>All Homeworks</h5>
+            <div t-if="not homeworks" class="alert alert-warning" role="alert">
+                No more homeworks for You.
+            </div>
+            <t t-if="homeworks">
+                <table class="table table-sm table-striped table-responsive">
+                    <thead>
+                        <tr >
+<!--                            <th>-->
+<!--                                <span >Title #</span>-->
+<!--                            </th>-->
+                            <th class="text-start">Date</th>
+                        </tr>
+                    </thead>
+                    <t t-foreach="homeworks.sorted(key=lambda h: h.homework_date, reverse=True)" t-as="homework">
+                        <tr>
+                            <td ><a t-attf-href="/homework/get_homework/#{homework.id}" ><span style="color:blue;" t-out="homework.homework_date.strftime('%d/%m/%y')"/></a></td>
+<!--                            <td class="text-end">-->
+<!--                                <span t-field="homework.homework_date" />-->
+<!--                            </td>-->
+                        </tr>
+                    </t>
+                </table>
+            </t>
+            </div>
+            <script>
+                    function speakText(id) {
+                        const span = document.getElementById("speechText_" + id);
+                        if (!span) {
+                            console.warn("Speech text not found");
+                            return;
+                        }
+
+                        const text = span.getAttribute("data-speak");
+                        if (!text) {
+                            console.warn("No text to speak");
+                            return;
+                        }
+
+                        // ✅ ANDROID WEBVIEW (Native TTS)
+                        if (window.AndroidTTS &amp;&amp; typeof window.AndroidTTS.speakText === "function") {
+                            window.AndroidTTS.speakText(text);
+                            return;
+                        }
+
+                        // ✅ BROWSER FALLBACK (Web Speech API)
+                        if ("speechSynthesis" in window) {
+                            window.speechSynthesis.cancel();
+                            const msg = new SpeechSynthesisUtterance(text);
+                            msg.lang = "en-US";
+                            window.speechSynthesis.speak(msg);
+                            return;
+                        }
+
+                        alert("Text-to-speech not supported on this device");
+                    }
+                    </script>
+        </t>
+    </template>
+
+    <template id="portal_open_homeworks" name="My Sales Orders">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">HomeWork</t>
+            </t>
+            <a t-attf-href="/school/all_homeworks" ><h5 style="color:blue;">HomeWork</h5></a>
+            <div >
+                <span><b>Title :</b></span><span t-field="home_work_id.name"></span><br></br>
+                <span><b>Faculty :</b></span><span t-field="home_work_id.class_div_id.faculty_id.name"></span>
+            </div>
+                <table class="table table-sm table-striped table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th >Homework Desc</th>
+<!--                            <th >File</th>-->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="home_work_id.work_line_ids" t-as="line">
+                            <t t-if="line.state == 'post'">
+                                <tr>
+                                    <td><span  t-field="line.subject_id.name"/></td>
+                                    <td >
+                                        <span t-att-id="'speechText_' + str(line.id)"
+                                            t-att-data-speak="'Subject: %s. Homework: %s' % (line.subject_id.name, line.homework)"
+                                            style="background-color:#ffe6ff;">
+                                        <span t-field="line.homework"/>
+                                        </span>
+                                        <button class="btn btn-info"
+                                                t-att-onclick="'speakText(%s)' % line.id">
+                                            🔊
+                                        </button>
+                                    </td>
+    <!--                                <td >-->
+    <!--                                    <a t-att-href="'/web/content/%s?download=true' % line.attachment_id.id" ><i class="fa fa-download"/> </a>-->
+    <!--                                </td>-->
+                                </tr>
+                            </t>
+                        </t>
+                    </tbody>
+                </table>
+                <script>
+                    function speakText(id) {
+                        const span = document.getElementById("speechText_" + id);
+                        if (!span) {
+                            console.warn("Speech text not found");
+                            return;
+                        }
+
+                        const text = span.getAttribute("data-speak");
+                        if (!text) {
+                            console.warn("No text to speak");
+                            return;
+                        }
+
+                        // ✅ ANDROID WEBVIEW (Native TTS)
+                        if (window.AndroidTTS &amp;&amp; typeof window.AndroidTTS.speakText === "function") {
+                            window.AndroidTTS.speakText(text);
+                            return;
+                        }
+
+                        // ✅ BROWSER FALLBACK (Web Speech API)
+                        if ("speechSynthesis" in window) {
+                            window.speechSynthesis.cancel();
+                            const msg = new SpeechSynthesisUtterance(text);
+                            msg.lang = "en-US";
+                            window.speechSynthesis.speak(msg);
+                            return;
+                        }
+
+                        alert("Text-to-speech not supported on this device");
+                    }
+                    </script>
+
+            </t>
+    </template>
+
+</odoo>

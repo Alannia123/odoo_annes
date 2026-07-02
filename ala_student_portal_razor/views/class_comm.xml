@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_all_class_comms" name="My Sales Orders">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Class Communications</t>
+            </t>
+            <div class="container glow-background">
+            <h5>Today Communications</h5>
+            <div t-if="not today_class_comms" class="alert alert-warning" role="alert" style="font-size: 10 pt">
+                No Communications for Today.
+            </div>
+            <t t-if="today_class_comms">
+                <table class="table table-sm table-striped table-responsive">
+                    <thead>
+                        <tr>
+                            <th width="15%">Date #</th>
+                            <th width="85%" >Information</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="today_class_comms" t-as="comms">
+                            <tr>
+                                <td t-esc="comms.create_date.strftime('%d/%m/%y')"></td>
+                                <td  t-esc="comms.desc"/>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </t>
+
+            <h5>All Class Communications</h5>
+            <div t-if="not class_comms" class="alert alert-warning" role="alert">
+                No more Communications for You.
+            </div>
+            <t t-if="class_comms">
+                <table class="table table-sm table-striped table-responsive">
+                    <thead>
+                        <tr >
+                            <th >Date</th>
+                        </tr>
+                    </thead>
+                    <t t-foreach="class_comms" t-as="comms">
+                        <tr>
+                            <td ><a t-attf-href="/class_comm/get_comm/#{comms.id}" ><span style="color: blue;" t-out="comms.create_date.strftime('%d/%m/%y')"/></a></td>
+                        </tr>
+                    </t>
+                </table>
+            </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_open_communication" name="My Sales Orders">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Communications</t>
+            </t>
+            <a t-attf-href="/school/class_communation" ><h5 style="color:blue;">Communications</h5></a>
+            <div >
+                <span><b>Title :</b></span><span t-field="class_com_id.name"></span><br></br>
+                <span><b>Faculty :</b></span><span t-field="class_com_id.class_div_id.faculty_id.name"></span><br></br>
+                <span><b>Message :</b></span><br></br><span style="padding-left:20 px;background-color:#ffe6ff" t-field="class_com_id.desc"></span>
+            </div>
+            <br></br>
+            <!-- Chatter Section -->
+            <div id="portal_chatter">
+                <h4>Comments</h4>
+                <form action="/student/add_comment_class_comm" method="POST"  enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <input type="hidden" name="res_id" t-att-value="class_com_id.id"/>
+                    <input type="hidden" name="model" value="teacher.class.parent"/>
+                    <textarea name="message" class="form-control" required="1" placeholder="Add a comment..."></textarea>
+                    <button type="submit" class="btn btn-success mt-2">
+                        <i class="fa fa-comment"></i> Post
+                    </button>
+                </form>
+                <t t-if="class_com_id.message_ids">
+                    <ul class="list-group">
+                        <t t-foreach="class_com_id.message_ids" t-as="message">
+                            <li class="list-group-item">
+                                <strong><t t-esc="message.author_id.name"/></strong>:
+                                <t t-esc="message.body"/>
+<!--                                <small><t t-esc="message.date"/></small>-->
+                            </li>
+                        </t>
+                    </ul>
+                </t>
+
+            </div>
+<!--            <div id="invoice_communication" class="mt-4">-->
+<!--                        <h3>Communication history</h3>-->
+<!--                        <t t-call="portal.message_thread"/>-->
+<!--                    </div>-->
+<!--            <t t-call="mail.portal_chatter">-->
+<!--                <t t-set="res_model" t-value="'ala.student.homework'" />-->
+<!--                <t t-set="res_id" t-value="home_work_id.id" />-->
+<!--            </t>-->
+            </t>
+
+
+    </template>
+
+</odoo>

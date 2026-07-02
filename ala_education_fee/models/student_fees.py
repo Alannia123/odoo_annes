@@ -384,6 +384,8 @@ class StudentFeeLine(models.Model):
         ('monthly', 'Monthly'),
         ('other', 'Others')], string='Fee Type', required=True, copy=False)
     fine_log_ids = fields.One2many('ala.student.fine.log', 'fee_line_id', string="Fine Logs")
+    
+
 
     @api.depends('amount', 'concession_amount', 'fine_amount')
     def _compute_amount_to_paid(self):

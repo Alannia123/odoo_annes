@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_monthly_payment_tiles" name="Monthly Payment Tiles">
+        <t t-call="portal.portal_layout">
+            <style>
+                .typing-text::after {
+                      content: attr(data-text);
+                      display: inline-block;
+                      overflow: hidden;
+                      color: #e64d00;
+                      white-space: nowrap;
+                      animation: typing 3s infinite;
+                    }
+                    @keyframes typing { from { width: 0 } to { width: 100% } }
+            </style>
+
+            <h3 class="mb-3">School Payments</h3>
+
+            <!-- Post-redirect flash banner -->
+            <t t-set="pay_status" t-value="request.params.get('payment')"/>
+            <t t-if="pay_status == 'success'">
+                <div class="alert alert-success text-center">Payment successful. Thank you!</div>
+            </t>
+            <t t-if="pay_status == 'already'">
+                <div class="alert alert-info text-center">This fee is already paid.</div>
+            </t>
+            <t t-if="pay_status == 'failed'">
+                <div class="alert alert-danger text-center">Payment failed or cancelled. Please try again.</div>
+            </t>
+            <t t-if="pay_status == 'config'">
+                <div class="alert alert-warning text-center">Online payment is not configured yet. Please contact the office.</div>
+            </t>
+
+            <div class="row text-center">
+                <t t-if="student_fees">
+                    <t t-foreach="student_fees.fee_line_ids" t-as="fee">
+                        <t t-set="is_paid" t-value="fee.payment_status == 'paid'"/>
+                        <div class="col-6 col-md-3 mb-4">
+                            <div class="card shadow-sm" style="background-color:#ff99c2;">
+                                <div class="card-body">
+                                    <span t-field="fee.fee_description"/><br/>
+                                    <b>&#8377;<span t-field="fee.amount"/></b>
+
+                                    <t t-if="is_paid">
+                                        <p class="card-text" style="background-color:green; border-radius: 10px;margin-left:25px;margin-right:25px;">Paid</p>
+                                    </t>
+                                    <t t-elif="fee.payment_status == 'upcoming'">
+                                        <p class="card-text" style="background-color:#7094db; border-radius: 10px;margin-left:25px;margin-right:25px;">Upcoming</p>
+                                        <a t-att-href="'/my/fees/pay/%s' % fee.id" class="btn btn-sm btn-light mt-1">Pay Now</a>
+                                    </t>
+                                    <t t-elif="fee.payment_status == 'unpaid'">
+                                        <p class="card-text" style="background-color:#ffad33; border-radius: 10px;margin-left:25px;margin-right:25px;">Unpaid</p>
+                                        <a t-att-href="'/my/fees/pay/%s' % fee.id" class="btn btn-sm btn-light mt-1">Pay Now</a>
+                                    </t>
+                                    <t t-elif="fee.payment_status == 'over_due'">
+                                        <p class="card-text" style="background-color:#cc2900; border-radius: 10px;margin-left:25px;margin-right:25px;">Overdue</p>
+                                        <t t-if="fee.overdue_days &gt; 0">
+                                            <span class="typing-text" t-att-data-text="str(fee.overdue_days) + ' days ago'"/>
+                                        </t>
+                                        <a t-att-href="'/my/fees/pay/%s' % fee.id" class="btn btn-sm btn-light mt-1">Pay Now</a>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                    <canvas id="feesChart" width="400" height="400"></canvas>
+                    <div class="text-center"><span class="card-text" style="background-color:#8585ad; border-radius: 3px;"><b>Payable:</b>&#8377;<t t-esc="total_fees"/></span></div>
+                    <div>
+                        <span class="card-text" style="background-color:green; border-radius: 2px;margin-left:5px;margin-right:10px;"><b>Paid:</b>&#8377;<t t-esc="paid_fees"/></span>
+                        <span style="background-color:red; border-radius: 4px;margin-left:30px;"><b>Balance:</b>&#8377;<t t-esc="balance_fees"/></span>
+                    </div>
+
+                    <div id="fee-data" t-att-data-paid="paid_fees" t-att-data-balance="balance_fees"></div>
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            var el = document.getElementById("fee-data");
+                            var paid = parseFloat(el.dataset.paid);
+                            var balance = parseFloat(el.dataset.balance);
+                            var ctx = document.getElementById("feesChart").getContext("2d");
+                            new Chart(ctx, {
+                                type: 'doughnut',
+                                data: {
+                                    labels: ["Paid Fees", "Balance Fees"],
+                                    datasets: [{
+                                        label: "Fees Overview",
+                                        data: [paid, balance],
+                                        backgroundColor: ['rgba(75, 192, 192, 0.7)', 'rgba(255, 99, 132, 0.7)'],
+                                        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
+                                        borderWidth: 1
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    plugins: { legend: { position: 'top' }, title: { display: true, text: 'Fees Distribution' } }
+                                }
+                            });
+                        });
+                    </script>
+                </t>
+                <t t-else="">
+                    <div class="alert alert-warning text-center" style="border-radius: 10px; padding: 15px; margin: 20px 0;">
+                        <strong>Sorry for your inconvenience.</strong><br/>
+                        No fees details found. Please contact the office admin for further assistance.
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <!-- Auto-opening Razorpay checkout (website) -->
+    <template id="razorpay_checkout_page" name="Razorpay Checkout">
+        <t t-call="portal.portal_layout">
+            <div class="container text-center mt-5">
+                <h3>Redirecting to secure payment…</h3>
+                <p>Please don't close or refresh this page.</p>
+                <a href="/my/fees" class="btn btn-link">Cancel and go back</a>
+            </div>
+            <div id="rzp-data"
+                 t-att-data-key="key_id"
+                 t-att-data-amount="amount"
+                 t-att-data-order="order_id"
+                 t-att-data-name="school_name"
+                 t-att-data-desc="description"
+                 t-att-data-callback="callback_url"
+                 t-att-data-email="prefill_email"
+                 t-att-data-contact="prefill_contact"/>
+            <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    var d = document.getElementById("rzp-data");
+                    var rzp = new Razorpay({
+                        key: d.dataset.key,
+                        amount: d.dataset.amount,
+                        currency: "INR",
+                        name: d.dataset.name,
+                        description: d.dataset.desc,
+                        order_id: d.dataset.order,
+                        callback_url: d.dataset.callback,
+                        prefill: { email: d.dataset.email, contact: d.dataset.contact },
+                        theme: { color: "#e64d00" }
+                    });
+                    rzp.on("payment.failed", function () { window.location = "/my/fees?payment=failed"; });
+                    rzp.open();
+                });
+            </script>
+        </t>
+    </template>
+</odoo>

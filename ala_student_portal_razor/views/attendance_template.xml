@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <template id="template_attendance_calendar" name="Student Attendance">
+            <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">My Attendance</t>
+            </t>
+                <div class="container my-5">
+                    <h2 class="text-center mb-4">My Attendance</h2>
+                    <style>
+                        .calendar-header h4 {
+                            font-weight: bold;
+                        }
+                        td {
+                            width: 40px;
+                            height: 40px;
+                        }
+                        .attendance-table {
+                            border: 2px solid #ccc;
+                            border-radius: 12px;
+                            overflow: hidden;
+                        }
+                    </style>
+
+                    <div class="calendar-header d-flex justify-content-between align-items-center mb-3">
+                        <a t-attf-href="/school/student_attendance?month={{prev_month}}&amp;year={{prev_year}}" class="btn btn-light"><b>⬅</b></a>
+                        <h4><t t-esc="month"/> <t t-esc="year"/></h4>
+                        <a t-attf-href="/school/student_attendance?month={{next_month}}&amp;year={{next_year}}" class="btn btn-light">➡</a>
+
+                    </div>
+
+                    <div class="d-flex justify-content-around mb-3">
+                        <span class="badge bg-success">Present</span>
+                        <span class="badge bg-danger">Absent</span>
+                        <span class="badge bg-secondary">Holiday</span>
+<!--                        <span class="badge bg-warning">Leave</span>-->
+                    </div>
+
+                    <table class="table table-borderless text-center" width="100%">
+                        <thead>
+                            <tr>
+                                <th>S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th>
+                            </tr>
+                        </thead>
+                        <style>
+                            .badge-present {
+                                background-color: green;  /* soft green */
+                        <!--        color: #155724;-->
+                        <!--        font-size: 16px;-->
+                                padding: 6px 6px;
+                                border-radius: 20px;
+                        <!--        display: inline-block;-->
+                            }
+                            .badge-absent {
+                                background-color: red;  /* soft red */
+                        <!--        color: #721c24;-->
+                        <!--        font-size: 16px;-->
+                                padding: 6px 6px;
+                                border-radius: 20px;
+                        <!--        display: inline-block;-->
+                            }
+                            .badge-holiday {
+                            background-color: #6c757d;  /* same as Bootstrap bg-secondary */
+                            color: #fff;                /* white text for contrast */
+                            padding: 6px 6px;
+                            border-radius: 20px;
+                        }
+                        </style>
+
+                        <tbody>
+                            <t t-foreach="weeks" t-as="week">
+                                <tr>
+                                    <t t-foreach="week" t-as="day" t-foreach-index="day_index">
+                                        <t t-if="day">
+                                            <t t-set="status" t-value="status_by_day.get(day)"/>
+                                            <!-- ✅ Check if Sunday (day_index == 0) -->
+                                            <t t-if="day_index == 0">
+                                                <td>
+                                                    <span class="badge-holiday" t-esc="day"/>
+                                                </td>
+                                            </t>
+                                            <t t-elif="status == 'holiday'">
+                                                <td>
+                                                    <span class="badge-holiday" t-esc="day"></span>
+                                                </td>
+                                            </t>
+                                            <t t-elif="status == 'present'">
+                                                <td>
+                                                    <span class="badge-present" t-esc="day"/>
+                                                </td>
+                                            </t>
+                                            <t t-elif="status == 'absent'">
+                                                <td>
+                                                    <span class="badge-absent" t-esc="day"/>
+                                                </td>
+                                            </t>
+                                            <t t-else="">
+                                                <td>
+                                                    <span t-esc="day"/>
+                                                </td>
+                                            </t>
+                                        </t>
+                                        <t t-if="not day">
+                                            <td></td>
+                                        </t>
+                                    </t>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </template>
+
+</odoo>

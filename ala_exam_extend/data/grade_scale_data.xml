@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Generic grade scale (type empty = applies to all bands). Mirrors the
+         previously hard-coded AA/A+/A/B/C/D ladder. Edit or add band-specific
+         rows under Examination > Configuration > Grade Scale. -->
+    <record id="grade_scale_aa" model="ala.education.grade.scale">
+        <field name="name">AA</field>
+        <field name="sequence">1</field>
+        <field name="min_percent">90</field>
+        <field name="max_percent">100</field>
+        <field name="remark">Outstanding</field>
+    </record>
+    <record id="grade_scale_a_plus" model="ala.education.grade.scale">
+        <field name="name">A+</field>
+        <field name="sequence">2</field>
+        <field name="min_percent">80</field>
+        <field name="max_percent">89.99</field>
+        <field name="remark">Excellent</field>
+    </record>
+    <record id="grade_scale_a" model="ala.education.grade.scale">
+        <field name="name">A</field>
+        <field name="sequence">3</field>
+        <field name="min_percent">70</field>
+        <field name="max_percent">79.99</field>
+        <field name="remark">Very Good</field>
+    </record>
+    <record id="grade_scale_b" model="ala.education.grade.scale">
+        <field name="name">B</field>
+        <field name="sequence">4</field>
+        <field name="min_percent">60</field>
+        <field name="max_percent">69.99</field>
+        <field name="remark">Good</field>
+    </record>
+    <record id="grade_scale_c" model="ala.education.grade.scale">
+        <field name="name">C</field>
+        <field name="sequence">5</field>
+        <field name="min_percent">50</field>
+        <field name="max_percent">59.99</field>
+        <field name="remark">Satisfactory</field>
+    </record>
+    <record id="grade_scale_d" model="ala.education.grade.scale">
+        <field name="name">D</field>
+        <field name="sequence">6</field>
+        <field name="min_percent">0</field>
+        <field name="max_percent">49.99</field>
+        <field name="remark">Needs Improvement</field>
+        <field name="is_pass" eval="False"/>
+    </record>
+</odoo>

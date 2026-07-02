@@ -64,7 +64,7 @@ class EducationExam(models.Model):
         help='Academic year associated with the division.')
     company_id = fields.Many2one(
         'res.company', string='Company',
-        default=lambda self: self.env['res.company']._company_default_get(), readonly=True,
+        default=lambda self: self.env.company, readonly=True,
         help='Company associated with the exam.')
     mark = fields.Integer(
         string='Max Mark', required=True,
@@ -279,8 +279,8 @@ class EducationSubjectLine(models.Model):
         help='Exam associated with the subject line.')
     company_id = fields.Many2one(
         'res.company', string='Company',
-        default=lambda self: self.env['res.company']._company_default_get(),
-        help='Company associated with the subject line.')
+        default=lambda self: self.env.company, readonly=True,
+        help='Company associated with the exam.')
 
     @api.onchange('date')
     def _check_exam_date(self):
@@ -354,8 +354,8 @@ class EducationExamType(models.Model):
         help='Passing mark for the exam.')
     company_id = fields.Many2one(
         'res.company', string='Company',
-        default=lambda self: self.env['res.company']._company_default_get(),
-        help='Company associated with the education exam type.')
+        default=lambda self: self.env.company, readonly=True,
+        help='Company associated with the exam.')
     is_assign_mark = fields.Boolean('Is Assigment Mark?', copy=False)
     prepare_marksheet = fields.Boolean('Prepare Marksheet', copy=False)
     image_1920 = fields.Image("Image", max_width=1920, max_height=1920)

@@ -43,9 +43,8 @@ class EducationExamResults(models.Model):
                                             ' the division.')
     company_id = fields.Many2one(
         'res.company', string='Company',
-        default=lambda self: self.env['res.company']._company_default_get(),
-        help='Company associated with the exam results.'
-    )
+        default=lambda self: self.env.company, readonly=True,
+        help='Company associated with the exam.')
 
     total_pass_mark = fields.Float(string='Total Pass Mark', store=True,
                                    readonly=True, compute='_total_marks_all',compute_sudo=True,
@@ -192,5 +191,5 @@ class ResultsSubjectLine(models.Model):
                                             'with the subject result.')
     company_id = fields.Many2one(
         'res.company', string='Company',
-        default=lambda self: self.env['res.company']._company_default_get(),
-        help='Company associated with the subject result.')
+        default=lambda self: self.env.company, readonly=True,
+        help='Company associated with the exam.')

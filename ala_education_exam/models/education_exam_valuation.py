@@ -63,8 +63,8 @@ class EducationExamValuation(models.Model):
         help='Academic year associated with the exam valuation.')
     company_id = fields.Many2one(
         'res.company', string='Company',
-        default=lambda self: self.env['res.company']._company_default_get(),
-        help='Company associated with the exam valuation.')
+        default=lambda self: self.env.company, readonly=True,
+        help='Company associated with the exam.')
     subject_ids = fields.Many2many('ala.education.subject', 'Subjects')
     division_ids = fields.Many2many('ala.education.class.division', 'Divisions')
     faculty_ids = fields.Many2many('ala.education.faculty', 'edu_fac_rel', 'exam_val', 'education_faculty_id', string='Faculties')
@@ -387,9 +387,8 @@ class StudentsExamValuationLine(models.Model):
                                         'belongs.')
     company_id = fields.Many2one(
         'res.company', string='Company',
-        default=lambda self: self.env['res.company']._company_default_get(),
-        help='Company associated with this record.')
-
+        default=lambda self: self.env.company, readonly=True,
+        help='Company associated with the exam.')
 
     @api.onchange('assign_mark', 'exam_mark', 'mark_scored', 'pass_or_fail')
     def _onchange_mark_scored(self):

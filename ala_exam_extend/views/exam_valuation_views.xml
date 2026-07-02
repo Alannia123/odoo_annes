@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Make mark entry uniform: always show the Written component, show the
+         Internal component only when the subject has one (assign_max > 0),
+         keep Total read-only (computed) and surface the derived Grade. -->
+    <record id="education_exam_valuation_view_form_grade" model="ir.ui.view">
+        <field name="name">ala.education.exam.valuation.form.grade</field>
+        <field name="model">ala.education.exam.valuation</field>
+        <field name="inherit_id"
+               ref="ala_education_exam.education_exam_valuation_view_form"/>
+        <field name="arch" type="xml">
+            <!-- expose pattern fields on the header for column_invisible refs -->
+            <xpath expr="//field[@name='is_assign_mark']" position="after">
+                <field name="evaluation_mode" readonly="1"/>
+                <field name="exam_max" invisible="1"/>
+                <field name="assign_max" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//field[@name='valuation_line_ids']/list/field[@name='exam_mark']"
+                   position="attributes">
+                <attribute name="column_invisible">parent.evaluation_mode == 'grade'</attribute>
+                <attribute name="string">Written</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='valuation_line_ids']/list/field[@name='assign_mark']"
+                   position="attributes">
+                <attribute name="column_invisible">parent.assign_max == 0 or parent.evaluation_mode == 'grade'</attribute>
+                <attribute name="string">Internal</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='valuation_line_ids']/list/field[@name='mark_scored']"
+                   position="attributes">
+                <attribute name="column_invisible">parent.evaluation_mode == 'grade'</attribute>
+                <attribute name="readonly">1</attribute>
+                <attribute name="force_save">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='valuation_line_ids']/list/field[@name='mark_scored']"
+                   position="after">
+                <field name="grade" string="Grade" column_invisible="parent.evaluation_mode == 'mark'"/>
+                <field name="grade_label" string="Grade" column_invisible="parent.evaluation_mode == 'grade'"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="grade_scale_view_list" model="ir.ui.view">
+        <field name="name">ala.education.grade.scale.list</field>
+        <field name="model">ala.education.grade.scale</field>
+        <field name="arch" type="xml">
+            <list string="Grade Scale" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="type"/>
+                <field name="min_percent"/>
+                <field name="max_percent"/>
+                <field name="remark"/>
+                <field name="is_pass"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="grade_scale_view_form" model="ir.ui.view">
+        <field name="name">ala.education.grade.scale.form</field>
+        <field name="model">ala.education.grade.scale</field>
+        <field name="arch" type="xml">
+            <form string="Grade Scale">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="type"/>
+                            <field name="is_pass"/>
+                        </group>
+                        <group>
+                            <field name="min_percent"/>
+                            <field name="max_percent"/>
+                            <field name="remark"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="grade_scale_action" model="ir.actions.act_window">
+        <field name="name">Grade Scale</field>
+        <field name="res_model">ala.education.grade.scale</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">Define grade bands here.</p>
+            <p>Leave the Report Card Band empty for a grade that applies to all
+               classes, or set it to override a band.</p>
+        </field>
+    </record>
+
+    <menuitem id="grade_scale_menu"
+              name="Grade Scale"
+              action="grade_scale_action"
+              parent="ala_education_exam.examination_main_menu"
+              groups="ala_education_core.group_education_principal"
+              sequence="50"/>
+</odoo>

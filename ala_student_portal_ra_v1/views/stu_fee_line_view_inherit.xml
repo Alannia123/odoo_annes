@@ -1,0 +1,17 @@
+<odoo>
+
+    <record id="student_fee_form_view_inherit" model="ir.ui.view">
+            <field name="name">ala.student.fees.form</field>
+            <field name="model">ala.student.fees</field>
+            <field name="inherit_id" ref="ala_education_fee.view_student_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook/page/field[@name='fee_line_ids']/list/field[@name='payment_status']" position="after">
+                    <field name="razorpay_order_id" optional="hide" readonly="1"/>
+                    <field name="razorpay_payment_id" optional="hide" readonly="1"/>
+                    <field name="razorpay_payment_state" optional="show" widget="badge" decoration-danger="razorpay_payment_state == 'failed'" decoration-success="razorpay_payment_state == 'paid'"
+                                                                            decoration-warning="razorpay_payment_state == 'pending'" decoration-info="razorpay_payment_state == 'none'"/>
+                </xpath>
+            </field>
+    </record>
+
+</odoo>

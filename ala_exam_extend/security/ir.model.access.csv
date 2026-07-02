@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_grade_scale_user,grade.scale.user,model_ala_education_grade_scale,base.group_user,1,0,0,0
+access_grade_scale_manager,grade.scale.manager,model_ala_education_grade_scale,ala_education_core.group_education_principal,1,1,1,1

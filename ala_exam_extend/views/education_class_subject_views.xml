@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add the assessment pattern to each subject row on the Class form. -->
+    <record id="view_education_class_form_grade_pattern" model="ir.ui.view">
+        <field name="name">ala.education.class.form.grade.pattern</field>
+        <field name="model">ala.education.class</field>
+        <field name="inherit_id"
+               ref="ala_education_core.view_education_class_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='subject_ids']/list/field[@name='faculty_ids']"
+                   position="after">
+                <field name="evaluation_mode"/>
+                <field name="unit_exam_max" string="U-Written"/>
+                <field name="unit_assign_max" string="U-Internal"/>
+                <field name="unit_max_mark" string="U-Total"/>
+                <field name="unit_pass_mark" string="U-Pass"/>
+                <field name="term_exam_max" string="T-Written"/>
+                <field name="term_assign_max" string="T-Internal"/>
+                <field name="term_max_mark" string="T-Total"/>
+                <field name="term_pass_mark" string="T-Pass"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
