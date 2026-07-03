@@ -25,6 +25,7 @@
         'views/attendance_template.xml',
         'views/teacher_stu_view.xml',
         'views/payments_template.xml',
+        'views/portal_breadcrumbs.xml',
         'views/result_template.xml',
 
     ],

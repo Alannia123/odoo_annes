@@ -105,7 +105,7 @@ class AlaRazorpayController(http.Controller):
             "description": line.fee_description or "School Fee",
             "callback_url": "%s/my/fees/pay/return" % base_url,
             "prefill_email": partner.email or "",
-            "prefill_contact": partner.phone or partner.mobile or "",
+            "prefill_contact": partner.phone or "",
         })
 
     @http.route(["/my/fees/pay/return"], type="http", auth="public",

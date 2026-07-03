@@ -1,0 +1,47 @@
+.o_form_status_indicator {
+
+    .o_form_button_save_custom,
+    .o_form_button_cancel_custom {
+        font-weight: 600;
+        i { margin-left: .25rem; }
+    }
+
+    // If you want exact brand shades instead of Bootstrap defaults,
+    // uncomment and set your hex values (remember hover/active states):
+    //
+    // .o_form_button_save_custom {
+    //     background-color: #28a745;
+    //     border-color: #28a745;
+    //     &:hover, &:focus { background-color: #218838; border-color: #1e7e34; }
+    // }
+    // .o_form_button_cancel_custom {
+    //     background-color: #ffc107;
+    //     border-color: #ffc107;
+    //     color: #212529;
+    //     &:hover, &:focus { background-color: #e0a800; border-color: #d39e00; }
+    // }
+}
+
+// Mobile — larger touch targets, keep labels visible, prevent wrap
+@media (max-width: 767.98px) {
+    .o_form_status_indicator {
+
+        .o_form_status_indicator_buttons {
+            gap: .35rem;
+        }
+
+        .o_form_button_save_custom,
+        .o_form_button_cancel_custom {
+            padding: .45rem .85rem !important;  // overrides Bootstrap padding utils
+            font-size: .875rem;
+            border-radius: .375rem;
+            white-space: nowrap;
+            line-height: 1.2;
+        }
+    }
+}
+// @media (max-width: 575.98px) {
+//     .o_form_status_indicator .o_btn_label {
+//         display: none;   // icon-only on small phones
+//     }
+// }

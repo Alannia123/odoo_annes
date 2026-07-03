@@ -45,9 +45,10 @@
             '/ala_website/static/src/js/online_application.js',
             '/ala_website/static/src/js/valaidate_js.js',
         ],
-        # 'web.assets_backend': [
-        #     '/ala_website/static/src/xml/icon_chage.xml',
-        # ],
+        'web.assets_backend': [
+            '/ala_website/static/src/xml/form_status_indicator.xml',
+            '/ala_website/static/src/css/form_status_indicator.scss',
+        ],
     },
 
 

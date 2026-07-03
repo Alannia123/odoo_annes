@@ -22,6 +22,10 @@
                                  help="Must match the secret set when registering the webhook.">
                             <field name="razorpay_webhook_secret" password="True" placeholder="••••••••"/>
                         </setting>
+                        <setting string="Gateway Fee Bearer"
+                                 help="Who pays the Razorpay fee. 'Payer' requires Customer Fee Bearer enabled on the Razorpay account.">
+                            <field name="razorpay_fee_bearer" widget="radio"/>
+                        </setting>
                     </block>
                     <block title="Accounting" name="razorpay_accounting_block">
                         <setting string="Bank Journal"

@@ -183,8 +183,8 @@ class EducationStudent(models.Model):
     login = fields.Char('Login', readonly=True)
     hide_result = fields.Boolean('Hide Result', readonly=False)
     promoted = fields.Boolean('Promoted?', readonly=False)
-    # student_html = fields.Html('Attendance & Fees',  compute="_compute_student_html", sanitize=False)
-    student_html = fields.Html('Attendance & Fees',  sanitize=False)
+    student_html = fields.Html('Attendance & Fees',  compute="_compute_student_html", sanitize=False)
+    # student_html = fields.Html('Attendance & Fees',  sanitize=False)
     student_html_compute = fields.Boolean('StudentHtmlComp')
     tc_issued = fields.Boolean('TC Issued', copy=False, tracking=True)
     tc_issue_reason_id = fields.Many2one( 'ala.tc.issue.wizard.reason', string="TC Issue Reason", help="Give tc issue reason", required=False)
@@ -275,23 +275,20 @@ class EducationStudent(models.Model):
 
     def _compute_student_html(self):
         for record in self:
-            # Handle unsaved/new records
             if not record.id or not isinstance(record.id, int):
-                record.student_html = """
-                    <div style="padding:20px; font-family: Arial, sans-serif;">
-                        <div style="color:#666; font-size:14px;">
-                            Student details will appear after saving the record.
-                        </div>
-                    </div>
-                """
+                record.student_html = ""
                 continue
+
+            current_aca_id = self.env['ala.education.academic.year'].search([
+                ('enable', '=', True)
+            ], limit=1)
 
             self.env.cr.execute("""
                 SELECT
                     COUNT(*) AS total_days,
                     SUM(CASE WHEN present = TRUE THEN 1 ELSE 0 END) AS present_days
-                FROM education_attendance_line AS line
-                JOIN education_academic_year AS year
+                FROM ala_education_attendance_line AS line
+                JOIN ala_education_academic_year AS year
                     ON year.id = line.academic_year_id
                 WHERE line.student_id = %s
                   AND line.state = 'done'
@@ -303,13 +300,23 @@ class EducationStudent(models.Model):
             present_days = result.get('present_days', 0) or 0
             absent_days = total_days - present_days
 
-            current_aca_id = self.env['ala.education.academic.year'].search([('enable', '=', True)], limit=1)
-            no_of_work_days = current_aca_id.total_no_of_working_days or 0
+            no_of_work_days = current_aca_id.total_no_of_working_days if current_aca_id else 0
+
+            academic_fee_id = self.env['ala.student.fees'].search([
+                ('student_id', '=', record.id),
+                ('academic_year_id', '=', current_aca_id.id)
+            ], limit=1)
+
+            total_fees = academic_fee_id.final_amount_total if academic_fee_id else 0
+            paid_fees = academic_fee_id.amount_paid if academic_fee_id else 0
+            remaining_fees = academic_fee_id.amount_unpaid if academic_fee_id else 0
+            overdue_amount = academic_fee_id.amount_due if academic_fee_id else 0
 
             attendance_percentage = 0
             if total_days > 0:
                 attendance_percentage = round((present_days / total_days) * 100, 2)
 
+            # Dynamic color
             if attendance_percentage >= 75:
                 progress_color = "#2e7d32"
             elif attendance_percentage >= 50:
@@ -317,11 +324,19 @@ class EducationStudent(models.Model):
             else:
                 progress_color = "#c62828"
 
-            total_fees = 25000
-            paid_fees = 10000
-            remaining_fees = total_fees - paid_fees
-            overdue_amount = 5000
+            # =========================
+            # FEES (Replace With Real Calculation If Needed)
+            # =========================
+            academic_fee_id = self.env['ala.student.fees'].search(
+                [('student_id', '=', record.id), ('academic_year_id', '=', current_aca_id.id)], limit=1)
+            total_fees = academic_fee_id.final_amount_total
+            paid_fees = academic_fee_id.amount_paid
+            remaining_fees = academic_fee_id.amount_unpaid
+            overdue_amount = academic_fee_id.amount_due
 
+            # =========================
+            # STYLES
+            # =========================
             main_container_style = (
                 "font-family: Arial, sans-serif;"
                 "max-width: 750px;"
@@ -384,61 +399,69 @@ class EducationStudent(models.Model):
             )
 
             percentage_text_style = (
-                "margin-top: 8px;"
+                f"margin-top: 8px;"
                 "font-size: 14px;"
                 "font-weight: 600;"
                 f"color: {progress_color};"
                 "text-align: right;"
             )
 
-            record.student_html = f"""
-                <div style="{main_container_style}">
-                    <div style="{section_style} border-bottom: 1px solid #f0f0f0;">
-                        <div style="{header_style}">📊 Attendance</div>
+            # =========================
+            # FINAL HTML
+            # =========================
+            student_html = f"""
+                    <div style="{main_container_style}">
 
-                        <div style="{details_header_row_style}">
-                            <div style="{details_header_item_style} color:#750f42;">📅 No Of Working Days</div>
-                            <div style="{details_header_item_style} color:#004d40;">📅 No Of ATT Days</div>
-                            <div style="{details_header_item_style} color:#1b5e20;">✅ Present</div>
-                            <div style="{details_header_item_style} color:#c62828;">❌ Absent</div>
+                        <!-- Attendance Section -->
+                        <div style="{section_style} border-bottom: 1px solid #f0f0f0;">
+                            <div style="{header_style}">📊 Attendance</div>
+
+                            <div style="{details_header_row_style}">
+                                <div style="{details_header_item_style} color:#750f42;">📅 No Of Working Days</div>
+                                <div style="{details_header_item_style} color:#004d40;">📅 No Of ATT Days</div>
+                                <div style="{details_header_item_style} color:#1b5e20;">✅ Present</div>
+                                <div style="{details_header_item_style} color:#c62828;">❌ Absent</div>
+                            </div>
+
+                            <div style="{details_value_row_style}">
+                                <div style="{details_value_item_style} color:#750f42;">{no_of_work_days}</div>
+                                <div style="{details_value_item_style} color:#004d40;">{total_days}</div>
+                                <div style="{details_value_item_style} color:#1b5e20;">{present_days}</div>
+                                <div style="{details_value_item_style} color:#c62828;">{absent_days}</div>
+                            </div>
+
+                            <div style="{progress_bar_bg_style}">
+                                <div style="{progress_bar_fill_style}"></div>
+                            </div>
+
+                            <div style="{percentage_text_style}">
+                                Attendance: {attendance_percentage}%
+                            </div>
                         </div>
 
-                        <div style="{details_value_row_style}">
-                            <div style="{details_value_item_style} color:#750f42;">{no_of_work_days}</div>
-                            <div style="{details_value_item_style} color:#004d40;">{total_days}</div>
-                            <div style="{details_value_item_style} color:#1b5e20;">{present_days}</div>
-                            <div style="{details_value_item_style} color:#c62828;">{absent_days}</div>
+                        <!-- Fees Section -->
+                        <div style="{section_style}">
+                            <div style="{header_style}">💰 Fees</div>
+
+                            <div style="{details_header_row_style}">
+                                <div style="{details_header_item_style} color:#e65100;">Total</div>
+                                <div style="{details_header_item_style} color:#1b5e20;">Paid</div>
+                                <div style="{details_header_item_style} color:#f9a825;">Remaining</div>
+                                <div style="{details_header_item_style} color:#c62828;">Overdue</div>
+                            </div>
+
+                            <div style="{details_value_row_style}">
+                                <div style="{details_value_item_style} color:#e65100;">₹ {total_fees}</div>
+                                <div style="{details_value_item_style} color:#1b5e20;">₹ {paid_fees}</div>
+                                <div style="{details_value_item_style} color:#f9a825;">₹ {remaining_fees}</div>
+                                <div style="{details_value_item_style} color:#c62828;">₹ {overdue_amount}</div>
+                            </div>
                         </div>
 
-                        <div style="{progress_bar_bg_style}">
-                            <div style="{progress_bar_fill_style}"></div>
-                        </div>
-
-                        <div style="{percentage_text_style}">
-                            Attendance: {attendance_percentage}%
-                        </div>
                     </div>
+                """
 
-                    <div style="{section_style}">
-                        <div style="{header_style}">💰 Fees</div>
-
-                        <div style="{details_header_row_style}">
-                            <div style="{details_header_item_style} color:#e65100;">Total</div>
-                            <div style="{details_header_item_style} color:#1b5e20;">Paid</div>
-                            <div style="{details_header_item_style} color:#f9a825;">Remaining</div>
-                            <div style="{details_header_item_style} color:#c62828;">Overdue</div>
-                        </div>
-
-                        <div style="{details_value_row_style}">
-                            <div style="{details_value_item_style} color:#e65100;">₹ {total_fees}</div>
-                            <div style="{details_value_item_style} color:#1b5e20;">₹ {paid_fees}</div>
-                            <div style="{details_value_item_style} color:#f9a825;">₹ {remaining_fees}</div>
-                            <div style="{details_value_item_style} color:#c62828;">₹ {overdue_amount}</div>
-                        </div>
-                    </div>
-                </div>
-            """
-
+            record.student_html = student_html
 
     def _compute_no_of_discipline_history(self):
         for rec in self:

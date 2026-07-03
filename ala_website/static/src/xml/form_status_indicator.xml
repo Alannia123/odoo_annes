@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-inherit="web.FormStatusIndicator" t-inherit-mode="extension">
+
+        <!-- SAVE → green + colour -->
+        <xpath expr="//button[hasclass('o_form_button_save')]" position="attributes">
+            <attribute name="class"
+                       add="btn-success o_form_button_save_custom px-2 py-1"
+                       remove="btn-light px-1 py-0"
+                       separator=" "/>
+        </xpath>
+
+        <!-- SAVE → add "Save" word before the icon -->
+        <xpath expr="//button[hasclass('o_form_button_save')]/i" position="before">
+            <span class="o_btn_label me-1">Save</span>
+        </xpath>
+
+        <!-- DISCARD → yellow + colour -->
+        <xpath expr="//button[hasclass('o_form_button_cancel')]" position="attributes">
+            <attribute name="class"
+                       add="btn-warning o_form_button_cancel_custom px-2 py-1"
+                       remove="btn-light px-1 py-0"
+                       separator=" "/>
+        </xpath>
+
+        <!-- DISCARD → add "Discard" word before the icon -->
+        <xpath expr="//button[hasclass('o_form_button_cancel')]/i" position="before">
+            <span class="o_btn_label me-1">Discard</span>
+        </xpath>
+
+    </t>
+
+</templates>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <template id="portal_breadcrumbs_back_home"
+              inherit_id="portal.portal_breadcrumbs"
+              name="Portal Breadcrumbs - Back to Home">
+
+        <!-- Add a styled 'Back to Home' label next to the home icon -->
+        <xpath expr="//li[hasclass('breadcrumb-item')][1]/a" position="inside">
+            <span class="o_portal_back_home_label ms-1">Back to Home</span>
+        </xpath>
+
+    </template>
+
+</odoo>

@@ -173,7 +173,7 @@
                     <group>
                         <field name="student_html_compute" invisible="1"/>
 <!--                        <div>-->
-                            <field name="student_html" widget="html" readonly="1" no_label="1" groups="ala_education_core.group_education_principal"/>
+                            <field name="student_html" widget="html" readonly="1" no_label="1" />
 <!--                        </div>-->
                     </group>
                     <notebook groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin">
