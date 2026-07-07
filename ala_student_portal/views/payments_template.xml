@@ -1,126 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="portal_monthly_payment_tiles" name="Monthly Payment Tiles">
-        <t t-call="portal.portal_layout">
-            <style>
-                .typing-text::after {
-                      content: attr(data-text);
-                      display: inline-block;
-                      overflow: hidden;
-                      color: #e64d00;
-                      white-space: nowrap;
-                      animation: typing 3s infinite;
-                    }
-                    @keyframes typing { from { width: 0 } to { width: 100% } }
-            </style>
+    <t t-call="portal.portal_layout">
+        <style>
+            .fee-title {
+                font-size: 32px;
+                font-weight: 700;
+                margin-bottom: 25px;
+            }
+            .fee-card {
+                background: linear-gradient(145deg, #fff7fb, #ffffff);
+                border: 1px solid #f08ab5;
+                border-radius: 18px;
+                box-shadow: 0 6px 18px rgba(0,0,0,.08);
+                min-height: 235px;
+                padding: 18px 10px;
+                transition: .2s;
+            }
+            .fee-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 10px 25px rgba(0,0,0,.12);
+            }
+            .fee-name {
+                font-size: 20px;
+                font-weight: 600;
+                color: #222;
+            }
+            .fee-amount {
+                font-size: 22px;
+                font-weight: 800;
+                color: #111;
+                margin-top: 6px;
+            }
+            .fee-status {
+                display: inline-block;
+                min-width: 105px;
+                padding: 6px 12px;
+                border-radius: 25px;
+                font-size: 14px;
+                font-weight: 700;
+                color: #fff;
+                white-space: nowrap;
+                margin: 12px 0;
+            }
+            .status-paid { background: #198754; }
+            .status-upcoming { background: #5d87d8; }
+            .status-unpaid { background: #f0a020; }
+            .status-overdue { background: #dc3545; }
 
-            <h3 class="mb-3">School Payments</h3>
+            .fee-btn {
+                display: inline-block;
+                padding: 7px 16px;
+                border-radius: 22px;
+                font-size: 14px;
+                font-weight: 600;
+                text-decoration: none;
+                margin-top: 5px;
+            }
+            .pay-btn {
+                background: #7b3f61;
+                color: #fff !important;
+            }
+            .download-btn {
+                background: #0d6efd;
+                color: #fff !important;
+            }
+            .overdue-text {
+                display: block;
+                font-size: 12px;
+                color: #dc3545;
+                font-weight: 600;
+                margin-bottom: 4px;
+            }
+            @media(max-width: 576px) {
+                .fee-title { font-size: 26px; }
+                .fee-card { min-height: 220px; padding: 15px 8px; }
+                .fee-name { font-size: 18px; }
+                .fee-amount { font-size: 20px; }
+                .fee-status { font-size: 13px; min-width: 90px; }
+            }
+        </style>
 
-            <!-- Post-redirect flash banner -->
-            <t t-set="pay_status" t-value="request.params.get('payment')"/>
-            <t t-if="pay_status == 'success'">
-                <div class="alert alert-success text-center">Payment successful. Thank you!</div>
-            </t>
-            <t t-if="pay_status == 'already'">
-                <div class="alert alert-info text-center">This fee is already paid.</div>
-            </t>
-            <t t-if="pay_status == 'failed'">
-                <div class="alert alert-danger text-center">Payment failed or cancelled. Please try again.</div>
-            </t>
-            <t t-if="pay_status == 'config'">
-                <div class="alert alert-warning text-center">Online payment is not configured yet. Please contact the office.</div>
-            </t>
+        <h3 class="fee-title">School Payments</h3>
 
-            <!-- Show the banner once, then clean the URL so a refresh / re-share
-                 doesn't re-trigger a stale "success" message. -->
-            <t t-if="pay_status">
-                <script>
-                    (function () {
-                        if (window.history &amp;&amp; window.history.replaceState) {
-                            window.history.replaceState({}, document.title, window.location.pathname);
-                        }
-                    })();
-                </script>
-            </t>
-
-            <div class="row text-center">
-                <t t-if="student_fees">
-                    <t t-foreach="student_fees.fee_line_ids" t-as="fee">
-                        <t t-set="is_paid" t-value="fee.payment_status == 'paid'"/>
-                        <div class="col-6 col-md-3 mb-4">
-                            <div class="card shadow-sm" style="background-color:#ff99c2;">
-                                <div class="card-body">
-                                    <span t-field="fee.fee_description"/><br/>
-                                    <b>&#8377;<span t-field="fee.amount"/></b>
-
-                                    <t t-if="is_paid">
-                                        <p class="card-text" style="background-color:green; border-radius: 10px;margin-left:25px;margin-right:25px;">Paid</p>
-                                    </t>
-                                    <t t-elif="fee.payment_status == 'upcoming'">
-                                        <p class="card-text" style="background-color:#7094db; border-radius: 10px;margin-left:25px;margin-right:25px;">Upcoming</p>
-                                        <a t-att-href="'/my/fees/pay/%s' % fee.id" class="btn btn-sm btn-light mt-1">Pay Now</a>
-                                    </t>
-                                    <t t-elif="fee.payment_status == 'unpaid'">
-                                        <p class="card-text" style="background-color:#ffad33; border-radius: 10px;margin-left:25px;margin-right:25px;">Unpaid</p>
-                                        <a t-att-href="'/my/fees/pay/%s' % fee.id" class="btn btn-sm btn-light mt-1">Pay Now</a>
-                                    </t>
-                                    <t t-elif="fee.payment_status == 'over_due'">
-                                        <p class="card-text" style="background-color:#cc2900; border-radius: 10px;margin-left:25px;margin-right:25px;">Overdue</p>
-                                        <t t-if="fee.overdue_days &gt; 0">
-                                            <span class="typing-text" t-att-data-text="str(fee.overdue_days) + ' days ago'"/>
-                                        </t>
-                                        <a t-att-href="'/my/fees/pay/%s' % fee.id" class="btn btn-sm btn-light mt-1">Pay Now</a>
-                                    </t>
-                                </div>
-                            </div>
-                        </div>
-                    </t>
-
-                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-                    <canvas id="feesChart" width="400" height="400"></canvas>
-                    <div class="text-center"><span class="card-text" style="background-color:#8585ad; border-radius: 3px;"><b>Payable:</b>&#8377;<t t-esc="total_fees"/></span></div>
-                    <div>
-                        <span class="card-text" style="background-color:green; border-radius: 2px;margin-left:5px;margin-right:10px;"><b>Paid:</b>&#8377;<t t-esc="paid_fees"/></span>
-                        <span style="background-color:red; border-radius: 4px;margin-left:30px;"><b>Balance:</b>&#8377;<t t-esc="balance_fees"/></span>
-                    </div>
-
-                    <div id="fee-data" t-att-data-paid="paid_fees" t-att-data-balance="balance_fees"></div>
-
-                    <script>
-                        document.addEventListener("DOMContentLoaded", function () {
-                            var el = document.getElementById("fee-data");
-                            var paid = parseFloat(el.dataset.paid);
-                            var balance = parseFloat(el.dataset.balance);
-                            var ctx = document.getElementById("feesChart").getContext("2d");
-                            new Chart(ctx, {
-                                type: 'doughnut',
-                                data: {
-                                    labels: ["Paid Fees", "Balance Fees"],
-                                    datasets: [{
-                                        label: "Fees Overview",
-                                        data: [paid, balance],
-                                        backgroundColor: ['rgba(75, 192, 192, 0.7)', 'rgba(255, 99, 132, 0.7)'],
-                                        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
-                                        borderWidth: 1
-                                    }]
-                                },
-                                options: {
-                                    responsive: true,
-                                    plugins: { legend: { position: 'top' }, title: { display: true, text: 'Fees Distribution' } }
-                                }
-                            });
-                        });
-                    </script>
-                </t>
-                <t t-else="">
-                    <div class="alert alert-warning text-center" style="border-radius: 10px; padding: 15px; margin: 20px 0;">
-                        <strong>Sorry for your inconvenience.</strong><br/>
-                        No fees details found. Please contact the office admin for further assistance.
-                    </div>
-                </t>
-            </div>
+        <t t-set="pay_status" t-value="request.params.get('payment')"/>
+        <t t-if="pay_status == 'success'">
+            <div class="alert alert-success text-center">Payment successful. Thank you!</div>
         </t>
-    </template>
+        <t t-if="pay_status == 'already'">
+            <div class="alert alert-info text-center">This fee is already paid.</div>
+        </t>
+        <t t-if="pay_status == 'failed'">
+            <div class="alert alert-danger text-center">Payment failed or cancelled. Please try again.</div>
+        </t>
+        <t t-if="pay_status == 'config'">
+            <div class="alert alert-warning text-center">Online payment is not configured yet. Please contact the office.</div>
+        </t>
+
+        <t t-if="pay_status">
+            <script>
+                (function () {
+                    if (window.history &amp;&amp; window.history.replaceState) {
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    }
+                })();
+            </script>
+        </t>
+
+        <div class="row text-center">
+            <t t-if="student_fees">
+                <t t-foreach="student_fees.fee_line_ids" t-as="fee">
+                    <t t-set="is_paid" t-value="fee.payment_status == 'paid'"/>
+
+                    <div class="col-6 col-md-3 mb-4">
+                        <div class="fee-card">
+                            <div class="fee-name">
+                                <span t-field="fee.fee_description"/>
+                            </div>
+
+                            <div class="fee-amount">
+                                ₹<span t-field="fee.amount"/>
+                            </div>
+
+                            <t t-if="is_paid">
+                                <span class="fee-status status-paid">Paid</span>
+                                <br/>
+                                <a t-att-href="'/my/fees/invoice/download/%s' % fee.id"
+                                   class="invoice-icon"
+                                   title="Download Invoice">
+                                    <i class="fa fa-file-pdf-o"></i>
+                                </a>
+                            </t>
+
+                            <t t-elif="fee.payment_status == 'upcoming'">
+                                <span class="fee-status status-upcoming">Upcoming</span>
+                                <br/>
+                                <a t-att-href="'/my/fees/pay/%s' % fee.id"
+                                   class="fee-btn pay-btn">
+                                    Pay Now
+                                </a>
+                            </t>
+
+                            <t t-elif="fee.payment_status == 'unpaid'">
+                                <span class="fee-status status-unpaid">Unpaid</span>
+                                <br/>
+                                <a t-att-href="'/my/fees/pay/%s' % fee.id"
+                                   class="fee-btn pay-btn">
+                                    Pay Now
+                                </a>
+                            </t>
+
+                            <t t-elif="fee.payment_status == 'over_due'">
+                                <span class="fee-status status-overdue">Overdue</span>
+                                <t t-if="fee.overdue_days &gt; 0">
+                                    <span class="overdue-text">
+                                        <t t-esc="fee.overdue_days"/> days ago
+                                    </span>
+                                </t>
+                                <a t-att-href="'/my/fees/pay/%s' % fee.id"
+                                   class="fee-btn pay-btn">
+                                    Pay Now
+                                </a>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </t>
+
+            <t t-else="">
+                <div class="alert alert-warning text-center">
+                    <strong>Sorry for your inconvenience.</strong><br/>
+                    No fees details found. Please contact the office admin.
+                </div>
+            </t>
+        </div>
+    </t>
+</template>
 
     <!-- Auto-opening Razorpay checkout (website) -->
     <template id="razorpay_checkout_page" name="Razorpay Checkout">
