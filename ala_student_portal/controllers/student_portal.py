@@ -104,10 +104,11 @@ class CustomerPortalCustom(CustomerPortal):
                 attendance_line_row = request.env.cr.fetchone()
                 today_attendance = request.env['ala.education.attendance.line'].sudo().browse(
                                             attendance_line_row[0]) if attendance_line_row else False
-                if today_attendance.present:
-                    attendance = 'Present'
-                else:
-                    attendance = 'Absent'
+                if today_attendance:
+                    if today_attendance.present:
+                        attendance = 'Present'
+                    else:
+                        attendance = 'Absent'
 
             request.env.cr.execute("""
                             SELECT id
