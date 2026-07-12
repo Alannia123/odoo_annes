@@ -12,6 +12,16 @@
 <!--    <field name="nextcall" eval="(datetime.now().replace(hour=2, minute=0, second=0, microsecond=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')"/>-->
 <!--</record>-->
 
+        <record id="ir_cron_fee_status_and_fines" model="ir.cron">
+            <field name="name">Fee Lines: Status Update &amp; Late Fines</field>
+            <field name="model_id" ref="model_ala_student_fee_line"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_update_payment_status_and_fines()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
 
         <record id="cron_check_fee_status" model="ir.cron">
     <field name="name">Cron: Fee status Update</field>

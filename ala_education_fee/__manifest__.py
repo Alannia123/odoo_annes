@@ -16,6 +16,7 @@
     "data": [
         'data/inv_generate.xml',
         'data/sequence.xml',
+        'data/product_data.xml',
         'security/ir.model.access.csv',
         # 'reports/fee_report_template.xml',
         'reports/school_fee_template.xml',

@@ -40,8 +40,8 @@ class AlaStudentFeeLine(models.Model):
     # ------------------------------------------------------------------
     def _razorpay_amount_paise(self):
         self.ensure_one()
-        payable = (self.amount_to_paid or 0.0) + (self.fine_amount or 0.0)
-        return int(round(payable * 100))
+        total_payable = self.amount - self.concession_amount + self.fine_amount
+        return int(round(total_payable * 100))
 
     def _razorpay_journal(self):
         """Bank journal used for the online payment.

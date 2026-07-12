@@ -2,6 +2,11 @@ from odoo import models, fields, api
 from odoo import models, fields, _
 from odoo.exceptions import UserError, ValidationError
 from datetime import date
+import logging
+from odoo import api, fields, models
+
+_logger = logging.getLogger(__name__)
+import re
 
 class StudentFees(models.Model):
     _name = 'ala.student.fees'
@@ -370,7 +375,7 @@ class StudentFeeLine(models.Model):
         ('paid', 'Paid')], string='Payment Status', copy=False, default='upcoming' )
     overdue_date = fields.Date('Due Date', copy=False,index=True)
     reminder_date = fields.Date('Reminder Date', required=False, copy=True)
-    pay_status = fields.Boolean('Pay status?', compute="_compute_payment_status")
+    # pay_status = fields.Boolean('Pay status?', compute="_compute_payment_status")
     fee_month_range = fields.Char('Fee Month Range', copy=False)
     monthly_fee = fields.Boolean('Is monthly?', copy=False)
     overdue_days = fields.Integer(
@@ -593,38 +598,39 @@ class StudentFeeLine(models.Model):
         return list(students_map.values())
 
     def action_create_invoice(self, fee_ids, payment_date):
-        fees = self.browse(fee_ids)
+        fees = self.browse(fee_ids).exists()
+        if not fees:
+            raise UserError(_("No valid fees found."))
+
+        # All lines must belong to one student fee record — the invoice is per student
+        if len(fees.mapped('student_fee_id')) > 1:
+            raise UserError(_("All selected fees must belong to the same student."))
 
         monthly_fees = fees.filtered(lambda f: f.fee_type == 'monthly')
         other_fees = fees - monthly_fees
 
         invoice_lines = []
 
-        print('666666666666666666',monthly_fees, other_fees)
-        print('666666666666666666',monthly_fees)
-        print('666666666666666666other_fees',other_fees)
-
-        # ✅ 1️⃣ Handle Monthly Fees (Combine)
+        # ------------------------------------------------------------------
+        # 1. Monthly fees (combined into one Tuition Fee line, EXCLUDING fine)
+        # ------------------------------------------------------------------
         if monthly_fees:
-
-            # Get Tuition Fee product
-            tuition_product = self.env['product.product'].search([
-                ('name', '=', 'Tuition Fee'),
-                ('type', '=', 'service')
-            ], limit=1)
-
+            tuition_product = self.env.ref(
+                'ala_education_fee.product_tuition_fee', raise_if_not_found=False)
             if not tuition_product:
-                raise UserError(_("Please create a Service product named 'Tuition Fee'."))
+                raise UserError(_("Tuition Fee product is not configured. "
+                                  "Please upgrade the Fees module."))
 
-            # Combine descriptions
             month_names = [
-                fee.fee_description if fee.fee_description else fee.product_id.name
+                (fee.fee_description or fee.product_id.name).replace(' Fee', '').strip()
                 for fee in monthly_fees
             ]
-            print('dfdsfdsfd777777777777',month_names)
-            combined_desc = "Tuition Fee (" + ", ".join(month_names) + ")"
+            combined_desc = "Tuition Fee (%s)" % ", ".join(month_names)
 
-            total_monthly_amount = sum(monthly_fees.mapped('amount_to_paid'))
+            # Base amount only: amount - concession (fine goes on its own line)
+            total_monthly_amount = sum(
+                fee.amount - fee.concession_amount for fee in monthly_fees
+            )
 
             invoice_lines.append((0, 0, {
                 'product_id': tuition_product.id,
@@ -634,75 +640,81 @@ class StudentFeeLine(models.Model):
                 'price_unit': total_monthly_amount,
             }))
 
-        # ✅ 2️⃣ Handle Other Fees Normally
+        # ------------------------------------------------------------------
+        # 2. Other fees (one line each, EXCLUDING fine)
+        # ------------------------------------------------------------------
         for fee in other_fees:
             invoice_lines.append((0, 0, {
                 'product_id': fee.product_id.id,
                 'name': fee.fee_description or fee.product_id.name,
                 'quantity': 1,
-                'price_unit': fee.amount_to_paid,
+                'price_unit': fee.amount - fee.concession_amount,
             }))
 
-        # ✅ 3️⃣ Handle Fine Amount (Combine all fines)
+        # ------------------------------------------------------------------
+        # 3. Late fee (combined, on dedicated product → separate income account)
+        # ------------------------------------------------------------------
         total_fine = sum(fees.mapped('fine_amount'))
-
         if total_fine > 0:
+            late_fee_product = self.env.ref(
+                'ala_education_fee.product_late_fee', raise_if_not_found=False)
+            if not late_fee_product:
+                raise UserError(_("Late Fee product is not configured. "
+                                  "Please upgrade the Fees module."))
 
-            fine_product = self.env['product.product'].search([
-                ('name', '=', 'Miscellaneous'),
-                ('type', '=', 'service')
-            ], limit=1)
-
-            if not fine_product:
-                raise UserError(_("Please create a Service product named 'Miscellaneous' for fines."))
-
+            fined_months = [
+                re.sub(r'\s*Fee\s*$', '', name, flags=re.IGNORECASE)
+                for name in fees.filtered('fine_amount').mapped(lambda f: f.product_id.name)
+            ]
             invoice_lines.append((0, 0, {
-                'product_id': fine_product.id,
-                'name': fine_product.name,
+                'product_id': late_fee_product.id,
+                'name': _("Late Fee (%s)", ", ".join(fined_months)),
                 'quantity': 1,
                 'price_unit': total_fine,
             }))
 
-        # ✅ 3️⃣ Create Invoice
+        # ------------------------------------------------------------------
+        # 4. Invoice
+        # ------------------------------------------------------------------
         invoice = self.env['account.move'].create({
             'move_type': 'out_invoice',
             'partner_id': fees[0].student_id.partner_id.id,
             'journal_id': fees[0].journal_id.id,
             'invoice_date': payment_date,
+            'student_fee_id': fees.student_fee_id.id,  # set at create, not post-write
             'invoice_line_ids': invoice_lines,
         })
-
         invoice.action_post()
 
-        invoice.student_fee_id = fees.student_fee_id.id
-
-        # Create ONE payment
+        # ------------------------------------------------------------------
+        # 5. Payment + reconciliation
+        # ------------------------------------------------------------------
+        payment_method_line = fees[0].journal_id.inbound_payment_method_line_ids[:1]
         payment = self.env['account.payment'].create({
             'payment_type': 'inbound',
             'partner_type': 'customer',
             'partner_id': invoice.partner_id.id,
             'date': invoice.invoice_date,
             'amount': invoice.amount_total,
-            'payment_method_id': self.env.ref('account.account_payment_method_manual_in').id,
             'journal_id': invoice.journal_id.id,
+            'payment_method_line_id': payment_method_line.id,
         })
         payment.action_post()
 
-        # Reconcile payment and invoice
         (payment.move_id.line_ids + invoice.line_ids).filtered(
-            lambda l: l.account_id.account_type == 'asset_receivable').reconcile()
+            lambda l: l.account_id.account_type == 'asset_receivable'
+        ).reconcile()
 
         fees.write({
             'invoice_id': invoice.id,
             'payment_status': 'paid',
         })
 
-        print('fffffffffffffffffffff',"ala_education_fee.action_generate_fees_invoice_report")
-        print('fffffffffffffffffffff',fees[0].id)
+        _logger.info("Fee invoice %s created and settled for student fee %s "
+                     "(%s lines, fine %.2f)", invoice.name,
+                     fees.student_fee_id.id, len(fees), total_fine)
 
-        return {
-            "invoice_id": invoice.id,
-        }
+        return {"invoice_id": invoice.id}
 
     def _compute_overdue_days(self):
         today = fields.Date.context_today(self)
@@ -732,19 +744,19 @@ class StudentFeeLine(models.Model):
         if self.select_for_invoice and self.payment_status == 'paid':
             raise UserError(_("Fees already paid. Please select another fees for payment"))
 
-    @api.depends('reminder_date', 'overdue_date', 'invoice_id')
-    def _compute_payment_status(self):
-        today = date.today()
-        for rec in self:
-            rec.pay_status = True
-            if rec.invoice_id:
-                rec.payment_status = 'paid'
-            elif rec.overdue_date and today > rec.overdue_date:
-                rec.payment_status = 'over_due'
-            elif rec.reminder_date and today < rec.reminder_date:
-                rec.payment_status = 'upcoming'
-            else:
-                rec.payment_status = 'unpaid'
+    # @api.depends('reminder_date', 'overdue_date', 'invoice_id')
+    # def _compute_payment_status(self):
+    #     today = date.today()
+    #     for rec in self:
+    #         rec.pay_status = True
+    #         if rec.invoice_id:
+    #             rec.payment_status = 'paid'
+    #         elif rec.overdue_date and today > rec.overdue_date:
+    #             rec.payment_status = 'over_due'
+    #         elif rec.reminder_date and today < rec.reminder_date:
+    #             rec.payment_status = 'upcoming'
+    #         else:
+    #             rec.payment_status = 'unpaid'
 
     def print_invoice(self):
         print('PRITNT REPORT____________,self',self)
@@ -755,4 +767,91 @@ class StudentFeeLine(models.Model):
             if record.payment_status == 'paid':
                 raise UserError(_("You cannot delete this student already made some payments."))
         return super().unlink()
+
+    @api.model
+    def _cron_update_payment_status_and_fines(self):
+        """Daily cron (early morning):
+        1. Normalize payment_status for all fee lines.
+        2. Apply late fine (once) to lines that are past due.
+        """
+        today = fields.Date.context_today(self)
+
+        # ------------------------------------------------------------------
+        # Step 1: STATUS TRANSITIONS (only touch rows whose status changes)
+        # ------------------------------------------------------------------
+        # paid: invoice exists but status not yet 'paid' (safety net —
+        # settlement flow should already set this)
+        self.search([
+            ('invoice_id', '!=', False),
+            ('payment_status', '!=', 'paid'),
+        ]).write({'payment_status': 'paid'})
+
+        # over_due: past due date, no invoice
+        newly_overdue = self.search([
+            ('invoice_id', '=', False),
+            ('overdue_date', '<', today),
+            ('payment_status', '!=', 'over_due'),
+        ])
+        newly_overdue.write({'payment_status': 'over_due'})
+
+        # upcoming: before reminder date
+        self.search([
+            ('invoice_id', '=', False),
+            ('reminder_date', '>', today),
+            ('payment_status', '!=', 'upcoming'),
+        ]).write({'payment_status': 'upcoming'})
+
+        # unpaid: inside the reminder→due window
+        self.search([
+            ('invoice_id', '=', False),
+            ('reminder_date', '<=', today),
+            ('overdue_date', '>=', today),
+            ('payment_status', '!=', 'unpaid'),
+        ]).write({'payment_status': 'unpaid'})
+
+        # ------------------------------------------------------------------
+        # Step 2: FINE APPLICATION (after statuses are correct)
+        # ------------------------------------------------------------------
+        fine_amount = float(self.env['ir.config_parameter'].sudo().get_param(
+            'ala_education_fee.late_fine_amount', default='0.0'))
+
+        if fine_amount <= 0:
+            _logger.info("Fee cron: no fine configured "
+                         "(ala_education_fee.late_fine_amount), skipping fines.")
+            return
+
+        fine_candidates = self.search([
+            ('payment_status', '=', 'over_due'),
+            ('invoice_id', '=', False),
+            ('fine_amount', '=', 0.0),
+        ])
+
+        if not fine_candidates:
+            _logger.info("Fee cron: statuses updated, no new fines to apply.")
+            return
+
+        # Batch write the fine
+        fine_candidates.write({'fine_amount': fine_amount})
+
+        # # Log each fine for the audit trail (Fine Change Logs)
+        # log_vals = [{
+        #     'fee_line_id': line.id,
+        #     # adjust field names to your ala.student.fine.log model:
+        #     'old_amount': 0.0,
+        #     'new_amount': fine_amount,
+        #     'reason': 'Automated late fine (cron)',
+        # } for line in fine_candidates]
+        # self.env['ala.student.fine.log'].create(log_vals)
+
+        _logger.info(
+            "Fee cron: %s lines marked over_due, fine of %.2f applied to %s lines.",
+            len(newly_overdue), fine_amount, len(fine_candidates),
+        )
+
+class ResConfigSettings(models.TransientModel):
+    _inherit = 'res.config.settings'
+
+    late_fine_amount = fields.Float(
+        string='Late Fee Fine Amount',
+        config_parameter='ala_education_fee.late_fine_amount')
 

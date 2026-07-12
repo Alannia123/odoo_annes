@@ -112,7 +112,7 @@
                                 <field name="amount_to_paid"  sum="Total"/>
                                 <field name="journal_id" column_invisible="1"/>
                                 <field name="payment_mode" readonly="payment_status == 'paid'"/>
-                                <field name="pay_status" column_invisible="1"/>
+<!--                                <field name="pay_status" column_invisible="1"/>-->
                                 <field name="payment_status" widget="badge" decoration-danger="payment_status == 'over_due'" decoration-success="payment_status == 'paid'"
                                                                             decoration-warning="payment_status == 'unpaid'" decoration-info="payment_status == 'upcoming'"/>
                                 <field name="reminder_date"  force_save="1" readonly="1" optional="hide"/>
@@ -237,6 +237,28 @@
         <field name="view_mode">kanban,list</field>
       <field name="context">{'create': False}</field>
   </record>
+
+    <record id="res_config_settings_view_form_fee" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.ala.education.fee</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="60"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Fees Administration"
+                     string="Fees Administration"
+                     name="ala_education_fee"
+                     logo="/ala_education_fee/static/description/icon.png">
+                    <block title="Late Fee Settings" name="late_fee_settings">
+                        <setting string="Late Fine Amount"
+                                 help="Fine applied automatically once a fee line passes its due date (daily cron).">
+                            <field name="late_fine_amount"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
 
 <!--    <record id="view_fee_line_search" model="ir.ui.view">-->
 <!--          <field name="name">ala.student.fee.line.search</field>-->
