@@ -10,7 +10,7 @@ class EducationExamValuation(models.Model):
     _inherit = 'ala.education.exam.valuation'
 
     evaluation_mode = fields.Selection(
-        [('mark', 'Marks'), ('grade', 'Grade Only')],
+        [('mark', 'Marks'), ('grade', 'Grade Only'), ('grade_no_calc', 'Grade Only(No Calc)')],
         string='Evaluation Mode', default='mark')
     exam_max = fields.Float(string='Written Max')
     assign_max = fields.Float(string='Internal Max')

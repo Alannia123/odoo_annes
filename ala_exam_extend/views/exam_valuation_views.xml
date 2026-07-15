@@ -16,21 +16,21 @@
                 <field name="assign_max" invisible="1"/>
             </xpath>
 
-            <xpath expr="//field[@name='valuation_line_ids']/list/field[@name='exam_mark']"
-                   position="attributes">
-                <attribute name="column_invisible">parent.evaluation_mode == 'grade'</attribute>
-                <attribute name="string">Written</attribute>
-            </xpath>
+<!--            <xpath expr="//field[@name='valuation_line_ids']/list/field[@name='exam_mark']"-->
+<!--                   position="attributes">-->
+<!--                <attribute name="column_invisible">parent.evaluation_mode == 'grade'</attribute>-->
+<!--                <attribute name="string">Written</attribute>-->
+<!--            </xpath>-->
 
             <xpath expr="//field[@name='valuation_line_ids']/list/field[@name='assign_mark']"
                    position="attributes">
-                <attribute name="column_invisible">parent.assign_max == 0 or parent.evaluation_mode == 'grade'</attribute>
+                <attribute name="column_invisible">parent.assign_max == 0</attribute>
                 <attribute name="string">Internal</attribute>
             </xpath>
 
             <xpath expr="//field[@name='valuation_line_ids']/list/field[@name='mark_scored']"
                    position="attributes">
-                <attribute name="column_invisible">parent.evaluation_mode == 'grade'</attribute>
+<!--                <attribute name="column_invisible">parent.evaluation_mode == 'grade'</attribute>-->
                 <attribute name="readonly">1</attribute>
                 <attribute name="force_save">1</attribute>
             </xpath>

@@ -188,8 +188,79 @@
                 })();
             </script>
         </t>
+        <t t-if="student_fees">
+    <t t-set="all_lines" t-value="student_fees.fee_line_ids"/>
+    <t t-set="paid_lines" t-value="all_lines.filtered(lambda l: l.payment_status == 'paid')"/>
+    <t t-set="payable" t-value="sum(l.amount + l.fine_amount for l in all_lines)"/>
+    <t t-set="concession" t-value="sum(l.concession_amount for l in all_lines)"/>
+    <t t-set="paid" t-value="sum(l.amount - l.concession_amount + l.fine_amount for l in paid_lines)"/>
+    <t t-set="balance" t-value="payable - concession - paid"/>
+
+    <!-- donut geometry: r=70, circumference = 2*pi*70 = 439.8 -->
+    <t t-set="circ" t-value="439.8"/>
+    <t t-set="net_payable" t-value="payable - concession"/>
+    <t t-set="paid_frac" t-value="(paid / net_payable) if net_payable else 0"/>
+    <t t-set="gap" t-value="10"/>
+    <t t-set="paid_len" t-value="max(circ * paid_frac - gap, 0)"/>
+    <t t-set="bal_len" t-value="max(circ * (1 - paid_frac) - gap, 0)"/>
+
+    <div class="fee-status-card">
+        <div class="fee-status-head">
+            <span>Fee Status</span>
+        </div>
+        <div class="fee-status-body">
+            <div class="fee-donut-wrap">
+                <svg viewBox="0 0 200 200" class="fee-donut">
+                    <!-- Paid (green) starts at 12 o'clock -->
+                    <circle cx="100" cy="100" r="70" fill="none"
+                            stroke="#7cc48f" stroke-width="34"
+                            stroke-linecap="round"
+                            t-att-stroke-dasharray="'%s %s' % (paid_len, circ - paid_len)"
+                            transform="rotate(-90 100 100)"/>
+                    <!-- Balance (red) fills the rest -->
+                    <circle cx="100" cy="100" r="70" fill="none"
+                            stroke="#f2726f" stroke-width="34"
+                            stroke-linecap="round"
+                            t-att-stroke-dasharray="'0 %s %s %s' % (circ * paid_frac + gap/2, bal_len, gap/2)"
+                            transform="rotate(-90 100 100)"/>
+                </svg>
+            </div>
+            <div class="fee-legend">
+                <div class="legend-pill">
+                    <span class="legend-dot" style="background:#4a63d8;"></span>
+                    <span class="legend-text">
+                        <span class="legend-label">Payable</span>
+                        <span class="legend-amt">₹<t t-esc="'{:,.0f}'.format(payable)"/></span>
+                    </span>
+                </div>
+                <div class="legend-pill">
+                    <span class="legend-dot" style="background:#f0a020;"></span>
+                    <span class="legend-text">
+                        <span class="legend-label">Con/Dis</span>
+                        <span class="legend-amt">₹<t t-esc="'{:,.0f}'.format(concession)"/></span>
+                    </span>
+                </div>
+                <div class="legend-pill">
+                    <span class="legend-dot" style="background:#7cc48f;"></span>
+                    <span class="legend-text">
+                        <span class="legend-label">Paid</span>
+                        <span class="legend-amt">₹<t t-esc="'{:,.0f}'.format(paid)"/></span>
+                    </span>
+                </div>
+                <div class="legend-pill">
+                    <span class="legend-dot" style="background:#f2726f;"></span>
+                    <span class="legend-text">
+                        <span class="legend-label">Balance</span>
+                        <span class="legend-amt">₹<t t-esc="'{:,.0f}'.format(balance)"/></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</t>
 
         <div class="row text-center">
+
             <t t-if="student_fees">
                 <t t-foreach="student_fees.fee_line_ids" t-as="fee">
                     <t t-set="is_paid" t-value="fee.payment_status == 'paid'"/>
@@ -278,76 +349,7 @@
                     </div>
                 </t>
             </t>
-            <t t-if="student_fees">
-    <t t-set="all_lines" t-value="student_fees.fee_line_ids"/>
-    <t t-set="paid_lines" t-value="all_lines.filtered(lambda l: l.payment_status == 'paid')"/>
-    <t t-set="payable" t-value="sum(l.amount + l.fine_amount for l in all_lines)"/>
-    <t t-set="concession" t-value="sum(l.concession_amount for l in all_lines)"/>
-    <t t-set="paid" t-value="sum(l.amount - l.concession_amount + l.fine_amount for l in paid_lines)"/>
-    <t t-set="balance" t-value="payable - concession - paid"/>
 
-    <!-- donut geometry: r=70, circumference = 2*pi*70 = 439.8 -->
-    <t t-set="circ" t-value="439.8"/>
-    <t t-set="net_payable" t-value="payable - concession"/>
-    <t t-set="paid_frac" t-value="(paid / net_payable) if net_payable else 0"/>
-    <t t-set="gap" t-value="10"/>
-    <t t-set="paid_len" t-value="max(circ * paid_frac - gap, 0)"/>
-    <t t-set="bal_len" t-value="max(circ * (1 - paid_frac) - gap, 0)"/>
-
-    <div class="fee-status-card">
-        <div class="fee-status-head">
-            <span>Fee Status</span>
-        </div>
-        <div class="fee-status-body">
-            <div class="fee-donut-wrap">
-                <svg viewBox="0 0 200 200" class="fee-donut">
-                    <!-- Paid (green) starts at 12 o'clock -->
-                    <circle cx="100" cy="100" r="70" fill="none"
-                            stroke="#7cc48f" stroke-width="34"
-                            stroke-linecap="round"
-                            t-att-stroke-dasharray="'%s %s' % (paid_len, circ - paid_len)"
-                            transform="rotate(-90 100 100)"/>
-                    <!-- Balance (red) fills the rest -->
-                    <circle cx="100" cy="100" r="70" fill="none"
-                            stroke="#f2726f" stroke-width="34"
-                            stroke-linecap="round"
-                            t-att-stroke-dasharray="'0 %s %s %s' % (circ * paid_frac + gap/2, bal_len, gap/2)"
-                            transform="rotate(-90 100 100)"/>
-                </svg>
-            </div>
-            <div class="fee-legend">
-                <div class="legend-pill">
-                    <span class="legend-dot" style="background:#4a63d8;"></span>
-                    <span class="legend-text">
-                        <span class="legend-label">Payable</span>
-                        <span class="legend-amt">₹<t t-esc="'{:,.0f}'.format(payable)"/></span>
-                    </span>
-                </div>
-                <div class="legend-pill">
-                    <span class="legend-dot" style="background:#f0a020;"></span>
-                    <span class="legend-text">
-                        <span class="legend-label">Con/Dis</span>
-                        <span class="legend-amt">₹<t t-esc="'{:,.0f}'.format(concession)"/></span>
-                    </span>
-                </div>
-                <div class="legend-pill">
-                    <span class="legend-dot" style="background:#7cc48f;"></span>
-                    <span class="legend-text">
-                        <span class="legend-label">Paid</span>
-                        <span class="legend-amt">₹<t t-esc="'{:,.0f}'.format(paid)"/></span>
-                    </span>
-                </div>
-                <div class="legend-pill">
-                    <span class="legend-dot" style="background:#f2726f;"></span>
-                    <span class="legend-text">
-                        <span class="legend-label">Balance</span>
-                        <span class="legend-amt">₹<t t-esc="'{:,.0f}'.format(balance)"/></span>
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</t>
 
             <t t-else="">
                 <div class="alert alert-warning text-center">

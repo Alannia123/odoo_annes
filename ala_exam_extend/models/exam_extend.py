@@ -21,6 +21,9 @@ class EducationExam(models.Model):
             ('class_id', '=', self.class_id.id),
             ('current_year', '=', True),
         ])
+        no_of_subjects = self.class_id.subject_ids.filtered(
+                lambda s: s.evaluation_mode != 'grade_no_calc')
+        self.no_of_subjects = len(no_of_subjects)
 
         for subject in self.subject_line_ids:
             curr_subject = self.class_id.subject_ids.filtered(

@@ -17,7 +17,7 @@ class EducationClassSubject(models.Model):
     _inherit = 'ala.education.class.subject'
 
     evaluation_mode = fields.Selection(
-        [('mark', 'Marks'), ('grade', 'Grade Only')],
+        [('mark', 'Marks'), ('grade', 'Grade Only'), ('grade_no_calc', 'Grade Only(No Calc)')],
         string='Evaluation Mode', default='mark', required=True,
         help='Grade Only subjects are still entered as raw marks; only the '
              'report card shows the derived grade instead of the number.')
