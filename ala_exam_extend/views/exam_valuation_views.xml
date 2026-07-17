@@ -37,8 +37,8 @@
 
             <xpath expr="//field[@name='valuation_line_ids']/list/field[@name='mark_scored']"
                    position="after">
-                <field name="grade" string="Grade" column_invisible="parent.evaluation_mode == 'mark'"/>
-                <field name="grade_label" string="Grade" column_invisible="parent.evaluation_mode == 'grade'"/>
+                <field name="grade" string="Grade" column_invisible="1"/>
+                <field name="grade_label" string="Grade" />
             </xpath>
         </field>
     </record>
