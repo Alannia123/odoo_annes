@@ -49,7 +49,9 @@
         <field name="model_id" ref="model_ala_education_student"/>
         <field name="groups" eval="[(4, ref('ala_education_core.group_education_faculty'))]"/>
         <field name="domain_force">
-            [('class_division_id.faculty_id.user_id', '=', user.id)]
+            ['|',
+                ('class_division_id.faculty_id.user_id', '=', user.id),
+                ('class_division_id.class_id.subject_ids.faculty_ids.user_id', '=', user.id)]
         </field>
     </record>
 

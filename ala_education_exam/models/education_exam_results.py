@@ -124,17 +124,17 @@ class EducationExamResults(models.Model):
                 raise UserError("Please Contact Administartor to configure No of Subjects.")
             self.total_mark_percentage = (self.total_mark_scored / total_max_mark) * 100
         if self.total_mark_percentage >= 90:
-            self.grade = 'AA'
-        elif self.total_mark_percentage >= 80 and self.total_mark_percentage < 90:
             self.grade = 'A+'
-        elif self.total_mark_percentage >= 70 and self.total_mark_percentage < 80:
+        elif self.total_mark_percentage >= 80 and self.total_mark_percentage < 90:
             self.grade = 'A'
-        elif self.total_mark_percentage >= 60 and self.total_mark_percentage < 70:
+        elif self.total_mark_percentage >= 60 and self.total_mark_percentage < 80:
             self.grade = 'B'
-        elif self.total_mark_percentage >= 50 and self.total_mark_percentage < 60:
+        elif self.total_mark_percentage >= 39 and self.total_mark_percentage < 60:
             self.grade = 'C'
-        else:
+        elif self.total_mark_percentage >= 1 and self.total_mark_percentage < 39:
             self.grade = 'D'
+        else:
+            self.grade = 'AB'
 
 
 class ResultsSubjectLine(models.Model):
