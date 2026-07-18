@@ -220,4 +220,4 @@ export class EducationalDashboard extends Component {
     }
 }
 
-registry.category("actions").add("erp_dashboard_tag", EducationalDashboard);
+registry.category("actions").add("ala_erp_dashboard_tag", EducationalDashboard);
