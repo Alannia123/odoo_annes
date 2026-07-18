@@ -103,7 +103,7 @@
 
     <menuitem id="education_attendance_entry_root_menu" name=" Daily Attendance"
               sequence="10" action="education_attendance_entry_action"
-              web_icon="ala_education_attendances,static/description/icon.png"/>
+              web_icon="ala_education_attendances,static/description/icon_att.png"/>
 
 
 </odoo>

@@ -189,7 +189,7 @@
 
     <menuitem id="education_attendance_root_menu" name="Attendance Management"
               sequence="12"
-              web_icon="ala_education_attendances,static/description/icon.png"/>
+              web_icon="ala_education_attendances,static/description/icon_att.png"/>
 
     <menuitem id="menu_attendance_dashboard" name="Dashboard"
               parent="ala_education_attendances.education_attendance_root_menu"

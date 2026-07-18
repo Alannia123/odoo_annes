@@ -6,160 +6,250 @@ from odoo import api, fields, models
 class ErpDashboard(models.Model):
     """The Dashboard model used to build the all details of the
     Educational system"""
-    _name = "ala.erp.dashboard"
+    _name = "erp.dashboard"
     _description = "Education ERP Dashboard"
 
-    @api.model
-    def erp_data(self):
-        """Critical data only — counts, attendance, divisions. Fast path."""
-        today = fields.Date.today()
-
-        current_year = self.env['ala.education.academic.year'].search([
+    def _get_current_year_id(self):
+        current_year = self.env['education.academic.year'].search([
             ('enable', '=', True)
         ], limit=1)
-        current_year_id = current_year.id or 0
+        return current_year.id or 0
 
-        # One CTE replaces 6 separate queries
+    # ============================================================
+    # LIGHT DATA — loaded on page open (top summary cards only)
+    # ============================================================
+    @api.model
+    def erp_data(self):
+        current_year_id = self._get_current_year_id()
+
+        # ----------------------------
+        # STUDENT COUNTS
+        # ----------------------------
         self.env.cr.execute("""
-            WITH
-            students AS (
                 SELECT
-                    COUNT(*) FILTER (WHERE COALESCE(tc_issued,false)=false AND COALESCE(drop_out,false)=false) AS total,
-                    COUNT(*) FILTER (WHERE gender='male'   AND COALESCE(tc_issued,false)=false AND COALESCE(drop_out,false)=false) AS male,
-                    COUNT(*) FILTER (WHERE gender='female' AND COALESCE(tc_issued,false)=false AND COALESCE(drop_out,false)=false) AS female
-                FROM ala_education_student
-            ),
-            faculties AS (
-                SELECT
-                    COUNT(*) AS total,
-                    COUNT(*) FILTER (WHERE gender='male')   AS male,
-                    COUNT(*) FILTER (WHERE gender='female') AS female
-                FROM ala_education_faculty
-            ),
-            amenities AS (
-                SELECT
-                    COUNT(*) FILTER (WHERE in_out_door='indoor')  AS indoor,
-                    COUNT(*) FILTER (WHERE in_out_door='outdoor') AS outdoor
-                FROM ala_education_amenities
-            ),
-            exams AS (
-                SELECT
-                    COUNT(*) FILTER (WHERE state='ongoing') AS ongoing,
-                    COUNT(*) FILTER (WHERE state='close')   AS closed
-                FROM ala_education_exam
-                WHERE academic_year_id = %(year_id)s
-            ),
-            attendance AS (
-                SELECT
-                    COUNT(*) FILTER (WHERE present=true)                  AS present,
-                    COUNT(*) FILTER (WHERE COALESCE(present,false)=false) AS absent
-                FROM ala_education_attendance_line
-                WHERE date=%(today)s AND state='done'
-            ),
-            homeworks AS (
-                SELECT COUNT(*) AS total
-                FROM ala_student_homework_line
-                WHERE homework_date=%(today)s AND state='post'
-            )
-            SELECT
-                s.total  AS st, s.male  AS sm, s.female AS sf,
-                f.total  AS ft, f.male  AS fm, f.female AS ff,
-                a.indoor AS ai, a.outdoor AS ao,
-                e.ongoing AS eo, e.closed AS ec,
-                att.present AS ap, att.absent AS aa,
-                h.total AS hw
-            FROM students s, faculties f, amenities a, exams e, attendance att, homeworks h
-        """, {'year_id': current_year_id, 'today': today})
+                    COUNT(*) FILTER (
+                        WHERE COALESCE(tc_issued, false) = false
+                        AND COALESCE(drop_out, false) = false
+                    ) AS total_students,
 
-        row = self.env.cr.dictfetchone() or {}
+                    COUNT(*) FILTER (
+                        WHERE gender = 'male'
+                        AND COALESCE(tc_issued, false) = false
+                        AND COALESCE(drop_out, false) = false
+                    ) AS male_students,
 
-        # Division query (unchanged — already good SQL)
+                    COUNT(*) FILTER (
+                        WHERE gender = 'female'
+                        AND COALESCE(tc_issued, false) = false
+                        AND COALESCE(drop_out, false) = false
+                    ) AS female_students
+                FROM education_student
+            """)
+        student_data = self.env.cr.dictfetchone() or {}
+
+        # ----------------------------
+        # FACULTY COUNTS
+        # ----------------------------
+        self.env.cr.execute("""
+                SELECT
+                    COUNT(*) AS total_faculty,
+                    COUNT(*) FILTER (WHERE gender = 'male') AS male_faculty,
+                    COUNT(*) FILTER (WHERE gender = 'female') AS female_faculty
+                FROM education_faculty
+            """)
+        faculty_data = self.env.cr.dictfetchone() or {}
+
+        # ----------------------------
+        # AMENITIES COUNTS
+        # ----------------------------
+        self.env.cr.execute("""
+                SELECT
+                    COUNT(*) FILTER (WHERE in_out_door = 'indoor') AS indoor,
+                    COUNT(*) FILTER (WHERE in_out_door = 'outdoor') AS outdoor
+                FROM education_amenities
+            """)
+        amenities_data = self.env.cr.dictfetchone() or {}
+
+        # ----------------------------
+        # EXAM COUNTS
+        # ----------------------------
+        self.env.cr.execute("""
+                SELECT
+                    COUNT(*) FILTER (WHERE state = 'ongoing') AS ongoing,
+                    COUNT(*) FILTER (WHERE state = 'close') AS closed
+                FROM education_exam
+                WHERE academic_year_id = %s
+            """, (current_year_id,))
+        exam_data = self.env.cr.dictfetchone() or {}
+
+        total_students = student_data.get('total_students') or 0
+        male_students = student_data.get('male_students') or 0
+        female_students = student_data.get('female_students') or 0
+
+        total_faculty = faculty_data.get('total_faculty') or 0
+        male_faculty = faculty_data.get('male_faculty') or 0
+        female_faculty = faculty_data.get('female_faculty') or 0
+
+        amenities_indoor = amenities_data.get('indoor') or 0
+        amenities_outdoor = amenities_data.get('outdoor') or 0
+
+        exam_ongoing = exam_data.get('ongoing') or 0
+        exam_closed = exam_data.get('closed') or 0
+
+        return {
+            'students': total_students,
+            'female_student_count': female_students,
+            'male_student_count': male_students,
+
+            'faculties': total_faculty,
+            'faculty_male': male_faculty,
+            'faculty_female': female_faculty,
+
+            'amenities': amenities_indoor + amenities_outdoor,
+            'amenities_indoor': amenities_indoor,
+            'amenities_outdoor': amenities_outdoor,
+
+            'exams': exam_ongoing + exam_closed,
+            'exam_ongoing': exam_ongoing,
+            'exam_closed': exam_closed,
+
+            'total_students': total_students,
+            'current_academic_year_id': current_year_id,
+        }
+
+    # ============================================================
+    # HEAVY DATA — loaded on demand via "Load Data" button
+    # ============================================================
+    @api.model
+    def erp_detail_data(self):
+        today = fields.Date.today()
+        current_year_id = self._get_current_year_id()
+
+        # ----------------------------
+        # TODAY ATTENDANCE TOTAL
+        # ----------------------------
+        self.env.cr.execute("""
+                SELECT
+                    COUNT(*) FILTER (WHERE present_morning = true) AS present,
+                    COUNT(*) FILTER (WHERE COALESCE(present_morning, false) = false) AS absent
+                FROM education_attendance_line
+                WHERE date = %s
+                AND state = 'done'
+            """, (today,))
+        attendance_data = self.env.cr.dictfetchone() or {}
+
+        # ----------------------------
+        # TODAY HOMEWORK TOTAL
+        # ----------------------------
+        self.env.cr.execute("""
+                SELECT COUNT(*) AS total_homeworks
+                FROM student_homework_line
+                WHERE homework_date = %s
+                AND state = 'post'
+            """, (today,))
+        homework_data = self.env.cr.dictfetchone() or {}
+
+        # ----------------------------
+        # DIVISION SUMMARY
+        # ----------------------------
         self.env.cr.execute("""
             SELECT
-                d.id AS division_id, d.name AS division,
-                a.id AS attendance_id, a.state AS attendance_state,
-                COUNT(al.id) FILTER (WHERE a.state='done')                                AS total,
-                COUNT(al.id) FILTER (WHERE a.state='done' AND al.present=true)            AS present,
-                COUNT(al.id) FILTER (WHERE a.state='done' AND COALESCE(al.present,false)=false) AS absent,
+                d.id AS division_id,
+                d.name AS division,
+                a.id AS attendance_id,
+                a.state AS attendance_state,
+
+                COUNT(al.id) FILTER (WHERE a.state = 'done') AS total,
+
+                COUNT(al.id) FILTER (
+                    WHERE a.state = 'done'
+                    AND al.present_morning = true
+                ) AS present,
+
+                COUNT(al.id) FILTER (
+                    WHERE a.state = 'done'
+                    AND COALESCE(al.present_morning, false) = false
+                ) AS absent,
+
                 COALESCE(hw.total_homeworks, 0) AS div_homeworks
-            FROM ala_education_class_division d
-            LEFT JOIN ala_education_attendance a
-                ON a.division_id=d.id AND a.date=%(today)s
-            LEFT JOIN ala_education_attendance_line al
-                ON al.attendance_id=a.id
+
+            FROM education_class_division d
+
+            LEFT JOIN education_attendance a
+                ON a.division_id = d.id
+                AND a.date = %s
+
+            LEFT JOIN education_attendance_line al
+                ON al.attendance_id = a.id
+
             LEFT JOIN (
                 SELECT class_div_id, COUNT(*) AS total_homeworks
-                FROM ala_student_homework_line
-                WHERE homework_date=%(today)s AND state='post'
+                FROM student_homework_line
+                WHERE homework_date = %s
+                AND state = 'post'
                 GROUP BY class_div_id
-            ) hw ON hw.class_div_id=d.id
-            WHERE d.current_year=true
-            GROUP BY d.id, d.name, a.id, a.state, hw.total_homeworks
-            ORDER BY d.name
-        """, {'today': today})
+            ) hw ON hw.class_div_id = d.id
+
+            WHERE d.current_year = true
+
+            GROUP BY
+                d.id, d.name, a.id, a.state, hw.total_homeworks
+
+            ORDER BY
+                CASE
+                    WHEN d.name ILIKE 'LKG%%' THEN 1
+                    WHEN d.name ILIKE 'UKG%%' THEN 2
+                    WHEN d.name ILIKE 'I-%%' THEN 3
+                    WHEN d.name ILIKE 'II-%%' THEN 4
+                    WHEN d.name ILIKE 'III-%%' THEN 5
+                    WHEN d.name ILIKE 'IV-%%' THEN 6
+                    WHEN d.name ILIKE 'V-%%' THEN 7
+                    WHEN d.name ILIKE 'VI-%%' THEN 8
+                    WHEN d.name ILIKE 'VII-%%' THEN 9
+                    WHEN d.name ILIKE 'VIII-%%' THEN 10
+                    WHEN d.name ILIKE 'IX-%%' THEN 11
+                    WHEN d.name ILIKE 'X-%%' THEN 12
+                    ELSE 99
+                END,
+                d.name
+        """, (today, today))
 
         division_rows = self.env.cr.dictfetchall()
+
         division_summary = []
         updated_divisions_count = 0
 
-        for r in division_rows:
-            if not r['attendance_id']:
+        for row in division_rows:
+            if not row['attendance_id']:
                 status = 'Not Created'
-            elif r['attendance_state'] == 'draft':
+            elif row['attendance_state'] == 'draft':
                 status = 'Not Updated'
             else:
                 status = 'Updated'
                 updated_divisions_count += 1
 
             division_summary.append({
-                'id': r['attendance_id'],
-                'division': r['division'],
-                'division_id': r['division_id'],
-                'attendance_id': r['attendance_id'] or False,
-                'total': r['total'] or 0,
-                'present': r['present'] or 0,
-                'absent': r['absent'] or 0,
-                'div_homeworks': r['div_homeworks'] or 0,
+                'id': row['attendance_id'],
+                'division': row['division'],
+                'division_id': row['division_id'],
+                'attendance_id': row['attendance_id'] or False,
+                'total': row['total'] or 0,
+                'present': row['present'] or 0,
+                'absent': row['absent'] or 0,
+                'div_homeworks': row['div_homeworks'] or 0,
                 'status': status,
             })
 
-        return {
-            'students': row.get('st') or 0,
-            'male_student_count': row.get('sm') or 0,
-            'female_student_count': row.get('sf') or 0,
-            'faculties': row.get('ft') or 0,
-            'faculty_male': row.get('fm') or 0,
-            'faculty_female': row.get('ff') or 0,
-            'amenities': (row.get('ai') or 0) + (row.get('ao') or 0),
-            'amenities_indoor': row.get('ai') or 0,
-            'amenities_outdoor': row.get('ao') or 0,
-            'exams': (row.get('eo') or 0) + (row.get('ec') or 0),
-            'exam_ongoing': row.get('eo') or 0,
-            'exam_closed': row.get('ec') or 0,
-            'total_students': row.get('st') or 0,
-            'today_present': row.get('ap') or 0,
-            'today_absent': row.get('aa') or 0,
-            'today_homeworks': row.get('hw') or 0,
-            'division_summary': division_summary,
-            'total_divisions': len(division_summary),
-            'updated_divisions': updated_divisions_count,
-            'current_academic_year_id': current_year_id,
-        }
-
-    @api.model
-    def erp_data_deferred(self):
-        """Non-critical data — tasks and valuations. Called after main render."""
-        current_year = self.env['ala.education.academic.year'].search([
-            ('enable', '=', True)
-        ], limit=1)
-        current_year_id = current_year.id or 0
-
-        # prefetch_fields eliminates N+1 on user_id.name, scheduled_date, etc.
-        teacher_tasks = self.env['ala.task.management'].search([
-            ('state', 'in', ('assigned', 'in_progress')),
-            ('academic_year_id', '=', current_year_id),
-        ], order='scheduled_date desc', limit=50)
-        teacher_tasks.mapped('user_id')  # prefetch user records in one query
+        # ----------------------------
+        # TEACHER TASKS
+        # ----------------------------
+        teacher_tasks = self.env['task.management'].search(
+            [
+                ('state', 'in', ('assigned', 'in_progress')),
+                ('academic_year_id', '=', current_year_id)
+            ],
+            order='scheduled_date desc'
+        )
 
         task_summary = [{
             'id': t.id,
@@ -169,15 +259,16 @@ class ErpDashboard(models.Model):
             'state': dict(t._fields['state'].selection).get(t.state),
         } for t in teacher_tasks]
 
-        exam_valuations = self.env['ala.education.exam.valuation'].search([
-            ('state', '=', 'draft'),
-            ('academic_year_id', '=', current_year_id),
-        ], order='id desc', limit=50)
-        # Prefetch all related fields in bulk
-        exam_valuations.mapped('exam_id')
-        exam_valuations.mapped('subject_id')
-        exam_valuations.mapped('class_id')
-        exam_valuations.mapped('division_id')
+        # ----------------------------
+        # EXAM VALUATIONS
+        # ----------------------------
+        exam_valuations = self.env['education.exam.valuation'].search(
+            [
+                ('state', '=', 'draft'),
+                ('academic_year_id', '=', current_year_id)
+            ],
+            order='id desc'
+        )
 
         valuation_summary = [{
             'id': v.id,
@@ -190,6 +281,14 @@ class ErpDashboard(models.Model):
         } for v in exam_valuations]
 
         return {
-            'teacher_tasks': task_summary,
+            'today_present': attendance_data.get('present') or 0,
+            'today_absent': attendance_data.get('absent') or 0,
+            'today_homeworks': homework_data.get('total_homeworks') or 0,
+
+            'division_summary': division_summary,
             'valuation_summary': valuation_summary,
+            'teacher_tasks': task_summary,
+
+            'total_divisions': len(division_summary),
+            'updated_divisions': updated_divisions_count,
         }
