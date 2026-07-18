@@ -5,8 +5,7 @@
     <!-- Header Section -->
     <div class="dashboard-header mb-4 text-center">
         <div class="logo-wrapper mb-2">
-    <img t-if="companyId"
-         t-att-src="'/web/image/res.company/' + companyId + '/logo'"
+    <img src="/web/binary/company_logo"
          alt="Company Logo"
          class="edu-logo animate-glow"/>
 </div>

@@ -18,10 +18,8 @@ export class EducationalDashboard extends Component {
     setup() {
         this.orm = useService("orm");
         this.action = useService("action");
-        this.company = useService("company");
         this.user = user;
 
-        this.companyId = this.company.currentCompany?.id || false;
         this.detailsLoaded = false;
 
         this.state = useState({
