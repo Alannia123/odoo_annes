@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="ala_faculty_attendance_daily.Dashboard">
+    <div class="mfa_dash o_action">
+    <div class="mfa_scroll">
+
+        <!-- ============ ANNOUNCEMENT TICKER (running display) ============ -->
+        <div t-if="announcements.length" class="mfa_ticker" role="marquee"
+             aria-label="Announcements">
+            <span class="mfa_ticker_label">
+                <i class="fa fa-bullhorn me-1"/>Announcements
+            </span>
+            <div class="mfa_ticker_viewport">
+                <div class="mfa_ticker_track"
+                     t-attf-style="animation-duration: {{ tickerDuration }}s">
+                    <t t-foreach="[0, 1]" t-as="loop" t-key="loop">
+                        <span class="mfa_ticker_group"
+                              t-att-aria-hidden="loop ? 'true' : undefined">
+                            <t t-foreach="announcements" t-as="ann"
+                               t-key="loop + '_' + ann.id">
+                                <span t-att-class="'mfa_ticker_item'
+                                        + (ann.priority === 'high'
+                                            ? ' mfa_ticker_high' : '')">
+                                    <i t-if="ann.priority === 'high'"
+                                       class="fa fa-exclamation-circle me-1"/>
+                                    <b class="mfa_ticker_name" t-esc="ann.name"/>
+                                    <span class="mfa_ticker_sep">—</span>
+                                    <t t-esc="ann.message"/>
+                                </span>
+                            </t>
+                        </span>
+                    </t>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================= HEADER ======================= -->
+        <div class="mfa_header">
+            <div class="mfa_title_block">
+                <h2 class="mfa_title">Faculty Attendance</h2>
+                <div class="mfa_sub">
+                    <span t-if="state.data" t-esc="state.data.range_label"/>
+                    <span t-if="state.employeeId" class="mfa_chip mfa_chip_emp">
+                        <i class="fa fa-user me-1"/>
+                        <t t-esc="state.employeeName || (state.data and state.data.employee_focus and state.data.employee_focus.name) || 'Faculty'"/>
+                        <i class="fa fa-times ms-2" role="button"
+                           title="Clear faculty filter"
+                           t-on-click="clearEmployeeFocus"/>
+                    </span>
+                    <t t-if="state.data and state.data.sheet_info">
+                        <span t-if="!state.data.sheet_info.exists"
+                              class="mfa_chip mfa_chip_muted">No Sheet</span>
+                        <span t-elif="state.data.sheet_info.state === 'draft'"
+                              class="mfa_chip mfa_chip_draft"
+                              t-on-click="openSheet" role="button">Draft — open</span>
+                        <span t-else=""
+                              class="mfa_chip mfa_chip_done"
+                              t-on-click="openSheet" role="button">
+                            <t t-if="state.data.sheet_info.auto_closed">Auto&#160;</t>Validated — open
+                        </span>
+                    </t>
+                </div>
+            </div>
+            <div class="mfa_controls">
+                <div class="mfa_pills">
+                    <button t-att-class="'mfa_pill' + (state.period === 'day' ? ' active' : '')"
+                            t-on-click="() => this.setPeriod('day')">Day</button>
+                    <button t-att-class="'mfa_pill' + (state.period === 'week' ? ' active' : '')"
+                            t-on-click="() => this.setPeriod('week')">Week</button>
+                    <button t-att-class="'mfa_pill' + (state.period === 'month' ? ' active' : '')"
+                            t-on-click="() => this.setPeriod('month')">Month</button>
+                </div>
+                <div class="mfa_nav">
+                    <button class="mfa_nav_btn" t-on-click="() => this.shift(-1)"
+                            title="Previous">&#8249;</button>
+                    <button class="mfa_nav_btn mfa_today" t-on-click="goToday">Today</button>
+                    <button class="mfa_nav_btn" t-on-click="() => this.shift(1)"
+                            title="Next">&#8250;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================= TABS ======================= -->
+        <div class="mfa_tabs">
+            <button t-att-class="'mfa_tab' + (state.tab === 'overview' ? ' active' : '')"
+                    t-on-click="() => this.setTab('overview')">Overview</button>
+            <button t-att-class="'mfa_tab' + (state.tab === 'employee' ? ' active' : '')"
+                    t-on-click="() => this.setTab('employee')">By Employee</button>
+        </div>
+
+        <!-- ======================= LOADING ======================= -->
+        <div t-if="state.loading" class="mfa_loading">
+            <i class="fa fa-circle-o-notch fa-spin fa-2x"/>
+        </div>
+
+        <t t-if="!state.loading and state.data">
+
+            <!-- ======================= KPI CARDS ======================= -->
+            <div class="mfa_kpis">
+                <div class="mfa_card mfa_kpi mfa_kpi_total">
+                    <span class="mfa_kpi_value" t-esc="state.data.kpi.total"/>
+                    <span class="mfa_kpi_label">Marked</span>
+                </div>
+                <div class="mfa_card mfa_kpi mfa_kpi_present">
+                    <span class="mfa_kpi_value" t-esc="state.data.kpi.present"/>
+                    <span class="mfa_kpi_label">Present</span>
+                </div>
+                <div class="mfa_card mfa_kpi mfa_kpi_leave">
+                    <span class="mfa_kpi_value" t-esc="state.data.kpi.leave"/>
+                    <span class="mfa_kpi_label">Leave</span>
+                </div>
+                <div class="mfa_card mfa_kpi mfa_kpi_onduty">
+                    <span class="mfa_kpi_value" t-esc="state.data.kpi.on_duty"/>
+                    <span class="mfa_kpi_label">On Duty</span>
+                </div>
+                <div class="mfa_card mfa_kpi mfa_kpi_med">
+                    <span class="mfa_kpi_value" t-esc="state.data.kpi.med_leave"/>
+                    <span class="mfa_kpi_label">Med Leave</span>
+                </div>
+                <div class="mfa_card mfa_kpi mfa_kpi_rate">
+                    <span class="mfa_kpi_value"><t t-esc="state.data.kpi.rate"/>%</span>
+                    <span class="mfa_kpi_label">Attendance Rate</span>
+                </div>
+            </div>
+
+            <!-- ======================= OVERVIEW TAB ======================= -->
+            <div t-if="state.tab === 'overview'" class="mfa_grid">
+                <div class="mfa_card mfa_chart_card">
+                    <h5 class="mfa_card_title">
+                        <t t-if="state.period === 'day'">Status Split</t>
+                        <t t-else="">Daily Trend</t>
+                    </h5>
+                    <div class="mfa_chart_wrap">
+                        <canvas t-ref="chart"/>
+                    </div>
+                </div>
+                <div class="mfa_card mfa_side_card">
+                    <h5 class="mfa_card_title">
+                        <t t-if="state.period === 'day'">On Leave Today</t>
+                        <t t-else="">Most Leaves</t>
+                    </h5>
+                    <div t-if="!absentList.length" class="mfa_empty">
+                        <i class="fa fa-check-circle"/> Everyone present
+                    </div>
+                    <ul class="mfa_absent_list">
+                        <li t-foreach="absentList" t-as="emp" t-key="emp.id">
+                            <span class="mfa_roll" t-esc="emp.roll"/>
+                            <span class="mfa_emp_name" t-esc="emp.name"/>
+                            <span t-if="state.period !== 'day'"
+                                  class="mfa_badge mfa_badge_leave">
+                                <t t-esc="emp.leaves"/> d
+                            </span>
+                            <span t-if="state.period === 'day'"
+                                  t-att-class="statusBadgeClass(emp.day_status)"
+                                  t-esc="statusLabel(emp.day_status)"/>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ======================= EMPLOYEE TAB ======================= -->
+            <div t-if="state.tab === 'employee'" class="mfa_card mfa_table_card">
+                <div class="mfa_table_head">
+                    <h5 class="mfa_card_title mb-0">Employee-wise Attendance</h5>
+                    <input type="text" class="mfa_search" placeholder="Search name / roll no…"
+                           t-model="state.search"/>
+                </div>
+                <div class="mfa_table_scroll">
+                    <table class="mfa_table">
+                        <thead>
+                            <tr>
+                                <th class="text-end">Roll</th>
+                                <th>Faculty</th>
+                                <t t-if="state.period === 'day'">
+                                    <th>Status</th>
+                                </t>
+                                <t t-else="">
+                                    <th class="text-end">Present</th>
+                                    <th class="text-end">Leave</th>
+                                    <th class="text-end">On Duty</th>
+                                    <th class="text-end">Med Leave</th>
+                                    <th class="mfa_rate_col">Attendance</th>
+                                </t>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="filteredEmployees" t-as="emp" t-key="emp.id">
+                                <td class="text-end mfa_roll_cell" t-esc="emp.roll"/>
+                                <td t-esc="emp.name"/>
+                                <t t-if="state.period === 'day'">
+                                    <td>
+                                        <span t-att-class="statusBadgeClass(emp.day_status)"
+                                              t-esc="statusLabel(emp.day_status)"/>
+                                    </td>
+                                </t>
+                                <t t-else="">
+                                    <td class="text-end" t-esc="emp.present"/>
+                                    <td class="text-end" t-esc="emp.leave"/>
+                                    <td class="text-end" t-esc="emp.on_duty"/>
+                                    <td class="text-end" t-esc="emp.med_leave"/>
+                                    <td>
+                                        <div class="mfa_rate_wrap">
+                                            <div class="mfa_rate_bar">
+                                                <div class="mfa_rate_fill"
+                                                     t-attf-style="width: {{ emp.rate }}%"/>
+                                            </div>
+                                            <span class="mfa_rate_txt">
+                                                <t t-esc="emp.rate"/>%
+                                            </span>
+                                        </div>
+                                    </td>
+                                </t>
+                            </tr>
+                            <tr t-if="!filteredEmployees.length">
+                                <td colspan="7" class="mfa_empty">No attendance records
+                                    in this period.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </div>
+    </div>
+</t>
+
+</templates>

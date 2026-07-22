@@ -110,6 +110,8 @@
                                 <group>
                                     <field name="degree_id"/>
                                     <field name="gender"/>
+                                    <field name="roll_seq"/>
+                                    <field name="date_of_join"/>
                                     <field name="date_of_birth"/>
                                     <field name="blood_group"/>
                                 </group>

@@ -44,6 +44,8 @@ class EducationFaculty(models.Model):
     mobile = fields.Char(string="Mobile",
                          help="Enter the Mobile for contact purpose")
     date_of_birth = fields.Date(string="Date of Birth", help="Enter the DOB")
+    date_of_join = fields.Date(string="Date of Join", help="Enter the DOJ")
+
     guardian_name = fields.Char(string="Guardian", help="Your guardian is ")
     father_name = fields.Char(string="Father", help="Your Father name is ")
     mother_name = fields.Char(string="Mother", help="Your Mother name is ")
@@ -74,3 +76,4 @@ class EducationFaculty(models.Model):
     signature = fields.Binary("Signature")
     faculty_left_reason_id = fields.Many2one('ala.faculty.left.reason', string="Left Reason")
     faculty_left = fields.Boolean(string="Faculty Left")
+    roll_seq = fields.Integer(string="Roll Sequence")

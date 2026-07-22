@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ==================== WIZARD ==================== -->
+    <record id="view_faculty_att_report_wizard_form" model="ir.ui.view">
+        <field name="name">ala.faculty.attendance.report.wizard.form</field>
+        <field name="model">ala.faculty.attendance.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Monthly Attendance Report">
+                <group>
+                    <group>
+                        <field name="month_date"/>
+                        <field name="company_id"
+                               groups="base.group_multi_company"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_print_pdf" type="object"
+                            string="Print PDF" class="btn-primary"
+                            icon="fa-file-pdf-o"/>
+                    <button name="action_export_xlsx" type="object"
+                            string="Export XLSX" class="btn-primary"
+                            icon="fa-file-excel-o"/>
+                    <button string="Close" class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_faculty_att_report_wizard" model="ir.actions.act_window">
+        <field name="name">Monthly Attendance Report</field>
+        <field name="res_model">ala.faculty.attendance.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_faculty_att_report"
+              parent="menu_faculty_attendance_root"
+              action="action_faculty_att_report_wizard"
+              name="Monthly Report" sequence="25"
+              groups="hr.group_hr_user"/>
+
+    <!-- ==================== PAPERFORMAT ==================== -->
+    <record id="paperformat_faculty_att_monthly" model="report.paperformat">
+        <field name="name">Faculty Attendance Monthly (A4 Landscape)</field>
+        <field name="format">A4</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">10</field>
+        <field name="margin_bottom">8</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">5</field>
+        <field name="disable_shrinking" eval="True"/>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- ==================== REPORT ACTION ==================== -->
+    <record id="action_report_faculty_att_monthly" model="ir.actions.report">
+        <field name="name">Faculty Monthly Attendance</field>
+        <field name="model">ala.faculty.attendance.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ala_faculty_attendance_daily.report_att_monthly</field>
+        <field name="report_file">ala_faculty_attendance_daily.report_att_monthly</field>
+        <field name="paperformat_id" ref="paperformat_faculty_att_monthly"/>
+        <field name="print_report_name">'Faculty_Attendance_%s' % (object.month_date.strftime('%b_%Y'))</field>
+    </record>
+
+    <!-- ==================== QWEB TEMPLATE ==================== -->
+    <template id="report_att_monthly">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="matrix" t-value="matrices[doc.id]"/>
+                <t t-call="web.basic_layout">
+                    <div class="page"
+                         style="font-family: Arial, sans-serif; color: #1E293B;">
+                        <div style="text-align: center; margin-bottom: 8px;">
+                            <span style="font-size: 15px; font-weight: bold; color: #134E4A;">
+                                <t t-esc="matrix['company'].name"/>
+                            </span><br/>
+                            <span style="font-size: 12px; font-weight: bold; color: #0F766E;">
+                                Faculty Attendance Register —
+                                <t t-esc="matrix['month_label']"/>
+                            </span>
+                        </div>
+
+                        <t t-set="n_days" t-value="len(matrix['days'])"/>
+                        <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+                            <thead>
+                                <tr>
+                                    <th style="width: 24px; border: 0.5px solid #94A3B8; background-color: #134E4A; color: #fff; font-size: 6.5px; padding: 2px 1px; text-align: center;">Roll</th>
+                                    <th style="width: 95px; border: 0.5px solid #94A3B8; background-color: #134E4A; color: #fff; font-size: 6.5px; padding: 2px 3px; text-align: left;">Faculty</th>
+                                    <t t-foreach="matrix['days']" t-as="day">
+                                        <th t-attf-style="border: 0.5px solid #94A3B8; color: #fff; font-size: 6px; padding: 2px 0; text-align: center; background-color: {{ '#F59E0B' if day.weekday() == 6 else '#134E4A' }};">
+                                            <t t-esc="day.day"/>
+                                        </th>
+                                    </t>
+                                    <th style="width: 22px; border: 0.5px solid #94A3B8; background-color: #0F766E; color: #fff; font-size: 6px; padding: 2px 0; text-align: center;">P</th>
+                                    <th style="width: 22px; border: 0.5px solid #94A3B8; background-color: #0F766E; color: #fff; font-size: 6px; padding: 2px 0; text-align: center;">L</th>
+                                    <th style="width: 22px; border: 0.5px solid #94A3B8; background-color: #0F766E; color: #fff; font-size: 6px; padding: 2px 0; text-align: center;">OD</th>
+                                    <th style="width: 22px; border: 0.5px solid #94A3B8; background-color: #0F766E; color: #fff; font-size: 6px; padding: 2px 0; text-align: center;">ML</th>
+                                    <th style="width: 30px; border: 0.5px solid #94A3B8; background-color: #0F766E; color: #fff; font-size: 6px; padding: 2px 0; text-align: center;">Mkd</th>
+                                    <th style="width: 30px; border: 0.5px solid #94A3B8; background-color: #0F766E; color: #fff; font-size: 6px; padding: 2px 0; text-align: center;">%</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="matrix['rows']" t-as="row">
+                                    <td style="border: 0.5px solid #94A3B8; font-size: 6.5px; text-align: center; font-weight: bold; color: #0F766E; padding: 1.5px 0;">
+                                        <t t-esc="row['roll']"/>
+                                    </td>
+                                    <td style="border: 0.5px solid #94A3B8; font-size: 6.5px; padding: 1.5px 3px; overflow: hidden; white-space: nowrap;">
+                                        <t t-esc="row['name']"/>
+                                    </td>
+                                    <t t-foreach="row['cells']" t-as="cell">
+                                        <t t-if="cell['code'] == 'P'">
+                                            <td style="border: 0.5px solid #94A3B8; font-size: 6px; text-align: center; color: #0F766E; font-weight: bold; padding: 1.5px 0;">P</td>
+                                        </t>
+                                        <t t-elif="cell['code'] == 'L'">
+                                            <td style="border: 0.5px solid #94A3B8; font-size: 6px; text-align: center; color: #DC2626; font-weight: bold; background-color: #FEE2E2; padding: 1.5px 0;">L</td>
+                                        </t>
+                                        <t t-elif="cell['code'] == 'OD'">
+                                            <td style="border: 0.5px solid #94A3B8; font-size: 6px; text-align: center; color: #B45309; font-weight: bold; background-color: #FEF3C7; padding: 1.5px 0;">OD</td>
+                                        </t>
+                                        <t t-elif="cell['code'] == 'ML'">
+                                            <td style="border: 0.5px solid #94A3B8; font-size: 6px; text-align: center; color: #475569; font-weight: bold; background-color: #E2E8F0; padding: 1.5px 0;">ML</td>
+                                        </t>
+                                        <t t-elif="cell['is_sunday']">
+                                            <td style="border: 0.5px solid #94A3B8; font-size: 6px; text-align: center; color: #B45309; background-color: #FDF6EC; padding: 1.5px 0;">S</td>
+                                        </t>
+                                        <t t-else="">
+                                            <td style="border: 0.5px solid #94A3B8; font-size: 6px; text-align: center; color: #94A3B8; padding: 1.5px 0;">-</td>
+                                        </t>
+                                    </t>
+                                    <td style="border: 0.5px solid #94A3B8; font-size: 6.5px; text-align: center; font-weight: bold; padding: 1.5px 0;"><t t-esc="row['present']"/></td>
+                                    <td style="border: 0.5px solid #94A3B8; font-size: 6.5px; text-align: center; font-weight: bold; padding: 1.5px 0;"><t t-esc="row['leave']"/></td>
+                                    <td style="border: 0.5px solid #94A3B8; font-size: 6.5px; text-align: center; font-weight: bold; padding: 1.5px 0;"><t t-esc="row['on_duty']"/></td>
+                                    <td style="border: 0.5px solid #94A3B8; font-size: 6.5px; text-align: center; font-weight: bold; padding: 1.5px 0;"><t t-esc="row['med_leave']"/></td>
+                                    <td style="border: 0.5px solid #94A3B8; font-size: 6.5px; text-align: center; font-weight: bold; padding: 1.5px 0;"><t t-esc="row['marked']"/></td>
+                                    <td style="border: 0.5px solid #94A3B8; font-size: 6.5px; text-align: center; font-weight: bold; color: #0F766E; padding: 1.5px 0;"><t t-esc="row['rate']"/>%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div style="margin-top: 6px; font-size: 6.5px; color: #64748B;">
+                            P = Present &#160;&#160; L = Leave &#160;&#160;
+                            OD = On Duty &#160;&#160; ML = Med Leave &#160;&#160;
+                            S = Sunday &#160;&#160; - = Not Marked &#160;&#160;
+                            % = (Present + On Duty) / Marked days
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

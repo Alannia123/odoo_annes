@@ -1,535 +1,481 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <templates id="Educational_dashboard_template" xml:space="preserve">
-    <t t-name="ala_education_erp_dashboard.EducationalDashboard">
-        <div class="edu-dashboard-wrapper">
-        <div class="edu-dashboard p-3">
-    <!-- Header Section -->
-    <div class="dashboard-header mb-4 text-center">
-        <div class="logo-wrapper mb-2">
-    <img src="/web/binary/company_logo"
-         alt="Company Logo"
-         class="edu-logo animate-glow"/>
-</div>
 
-        <h2 class="mb-1" style="font-weight:700;color:#2c3e50;">
-            🎓 Educational Dashboard
-        </h2>
-        <p class="text-muted" style="font-size:13px;">
-            Quick institutional overview
-        </p>
-    </div>
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+<t t-name="EducationalDashboard">
+    <div class="edb_dash o_action">
+    <div class="edb_scroll">
 
-            <!-- Summary Cards (loaded on page open) -->
-            <div class="row g-2 justify-content-center mb-3">
-<!--    Faculty-->
-                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
-                    <div class="dashboard-card card-gradient-green text-white text-center p-3 d-flex flex-column justify-content-between align-items-center"
-                                 t-att-class="{'cursor-not-allowed opacity-75': !state.canViewFaculty}"
-                                 t-on-click="onDashboardCardClick"
-                                 data-action="faculties">
-                        <div class="card-icon mb-2">
-                            <i class="fa fa-users" style="font-size:2rem; opacity:0.9;"></i>
+        <!-- ===================== HEADER ===================== -->
+        <div class="edb_header">
+            <div class="edb_brand">
+                <img src="/web/binary/company_logo"
+                     alt="Company Logo" class="edb_logo"/>
+                <div>
+                    <h2 class="edb_title">Educational Dashboard</h2>
+                    <span class="edb_date" t-esc="todayLabel"/>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== ANNOUNCEMENT TICKER ===================== -->
+        <div t-if="!state.loading and state.announcements.length"
+             class="edb_ticker" role="marquee" aria-label="Announcements">
+            <span class="edb_ticker_label">
+                <i class="fa fa-bullhorn me-1"/>Announcements
+            </span>
+            <div class="edb_ticker_viewport">
+                <div class="edb_ticker_track"
+                     t-attf-style="animation-duration: {{ tickerDuration }}s">
+                    <!-- Content rendered twice for a seamless loop -->
+                    <t t-foreach="[0, 1]" t-as="loop" t-key="loop">
+                        <span class="edb_ticker_group"
+                              t-att-aria-hidden="loop ? 'true' : undefined">
+                            <t t-foreach="state.announcements" t-as="ann"
+                               t-key="loop + '_' + ann.id">
+                                <span t-att-class="'edb_ticker_item'
+                                        + (ann.priority === 'high'
+                                            ? ' edb_ticker_high' : '')">
+                                    <i t-if="ann.priority === 'high'"
+                                       class="fa fa-exclamation-circle me-1"/>
+                                    <b class="edb_ticker_name" t-esc="ann.name"/>
+                                    <span class="edb_ticker_sep">—</span>
+                                    <t t-esc="ann.message"/>
+                                </span>
+                            </t>
+                        </span>
+                    </t>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== LOADING ===================== -->
+        <div t-if="state.loading" class="edb_loading">
+            <i class="fa fa-circle-o-notch fa-spin fa-2x"/>
+        </div>
+
+        <t t-if="!state.loading">
+
+            <!-- ============ FACULTY PERSONAL VIEW (non-manager) ============ -->
+            <t t-if="!state.allowed">
+                <t t-if="state.facultySelf">
+                    <!-- My attendance -->
+                    <div class="edb_card edb_section">
+                        <div class="edb_section_head">
+                            <h5 class="edb_section_title">
+                                <i class="fa fa-user-circle-o me-2"/>My Attendance
+                            </h5>
+                            <span t-if="state.facultySelf.my_attendance.available"
+                                  t-att-class="myStatusChipClass(state.facultySelf.my_attendance.today_status)"
+                                  t-esc="state.facultySelf.my_attendance.today_label"/>
                         </div>
-                        <div class="card-title text-uppercase mb-2" style="font-size:0.9rem; font-weight:600;">
-                            Faculties
+                        <div t-if="state.facultySelf.my_attendance.available"
+                             class="edb_minis">
+                            <div class="edb_mini edb_mini_rate">
+                                <span class="edb_mini_label">This Month</span>
+                                <span class="edb_mini_value">
+                                    <t t-esc="state.facultySelf.my_attendance.month_rate"/>%
+                                </span>
+                            </div>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center w-100 px-3" style="font-size:1rem; font-weight:600;">
-                            <div class="text-start d-flex align-items-center">
-                                <i class="fa fa-male" style="font-size:22px; color:#dbeafe;"></i>
-                                <span id="faculty_male" style="margin-left:5px;"></span>
-                            </div>
-                            <div class="text-center" style="font-size:1.6rem; font-weight:700;">
-                                <span id="all_faculties"></span>
-                            </div>
-                            <div class="text-end d-flex align-items-center">
-                                <i class="fa fa-female" style="font-size:22px; color:#fbcfe8;"></i>
-                                <span id="faculty_female" style="margin-left:5px;"></span>
+                        <div t-else="" class="edb_hint">Attendance tracking is
+                            not enabled for your account.</div>
+                    </div>
+
+                    <!-- My division(s), only when class in-charge -->
+                    <div t-if="state.facultySelf.divisions.length"
+                         class="edb_card edb_section">
+                        <h5 class="edb_section_title mb-3">
+                            <i class="fa fa-users me-2"/>My Class Today
+                        </h5>
+                        <div class="edb_div_grid">
+                            <div t-foreach="state.facultySelf.divisions"
+                                 t-as="div" t-key="div.division_id"
+                                 t-att-class="'edb_div_card edb_div_' + div.status"
+                                 role="button"
+                                 t-on-click="() => this.openDivision(div)">
+                                <div class="edb_div_name" t-esc="div.division"/>
+                                <div t-if="div.status === 'updated'"
+                                     class="edb_div_stats">
+                                    <span class="edb_t_total">
+                                        <i class="fa fa-users"/> <t t-esc="div.total"/></span>
+                                    <span class="edb_t_present">
+                                        <i class="fa fa-check"/> <t t-esc="div.present"/></span>
+                                    <span class="edb_t_absent">
+                                        <i class="fa fa-times"/> <t t-esc="div.absent"/></span>
+                                </div>
+                                <div t-else="" class="edb_div_status">
+                                    <i class="fa fa-clock-o"/>
+                                    <t t-esc="divisionStatusLabel(div.status)"/>
+                                </div>
                             </div>
                         </div>
                     </div>
+                </t>
+                <div t-else="" class="edb_card edb_locked">
+                    <i class="fa fa-lock"/>
+                    <h5>Institution data is available to the Principal and
+                        Office Admin only.</h5>
+                    <p class="text-muted mb-0">You can still load your pending
+                        tasks and exam valuations below.</p>
                 </div>
-<!--                Students-->
-                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
-                    <div class="dashboard-card card-gradient-stu text-white text-center p-3 d-flex flex-column justify-content-between align-items-center"
-                             t-att-class="{'cursor-not-allowed opacity-75': !state.canViewStudents}"
-                             t-on-click="onDashboardCardClick"
-                             data-action="students">
-                        <div class="card-icon mb-2">
-                            <i class="fa fa-user-graduate" style="font-size:2rem; opacity:0.9;"></i>
-                        </div>
-                        <div class="card-title text-uppercase mb-2" style="font-size:0.9rem; font-weight:600;">
-                            Students
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center w-100 px-3" style="font-size:1rem; font-weight:600;">
-                            <div class="text-start d-flex align-items-center">
-                                <i class="fa fa-male" style="font-size:22px; color:#dbeafe;"></i>
-                                <span id="student_male" style="margin-left:5px;"></span>
-                            </div>
-                            <div class="text-center" style="font-size:1.6rem; font-weight:700;">
-                                <span id="all_students"></span>
-                            </div>
-                            <div class="text-end d-flex align-items-center">
-                                <i class="fa fa-female" style="font-size:22px; color:#fbcfe8;"></i>
-                                <span id="student_female" style="margin-left:5px;"></span>
-                            </div>
-                        </div>
+            </t>
+
+            <!-- ===================== SUMMARY CARDS ===================== -->
+            <div t-if="state.allowed" class="edb_cards">
+                <div class="edb_card edb_stat edb_stat_teal" role="button"
+                     t-on-click="() => this.openCard('faculties')">
+                    <div class="edb_stat_top">
+                        <i class="fa fa-users"/>
+                        <span class="edb_stat_label">Faculties</span>
                     </div>
-                </div>
-<!--                Exams-->
-               <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
-                    <div class="dashboard-card card-gradient-purple text-white text-center p-3 d-flex flex-column justify-content-between align-items-center"
-                     t-att-class="{'cursor-not-allowed opacity-75': !state.canViewExams}"
-                     t-on-click="onDashboardCardClick"
-                     data-action="exams">
-                        <div class="card-icon mb-2">
-                            <i class="fa fa-file-alt" style="font-size:2rem; opacity:0.9;"></i>
-                        </div>
-
-                        <div class="card-title text-uppercase mb-2" style="font-size:0.9rem; font-weight:600;">
-                            Exams
-                        </div>
-
-                        <div class="d-flex justify-content-between align-items-center w-100 px-3" style="font-size:1rem; font-weight:600;">
-                            <!-- Ongoing Exams -->
-                            <div class="text-start d-flex align-items-center">
-                                <i class="fa fa-play-circle" style="font-size:22px; color:#fde047;"></i>
-                                <span id="exam_ongoing" style="margin-left:5px;"></span>
-                            </div>
-
-                            <!-- Total Exams -->
-                            <div class="text-center" style="font-size:1.6rem; font-weight:700;">
-                                <span id="all_exams"></span>
-                            </div>
-
-                            <!-- Closed Exams -->
-                            <div class="text-end d-flex align-items-center">
-                                <i class="fa fa-check-circle" style="font-size:22px; color:#059669;"></i>
-                                <span id="exam_closed" style="margin-left:5px;"></span>
-                            </div>
-                        </div>
+                    <div class="edb_stat_value"
+                         t-esc="state.data.cards.faculties"/>
+                    <div class="edb_stat_split">
+                        <span><i class="fa fa-male"/>
+                            <t t-esc="state.data.cards.faculty_male"/></span>
+                        <span><i class="fa fa-female"/>
+                            <t t-esc="state.data.cards.faculty_female"/></span>
                     </div>
                 </div>
 
+                <div class="edb_card edb_stat edb_stat_dark" role="button"
+                     t-on-click="() => this.openCard('students')">
+                    <div class="edb_stat_top">
+                        <i class="fa fa-graduation-cap"/>
+                        <span class="edb_stat_label">Students</span>
+                    </div>
+                    <div class="edb_stat_value"
+                         t-esc="state.data.cards.students"/>
+                    <div class="edb_stat_split">
+                        <span><i class="fa fa-male"/>
+                            <t t-esc="state.data.cards.student_male"/></span>
+                        <span><i class="fa fa-female"/>
+                            <t t-esc="state.data.cards.student_female"/></span>
+                    </div>
+                </div>
 
-               <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
-                   <div class="dashboard-card card-gradient-orange text-white text-center p-3 d-flex flex-column justify-content-between align-items-center"
-                     t-att-class="{'cursor-not-allowed opacity-75': !state.canViewAmenities}"
-                     t-on-click="onDashboardCardClick"
-                     data-action="amenities">
-                        <!-- Main Icon -->
-                        <div class="card-icon mb-2">
-                            <i class="fa fa-school" style="font-size:2rem; opacity:0.9;"></i>
+                <div class="edb_card edb_stat edb_stat_amber" role="button"
+                     t-on-click="() => this.openCard('exams')">
+                    <div class="edb_stat_top">
+                        <i class="fa fa-file-text-o"/>
+                        <span class="edb_stat_label">Exams</span>
+                    </div>
+                    <div class="edb_stat_value"
+                         t-esc="state.data.cards.exams"/>
+                    <div class="edb_stat_split">
+                        <span><i class="fa fa-play-circle"/>
+                            <t t-esc="state.data.cards.exam_ongoing"/> Ongoing</span>
+                        <span><i class="fa fa-check-circle"/>
+                            <t t-esc="state.data.cards.exam_closed"/> Closed</span>
+                    </div>
+                </div>
+
+                <div class="edb_card edb_stat edb_stat_slate" role="button"
+                     t-att-class="state.data.faculty_attendance ? '' : 'edb_disabled'"
+                     t-on-click="openFacultyAttendanceDashboard">
+                    <div class="edb_stat_top">
+                        <i class="fa fa-calendar-check-o"/>
+                        <span class="edb_stat_label">Faculty Attendance</span>
+                    </div>
+                    <t t-if="state.data.faculty_attendance">
+                        <div class="edb_stat_value">
+                            <t t-esc="state.data.faculty_attendance.month_rate"/>%
                         </div>
-
-                        <!-- Title -->
-                        <div class="card-title text-uppercase mb-2" style="font-size:0.9rem; font-weight:600;">
-                            Amenities
+                        <div class="edb_stat_split">
+                            <span><i class="fa fa-check"/>
+                                <t t-esc="state.data.faculty_attendance.today_present"/> Present</span>
+                            <span><i class="fa fa-times"/>
+                                <t t-esc="state.data.faculty_attendance.today_leave
+                                          + state.data.faculty_attendance.today_med_leave"/> On Leave</span>
                         </div>
+                    </t>
+                    <t t-else="">
+                        <div class="edb_stat_value">—</div>
+                        <div class="edb_stat_split">
+                            <span>Module not installed</span>
+                        </div>
+                    </t>
+                </div>
+            </div>
 
-                        <!-- Icons & Counts -->
-                        <div class="d-flex justify-content-between align-items-center w-100 px-3" style="font-size:1rem; font-weight:600;">
-                            <!-- Indoor -->
-                            <div class="text-start d-flex align-items-center">
-                                <i class="fa fa-building" style="font-size:24px; color:#4338ca;"></i>
-                                <span id="amenities_indoor" style="margin-left:6px;"></span>
-                            </div>
-
-                            <!-- Total -->
-                            <div class="text-center" style="font-size:1.6rem; font-weight:700;">
-                                <span id="all_amenities"></span>
-                            </div>
-
-                            <!-- Outdoor -->
-                            <div class="text-end d-flex align-items-center">
-                                <i class="fa fa-tree" style="font-size:26px; color:#86efac;"></i>
-                                <span id="amenities_outdoor" style="margin-left:6px;"></span>
-                            </div>
+            <!-- ===================== STUDENT ATTENDANCE ===================== -->
+            <div t-if="state.allowed" class="edb_card edb_section">
+                <div class="edb_section_head">
+                    <h5 class="edb_section_title">
+                        <i class="fa fa-bar-chart me-2"/>Today's Student Attendance
+                    </h5>
+                    <div class="edb_ratio">
+                        <span class="edb_ratio_txt">
+                            <t t-esc="state.data.attendance.updated_divisions"/> /
+                            <t t-esc="state.data.attendance.total_divisions"/>
+                            divisions updated (<t t-esc="divisionRatio"/>%)
+                        </span>
+                        <div class="edb_ratio_bar">
+                            <div class="edb_ratio_fill"
+                                 t-attf-style="width: {{ divisionRatio }}%"/>
                         </div>
                     </div>
                 </div>
 
-            </div>
+                <div class="edb_minis">
+                    <div class="edb_mini">
+                        <span class="edb_mini_label">Total</span>
+                        <span class="edb_mini_value"
+                              t-esc="state.data.attendance.total_students"/>
+                    </div>
+                    <div class="edb_mini edb_mini_good">
+                        <span class="edb_mini_label">Present</span>
+                        <span class="edb_mini_value"
+                              t-esc="state.data.attendance.today_present"/>
+                    </div>
+                    <div class="edb_mini edb_mini_bad">
+                        <span class="edb_mini_label">Absent</span>
+                        <span class="edb_mini_value"
+                              t-esc="state.data.attendance.today_absent"/>
+                    </div>
+                    <div class="edb_mini edb_mini_amber">
+                        <span class="edb_mini_label">Homeworks</span>
+                        <span class="edb_mini_value"
+                              t-esc="state.data.attendance.today_homeworks"/>
+                    </div>
+                </div>
 
-            <!-- Attendance Section (loaded on demand) -->
-<div class="dashboard-section p-3">
-    <div class="section-header mb-2 d-flex justify-content-between align-items-center">
-        <h5 class="section-title mb-0">📊 Today's Attendance Overview</h5>
-        <!-- ✅ Load heavy data on demand -->
-        <button id="load_details_btn"
-                class="btn btn-primary btn-sm"
-                style="font-size:12px; padding:3px 12px; border-radius:6px;"
-                t-on-click="loadDetails">
-            <i class="fa fa-download me-1"></i>Load Data
-        </button>
-    </div>
-
-    <div class="row g-2 mb-3">
-        <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-            <div class="stat-card total-students">
-                <div class="stat-icon"><i class="fa fa-user-graduate"></i></div>
-                <div class="stat-content">
-                    <div class="stat-title">Total</div>
-                    <div class="stat-value" id="total_students">--</div>
+                <div class="edb_div_grid">
+                    <div t-foreach="state.data.attendance.division_summary"
+                         t-as="div" t-key="div.division_id"
+                         t-att-class="'edb_div_card edb_div_' + div.status"
+                         role="button"
+                         t-on-click="() => this.openDivision(div)">
+                        <div class="edb_div_name" t-esc="div.division"/>
+                        <div t-if="div.status === 'updated'" class="edb_div_stats">
+                            <span class="edb_t_total">
+                                <i class="fa fa-users"/> <t t-esc="div.total"/></span>
+                            <span class="edb_t_present">
+                                <i class="fa fa-check"/> <t t-esc="div.present"/></span>
+                            <span class="edb_t_absent">
+                                <i class="fa fa-times"/> <t t-esc="div.absent"/></span>
+                        </div>
+                        <div t-else="" class="edb_div_status">
+                            <i class="fa fa-clock-o"/>
+                            <t t-esc="divisionStatusLabel(div.status)"/>
+                        </div>
+                        <div class="edb_div_hw">
+                            <i class="fa fa-book"/> Homeworks:
+                            <t t-esc="div.div_homeworks"/>
+                        </div>
+                    </div>
+                    <div t-if="!state.data.attendance.division_summary.length"
+                         class="edb_empty">No divisions found</div>
                 </div>
             </div>
-        </div>
-        <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-            <div class="stat-card present-students">
-                <div class="stat-icon"><i class="fa fa-user-check"></i></div>
-                <div class="stat-content">
-                    <div class="stat-title">Present</div>
-                    <div class="stat-value" id="today_present">--</div>
+
+            <!-- ===================== FACULTY ATTENDANCE ===================== -->
+            <div t-if="state.allowed and state.data.faculty_attendance"
+                 class="edb_card edb_section">
+                <div class="edb_section_head">
+                    <h5 class="edb_section_title">
+                        <i class="fa fa-calendar-check-o me-2"/>Faculty Attendance
+                        <span t-if="state.data.faculty_attendance.sheet_info"
+                              t-att-class="'edb_chip ' + (
+                                  !state.data.faculty_attendance.sheet_info.exists
+                                      ? 'edb_chip_muted'
+                                      : state.data.faculty_attendance.sheet_info.state === 'draft'
+                                          ? 'edb_chip_amber' : 'edb_chip_teal')">
+                            <t t-if="!state.data.faculty_attendance.sheet_info.exists">No Sheet Today</t>
+                            <t t-elif="state.data.faculty_attendance.sheet_info.state === 'draft'">Draft</t>
+                            <t t-else="">Validated</t>
+                        </span>
+                    </h5>
+                    <div class="edb_actions">
+                        <button class="edb_btn edb_btn_teal"
+                                t-on-click="openFacultyAttendanceEntry">
+                            <i class="fa fa-pencil-square-o me-1"/>Mark Attendance
+                        </button>
+                        <button class="edb_btn edb_btn_outline"
+                                t-on-click="openFacultyAttendanceDashboard">
+                            <i class="fa fa-line-chart me-1"/>Full Dashboard
+                        </button>
+                    </div>
+                </div>
+
+                <div class="edb_minis">
+                    <div class="edb_mini edb_mini_good">
+                        <span class="edb_mini_label">Present</span>
+                        <span class="edb_mini_value"
+                              t-esc="state.data.faculty_attendance.today_present"/>
+                    </div>
+                    <div class="edb_mini edb_mini_bad">
+                        <span class="edb_mini_label">Leave</span>
+                        <span class="edb_mini_value"
+                              t-esc="state.data.faculty_attendance.today_leave"/>
+                    </div>
+                    <div class="edb_mini edb_mini_amber">
+                        <span class="edb_mini_label">On Duty</span>
+                        <span class="edb_mini_value"
+                              t-esc="state.data.faculty_attendance.today_on_duty"/>
+                    </div>
+                    <div class="edb_mini">
+                        <span class="edb_mini_label">Med Leave</span>
+                        <span class="edb_mini_value"
+                              t-esc="state.data.faculty_attendance.today_med_leave"/>
+                    </div>
+                    <div class="edb_mini">
+                        <span class="edb_mini_label">Not Marked</span>
+                        <span class="edb_mini_value"
+                              t-esc="state.data.faculty_attendance.today_unmarked"/>
+                    </div>
+                    <div class="edb_mini edb_mini_rate">
+                        <span class="edb_mini_label">Month Rate</span>
+                        <span class="edb_mini_value">
+                            <t t-esc="state.data.faculty_attendance.month_rate"/>%
+                        </span>
+                    </div>
+                </div>
+
+                <div class="edb_table_head">
+                    <h6 class="edb_subtitle">Teachers — This Month</h6>
+                    <input type="text" class="edb_search"
+                           placeholder="Search teacher / roll…"
+                           t-model="state.teacherSearch"/>
+                </div>
+                <div class="edb_table_scroll">
+                    <table class="edb_table">
+                        <thead>
+                            <tr>
+                                <th class="text-end">Roll</th>
+                                <th>Teacher</th>
+                                <th class="text-end">Present</th>
+                                <th class="text-end">Leave</th>
+                                <th class="edb_rate_col">Attendance %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="filteredTeachers" t-as="teacher"
+                                t-key="teacher.id" role="button"
+                                t-on-click="() => this.openTeacher(teacher)">
+                                <td class="text-end edb_roll" t-esc="teacher.roll"/>
+                                <td t-esc="teacher.name"/>
+                                <td class="text-end" t-esc="teacher.present"/>
+                                <td class="text-end" t-esc="teacher.leave"/>
+                                <td>
+                                    <div class="edb_rate_wrap">
+                                        <div class="edb_rate_bar">
+                                            <div class="edb_rate_fill"
+                                                 t-attf-style="width: {{ teacher.rate }}%"/>
+                                        </div>
+                                        <span class="edb_rate_txt">
+                                            <t t-esc="teacher.rate"/>%
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr t-if="!filteredTeachers.length">
+                                <td colspan="5" class="edb_empty">No attendance
+                                    marked this month.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </div>
-        <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-            <div class="stat-card absent-students">
-                <div class="stat-icon"><i class="fa fa-user-times"></i></div>
-                <div class="stat-content">
-                    <div class="stat-title">Absent</div>
-                    <div class="stat-value" id="today_absent">--</div>
+
+            <!-- ===================== TASKS (on-demand) ===================== -->
+            <div class="edb_card edb_section">
+                <div class="edb_section_head">
+                    <h5 class="edb_section_title">
+                        <i class="fa fa-tasks me-2"/>
+                        <t t-if="state.allowed">Teacher Tasks</t>
+                        <t t-else="">My Tasks</t>
+                    </h5>
+                    <button class="edb_btn edb_btn_teal"
+                            t-att-disabled="state.tasks.loading"
+                            t-on-click="loadTasks">
+                        <i t-att-class="'fa me-1 ' + (state.tasks.loading
+                            ? 'fa-spinner fa-spin'
+                            : state.tasks.loaded ? 'fa-refresh' : 'fa-download')"/>
+                        <t t-if="state.tasks.loading">Loading…</t>
+                        <t t-elif="state.tasks.loaded">Refresh</t>
+                        <t t-else="">Load Tasks</t>
+                    </button>
                 </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-            <div class="stat-card homework-students">
-                <div class="stat-icon"><i class="fa fa-book-open"></i></div>
-                <div class="stat-content">
-                    <div class="stat-title">Homeworks</div>
-                    <div class="stat-value" id="today_homeworks">--</div>
-                    <div class="stat-percentage text-light small">Assigned</div>
+                <div t-if="state.tasks.loaded" class="edb_table_scroll">
+                    <table class="edb_table">
+                        <thead>
+                            <tr>
+                                <th>Teacher</th><th>Task</th>
+                                <th>Date</th><th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="state.tasks.rows" t-as="task"
+                                t-key="task.id" role="button"
+                                t-on-click="() => this.openTask(task)">
+                                <td t-esc="task.teacher_name"/>
+                                <td t-esc="task.task_name"/>
+                                <td t-esc="task.date"/>
+                                <td><span class="edb_chip edb_chip_amber"
+                                          t-esc="task.state"/></td>
+                            </tr>
+                            <tr t-if="!state.tasks.rows.length">
+                                <td colspan="4" class="edb_empty">No open tasks.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
+                <div t-else="" class="edb_hint">Click "Load Tasks" to fetch
+                    pending teacher tasks.</div>
             </div>
-        </div>
+
+            <!-- ===================== EXAM VALUATIONS (on-demand) ===================== -->
+            <div class="edb_card edb_section">
+                <div class="edb_section_head">
+                    <h5 class="edb_section_title">
+                        <i class="fa fa-check-square-o me-2"/>
+                        <t t-if="state.allowed">Exam Valuations</t>
+                        <t t-else="">My Exam Valuations</t>
+                    </h5>
+                    <button class="edb_btn edb_btn_teal"
+                            t-att-disabled="state.valuations.loading"
+                            t-on-click="loadValuations">
+                        <i t-att-class="'fa me-1 ' + (state.valuations.loading
+                            ? 'fa-spinner fa-spin'
+                            : state.valuations.loaded ? 'fa-refresh' : 'fa-download')"/>
+                        <t t-if="state.valuations.loading">Loading…</t>
+                        <t t-elif="state.valuations.loaded">Refresh</t>
+                        <t t-else="">Load Valuations</t>
+                    </button>
+                </div>
+                <div t-if="state.valuations.loaded" class="edb_table_scroll">
+                    <table class="edb_table">
+                        <thead>
+                            <tr>
+                                <th>Exam</th><th>Subject</th>
+                                <th>Class</th><th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="state.valuations.rows" t-as="valuation"
+                                t-key="valuation.id" role="button"
+                                t-on-click="() => this.openValuation(valuation)">
+                                <td t-esc="valuation.exam_name"/>
+                                <td t-esc="valuation.subject_name"/>
+                                <td><t t-esc="valuation.class_name"/> -
+                                    <t t-esc="valuation.division_name"/></td>
+                                <td><span class="edb_chip edb_chip_amber"
+                                          t-esc="valuation.state"/></td>
+                            </tr>
+                            <tr t-if="!state.valuations.rows.length">
+                                <td colspan="4" class="edb_empty">No draft
+                                    valuations.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div t-else="" class="edb_hint">Click "Load Valuations" to fetch
+                    pending exam valuations.</div>
+            </div>
+        </t>
     </div>
-
-    <div class="section-header mb-2 d-flex align-items-center justify-content-between" style="padding-left:5px;">
-    <div class="d-flex align-items-center gap-1">
-        <h5 class="section-title mb-0" style="font-weight:600; font-size:16px;">
-            🏫 Division-wise Attendance
-        </h5>
-        <b id="div_update_ratio" style="font-size:14px; margin-left:6px; color:#2563eb;"></b>
     </div>
-    <!-- ✅ Division progress bar -->
-<div class="progress"
-     style="width:150px; height:10px; margin-right:10px; background:#e5e7eb;
-            border-radius:6px; overflow:hidden; box-shadow:inset 0 0 2px rgba(0,0,0,0.1);">
-    <div id="division_progress_bar"
-         style="height:100%; width:0%;
-                background:linear-gradient(90deg,#2563eb,#3b82f6,#60a5fa);
-                border-radius:6px; transition:width 0.6s ease;"></div>
-</div>
-
-</div>
-
-<div class="row g-2" id="division_summary_grid">
-    <div class="col-12 text-center text-muted py-2">
-        Click "Load Data" to view division-wise attendance
-    </div>
-</div>
-</div>
-
-
-
-            <!-- Teacher Task Summary Section -->
-            <div class="dashboard-section p-3">
-    <div class="section-header mb-2 d-flex justify-content-between align-items-center">
-        <h5 class="section-title mb-0">👩‍🏫 Teacher Task Summary</h5>
-        <span class="section-date" id="task_summary_date" style="font-size:12px;">As of today</span>
-    </div>
-
-    <div class="table-responsive">
-        <table class="table table-sm table-hover align-middle" id="teacher_task_table"
-               style="background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,0.05);">
-            <thead class="table-light">
-                <tr class="text-center" style="font-size:13px;">
-                    <th>Teacher</th>
-                    <th>Task</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="teacher_task_body">
-                <tr>
-                    <td colspan="4" class="text-center text-muted py-2">
-                        Click "Load Data" to view tasks
-                    </td>
-                </tr>
-            </tbody>
-
-        </table>
-    </div>
-
-</div>
-
-
-            <div class="dashboard-section p-3 mt-3">
-    <div class="section-header mb-2 d-flex justify-content-between align-items-center">
-        <h5 class="section-title mb-0">📝 Exam Valuation Summary</h5>
-        <span class="section-date"
-              id="valuation_summary_date"
-              style="font-size:12px;">
-            Draft valuations
-        </span>
-    </div>
-
-    <div class="table-responsive">
-        <table class="table table-sm table-hover align-middle"
-               id="valuation_summary_table"
-               style="background:#fff; border-radius:8px; overflow:hidden;
-                      box-shadow:0 2px 6px rgba(0,0,0,0.05);">
-
-            <thead class="table-light">
-                <tr class="text-center" style="font-size:13px;">
-                    <th>Exam</th>
-                    <th>Subject</th>
-                    <th>Class</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-
-            <tbody id="valuation_summary_body">
-                <tr>
-                    <td colspan="4" class="text-center text-muted py-2">
-                        Click "Load Data" to view valuations
-                    </td>
-                </tr>
-            </tbody>
-
-        </table>
-    </div>
-</div>
-
-
-        </div>
-
-        <style>
-            /* ✅ Skeleton shimmer animation (required by JS skeleton loaders) */
-            @keyframes skelPulse {
-                0%   { background-position: 200% 0; }
-                100% { background-position: -200% 0; }
-            }
-
-            .edu-dashboard {
-                background: #f8fafc;
-                height: calc(100vh - 48px);   /* header safe */
-                overflow-y: auto;             /* ✅ ENABLE SCROLL */
-                overflow-x: hidden;
-                padding-bottom: 40px;
-            }
-
-            .dashboard-header h2 {
-                font-size: 1.5rem;
-            }
-            .dashboard-card {
-                align-items: center;
-                justify-content: start;
-                text-align: center;
-                border-radius: 10px;
-                padding: 0.8rem 1rem;
-                color: #fff;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                min-height: 60px;
-                transition: 0.2s ease;
-                cursor: pointer;
-            }
-            .dashboard-card:hover {
-                transform: translateY(-3px);
-            }
-            .dashboard-card .card-icon {
-                font-size: 1.8rem;
-                margin-bottom: 0.3rem;
-            }
-            .dashboard-card .card-title {
-                font-size: 0.85rem;
-                text-transform: uppercase;
-            }
-            .dashboard-card .card-value {
-                font-size: 1.4rem;
-                font-weight: bold;
-            }
-
-            /* Compact Stat Cards */
-    .stat-card {
-        display: flex;
-        align-items: center;
-        justify-content: start;
-        border-radius: 10px;
-        padding: 0.8rem 1rem;
-        color: #fff;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        min-height: 90px;
-        transition: 0.2s ease;
-    }
-    .stat-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    }
-    .stat-icon {
-        font-size: 1.6rem;
-        margin-right: 0.5rem;
-        opacity: 0.9;
-        background: none;
-        border: none;
-        padding: 0;
-        border-radius: 0;
-        color: #ffffff;
-    }
-    .stat-content {
-        line-height: 1.2;
-    }
-    .stat-title {
-        font-size: 0.8rem;
-        font-weight: 500;
-        opacity: 0.9;
-        margin-bottom: 2px;
-    }
-    .stat-value {
-        font-size: 1.4rem;
-        font-weight: bold;
-        margin-bottom: 0;
-    }
-    .stat-percentage {
-        font-size: 0.75rem;
-        font-weight: 500;
-        opacity: 0.9;
-    }
-
-
-            /* Gradient Styles */
-            .card-gradient-blue {
-                background: linear-gradient(135deg, #3a7bd5, #00d2ff);
-            }
-
-            .card-gradient-green {
-                background: linear-gradient(135deg, #56ab2f, #a8e063);
-            }
-
-            .card-gradient-stu {
-                background: #17a2b8;
-            }
-
-            .card-gradient-purple {
-                background: linear-gradient(135deg, #8e2de2, #4a00e0);
-            }
-
-            .card-gradient-orange {
-                background: linear-gradient(135deg, #14b8a6, #2dd4bf);
-            }
-
-            /* Gradient Colors */
-    .total-students { background: linear-gradient(135deg, #4f46e5, #7c3aed); }
-    .present-students { background: linear-gradient(135deg, #059669, #34d399); }
-    .absent-students { background: linear-gradient(135deg, #dc2626, #f87171); }
-    .homework-students { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
-
-            /* Division cards smaller and compact */
-            .division-card {
-                background: #fff;
-                border-left: 3px solid #3b82f6;
-                border-radius: 8px;
-                padding: 0.5rem 0.75rem;
-                font-size: 0.8rem;
-                box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-                transition: 0.2s;
-            }
-            .division-card:hover { transform: translateY(-2px); }
-            .division-card h5 {
-                margin-bottom: 0.4rem;
-                font-size: 0.9rem;
-                font-weight: 600;
-            }
-            .division-card .stats {
-                display: flex;
-                justify-content: space-between;
-                font-weight: 500;
-                font-size: 0.75rem;
-            }
-            .division-card.not-updated {
-                background: #fffbea;
-                border-left: 3px solid #f59e0b;
-            }
-            /* Responsive tweaks */
-    @media (max-width: 768px) {
-        .stat-card {
-            flex-direction: column;
-            text-align: center;
-            padding: 0.8rem;
-        }
-        .stat-icon {
-            margin: 0 0 0.4rem 0;
-            font-size: 1.4rem;
-        }
-    }
-
-            /* Teacher Task Summary Styling */
-#teacher_task_table tbody tr td {
-    font-size: 13px;
-    padding: 6px 10px;
-}
-
-.task-status {
-    padding: 3px 8px;
-    border-radius: 10px;
-    font-size: 12px;
-    font-weight: 600;
-}
-.task-status.pending {
-    background: #fff3cd;
-    color: #856404;
-}
-.task-status.completed {
-    background: #d4edda;
-    color: #155724;
-}
-.task-status.overdue {
-    background: #f8d7da;
-    color: #721c24;
-}
-.task-status.cancelled {
-    background: #f8d7da;
-    color: #721c24;
-}
-
-            .edu-logo {
-    height: 60px;
-    width: auto;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-}
-
-.edu-logo:hover {
-    transform: scale(1.08);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.25);
-}
-
-.animate-glow {
-    animation: pulse-glow 3s infinite ease-in-out;
-}
-
-@keyframes pulse-glow {
-    0%   { box-shadow: 0 0 8px rgba(66,153,225,0.4); }
-    50%  { box-shadow: 0 0 20px rgba(66,153,225,0.7); }
-    100% { box-shadow: 0 0 8px rgba(66,153,225,0.4); }
-}
-
-            .o_content {
-    overflow: auto !important;
-}
-
-.o_action_manager {
-    overflow: auto !important;
-}
-.edu-dashboard-wrapper {
-    height: 100%;
-    overflow-y: auto;
-}
-
-
-
-        </style>
-        </div>
-    </t>
+</t>
 
 </templates>

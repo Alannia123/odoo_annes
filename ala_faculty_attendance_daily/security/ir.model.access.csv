@@ -1,0 +1,12 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_faculty_att_sheet_hr_user,ala.faculty.attendance.sheet.hr.user,model_ala_faculty_attendance_sheet,hr.group_hr_user,1,1,1,1
+access_faculty_att_sheet_line_hr_user,ala.faculty.attendance.sheet.line.hr.user,model_ala_faculty_attendance_sheet_line,hr.group_hr_user,1,1,1,1
+access_faculty_att_sheet_employee,ala.faculty.attendance.sheet.employee,model_ala_faculty_attendance_sheet,base.group_user,1,0,0,0
+access_faculty_att_sheet_line_employee,ala.faculty.attendance.sheet.line.employee,model_ala_faculty_attendance_sheet_line,base.group_user,1,0,0,0
+access_faculty_att_report_wizard,ala.faculty.attendance.report.wizard.hr.user,model_ala_faculty_attendance_report_wizard,hr.group_hr_user,1,1,1,1
+access_faculty_att_sheet_principal,ala.faculty.attendance.sheet.principal,model_ala_faculty_attendance_sheet,ala_education_core.group_education_principal,1,1,1,1
+access_faculty_att_sheet_line_principal,ala.faculty.attendance.sheet.line.principal,model_ala_faculty_attendance_sheet_line,ala_education_core.group_education_principal,1,1,1,1
+access_faculty_att_report_wizard_principal,ala.faculty.attendance.report.wizard.principal,model_ala_faculty_attendance_report_wizard,ala_education_core.group_education_principal,1,1,1,1
+access_faculty_att_sheet_office,ala.faculty.attendance.sheet.office,model_ala_faculty_attendance_sheet,ala_education_core.group_education_office_admin,1,1,1,1
+access_faculty_att_sheet_line_office,ala.faculty.attendance.sheet.line.office,model_ala_faculty_attendance_sheet_line,ala_education_core.group_education_office_admin,1,1,1,1
+access_faculty_att_report_wizard_office,ala.faculty.attendance.report.wizard.office,model_ala_faculty_attendance_report_wizard,ala_education_core.group_education_office_admin,1,1,1,1

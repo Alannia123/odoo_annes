@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Roll no fields on the employee form (HR Settings tab) -->
+    <record id="view_employee_form_faculty_roll" model="ir.ui.view">
+        <field name="name">hr.employee.form.faculty.roll</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='pin']" position="after">
+                <field name="faculty_attendance_active"/>
+                <field name="faculty_roll_no"
+                       invisible="not faculty_attendance_active"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Dedicated editable list to assign roll no sequences in one screen -->
+    <record id="view_employee_faculty_roll_tree" model="ir.ui.view">
+        <field name="name">hr.employee.faculty.roll.tree</field>
+        <field name="model">hr.employee</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" create="false" delete="false"
+                  default_order="faculty_roll_no">
+                <field name="faculty_roll_no"/>
+                <field name="name" readonly="1"/>
+                <field name="job_id" readonly="1" optional="show"/>
+                <field name="department_id" readonly="1" optional="show"/>
+                <field name="faculty_attendance_active"/>
+                <field name="company_id" readonly="1" optional="hide"
+                       groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_faculty_roll_manager" model="ir.actions.act_window">
+        <field name="name">Faculty Roll Numbers</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_employee_faculty_roll_tree"/>
+        <field name="context">{'create': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Assign a roll number and enable
+                "Include in Faculty Attendance" for each staff member.
+            </p>
+        </field>
+    </record>
+</odoo>

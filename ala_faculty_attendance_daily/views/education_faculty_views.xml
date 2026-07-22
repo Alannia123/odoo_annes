@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- If your faculty form view has a different external ID, change the
+         inherit_id ref below (view id of education.faculty form in the core
+         module). -->
+    <record id="view_education_faculty_form_att_dashboard" model="ir.ui.view">
+        <field name="name">education.faculty.form.attendance.dashboard</field>
+        <field name="model">ala.education.faculty</field>
+        <field name="inherit_id" ref="ala_education_core.education_faculty_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@class='oe_button_box']" position="inside">
+                <div class="oe_button_box" name="mfa_button_box">
+                    <button name="action_open_attendance_dashboard"
+                            type="object" class="oe_stat_button"
+                            icon="fa-calendar-check-o"
+                            invisible="not employee_id">
+                        <field name="attendance_rate" widget="statinfo"
+                               string="Attendance %"/>
+                    </button>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

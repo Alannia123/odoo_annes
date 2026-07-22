@@ -1,0 +1,393 @@
+// Faculty Attendance Dashboard — Deep Teal + Amber palette
+$mfa-teal: #0F766E;
+$mfa-teal-dark: #134E4A;
+$mfa-amber: #F59E0B;
+$mfa-red: #DC2626;
+$mfa-slate: #64748B;
+$mfa-bg: #F1F5F4;
+$mfa-radius: 12px;
+$mfa-shadow: 0 1px 3px rgba(19, 78, 74, 0.10), 0 4px 14px rgba(19, 78, 74, 0.06);
+
+.mfa_dash {
+    background: $mfa-bg;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
+    padding: 0;
+    overflow: hidden;
+
+    > .mfa_scroll {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 20px 24px 32px;
+    }
+
+    // ---------------- Header ----------------
+    .mfa_header {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 14px;
+    }
+    .mfa_title {
+        margin: 0;
+        font-weight: 700;
+        color: $mfa-teal-dark;
+        letter-spacing: -0.02em;
+    }
+    .mfa_sub {
+        color: $mfa-slate;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 2px;
+    }
+    .mfa_chip {
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 2px 10px;
+        border-radius: 999px;
+        cursor: pointer;
+        &.mfa_chip_muted { background: #E2E8F0; color: $mfa-slate; cursor: default; }
+        &.mfa_chip_draft { background: rgba($mfa-amber, 0.15); color: darken($mfa-amber, 12%); }
+        &.mfa_chip_done  { background: rgba($mfa-teal, 0.14); color: $mfa-teal; }
+    }
+
+    .mfa_controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .mfa_pills {
+        display: flex;
+        background: #fff;
+        border-radius: 999px;
+        padding: 3px;
+        box-shadow: $mfa-shadow;
+        .mfa_pill {
+            border: 0;
+            background: transparent;
+            padding: 6px 18px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: $mfa-slate;
+            transition: all 0.15s ease;
+            &.active {
+                background: $mfa-teal;
+                color: #fff;
+                box-shadow: 0 2px 6px rgba($mfa-teal, 0.35);
+            }
+        }
+    }
+    .mfa_nav {
+        display: flex;
+        background: #fff;
+        border-radius: 999px;
+        padding: 3px;
+        box-shadow: $mfa-shadow;
+        .mfa_nav_btn {
+            border: 0;
+            background: transparent;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-weight: 700;
+            color: $mfa-teal-dark;
+            &:hover { background: rgba($mfa-teal, 0.08); }
+            &.mfa_today { font-size: 0.85rem; color: $mfa-amber; }
+        }
+    }
+
+    // ---------------- Tabs ----------------
+    .mfa_tabs {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 16px;
+        border-bottom: 2px solid rgba($mfa-teal, 0.12);
+        .mfa_tab {
+            border: 0;
+            background: transparent;
+            padding: 8px 18px;
+            font-weight: 600;
+            color: $mfa-slate;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            &.active {
+                color: $mfa-teal;
+                border-bottom-color: $mfa-amber;
+            }
+        }
+    }
+
+    // ---------------- Cards ----------------
+    .mfa_card {
+        background: #fff;
+        border-radius: $mfa-radius;
+        box-shadow: $mfa-shadow;
+        padding: 16px 18px;
+    }
+    .mfa_card_title {
+        color: $mfa-teal-dark;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+
+    // ---------------- KPI row ----------------
+    .mfa_kpis {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 14px;
+        margin-bottom: 16px;
+        @media (max-width: 992px) { grid-template-columns: repeat(3, 1fr); }
+        @media (max-width: 576px) { grid-template-columns: repeat(2, 1fr); }
+    }
+    .mfa_kpi {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        border-top: 4px solid transparent;
+        .mfa_kpi_value { font-size: 1.7rem; font-weight: 800; color: $mfa-teal-dark; }
+        .mfa_kpi_label { font-size: 0.78rem; font-weight: 600; color: $mfa-slate;
+                         text-transform: uppercase; letter-spacing: 0.04em; }
+        &.mfa_kpi_total   { border-top-color: $mfa-teal-dark; }
+        &.mfa_kpi_present { border-top-color: $mfa-teal;
+                            .mfa_kpi_value { color: $mfa-teal; } }
+        &.mfa_kpi_leave   { border-top-color: $mfa-red;
+                            .mfa_kpi_value { color: $mfa-red; } }
+        &.mfa_kpi_onduty  { border-top-color: $mfa-amber;
+                            .mfa_kpi_value { color: darken($mfa-amber, 8%); } }
+        &.mfa_kpi_med     { border-top-color: $mfa-slate;
+                            .mfa_kpi_value { color: $mfa-slate; } }
+        &.mfa_kpi_rate    { border-top-color: $mfa-amber;
+                            background: linear-gradient(135deg, $mfa-teal, $mfa-teal-dark);
+                            .mfa_kpi_value { color: #fff; }
+                            .mfa_kpi_label { color: rgba(#fff, 0.75); } }
+    }
+
+    // ---------------- Overview grid ----------------
+    .mfa_grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 16px;
+        @media (max-width: 992px) { grid-template-columns: 1fr; }
+    }
+    .mfa_chart_wrap {
+        position: relative;
+        height: 320px;
+        min-height: 0;
+    }
+    .mfa_absent_list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 4px;
+            border-bottom: 1px dashed rgba($mfa-slate, 0.25);
+            &:last-child { border-bottom: 0; }
+        }
+        .mfa_emp_name { flex: 1; font-weight: 500; }
+    }
+    .mfa_roll {
+        min-width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        background: rgba($mfa-teal, 0.10);
+        color: $mfa-teal;
+        font-weight: 700;
+        font-size: 0.8rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .mfa_empty {
+        color: $mfa-slate;
+        text-align: center;
+        padding: 18px 0;
+        i { color: $mfa-teal; margin-right: 6px; }
+    }
+
+    // ---------------- Employee table ----------------
+    .mfa_table_head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+    }
+    .mfa_search {
+        border: 1px solid rgba($mfa-slate, 0.35);
+        border-radius: 8px;
+        padding: 6px 12px;
+        min-width: 220px;
+        &:focus { outline: 2px solid rgba($mfa-teal, 0.35); border-color: $mfa-teal; }
+    }
+    .mfa_table_scroll {
+        overflow: auto;
+        max-height: 60vh;
+        min-height: 0;
+    }
+    .mfa_table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+        th {
+            position: sticky;
+            top: 0;
+            background: $mfa-teal-dark;
+            color: #fff;
+            padding: 9px 12px;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+            z-index: 1;
+            &.text-end { text-align: right; }
+        }
+        td {
+            padding: 8px 12px;
+            border-bottom: 1px solid rgba($mfa-slate, 0.15);
+        }
+        tbody tr:hover { background: rgba($mfa-teal, 0.05); }
+        .mfa_roll_cell { font-weight: 700; color: $mfa-teal; }
+        .mfa_rate_col { min-width: 160px; }
+    }
+    .mfa_rate_wrap {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .mfa_rate_bar {
+        flex: 1;
+        height: 8px;
+        background: rgba($mfa-slate, 0.18);
+        border-radius: 999px;
+        overflow: hidden;
+        .mfa_rate_fill {
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, $mfa-teal, $mfa-amber);
+        }
+    }
+    .mfa_rate_txt { font-weight: 700; color: $mfa-teal-dark; min-width: 48px;
+                    text-align: right; }
+
+    // ---------------- Badges ----------------
+    .mfa_badge {
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 999px;
+        white-space: nowrap;
+        &.mfa_badge_present  { background: rgba($mfa-teal, 0.14); color: $mfa-teal; }
+        &.mfa_badge_leave    { background: rgba($mfa-red, 0.12); color: $mfa-red; }
+        &.mfa_badge_on_duty  { background: rgba($mfa-amber, 0.16); color: darken($mfa-amber, 12%); }
+        &.mfa_badge_med_leave{ background: rgba($mfa-slate, 0.15); color: $mfa-slate; }
+        &.mfa_badge_none    { background: #E2E8F0; color: $mfa-slate; }
+    }
+
+    .mfa_loading {
+        display: flex;
+        justify-content: center;
+        padding: 60px 0;
+        color: $mfa-teal;
+    }
+}
+
+// Employee focus chip
+.mfa_dash .mfa_chip.mfa_chip_emp {
+    background: rgba(15, 118, 110, 0.12);
+    color: #0F766E;
+    display: inline-flex;
+    align-items: center;
+    .fa-times:hover { color: #DC2626; }
+}
+
+// ---------------- Announcement ticker (running display) ----------------
+.mfa_dash {
+    .mfa_ticker {
+        display: flex;
+        align-items: center;
+        background: linear-gradient(90deg, $mfa-teal-dark, $mfa-teal);
+        border-radius: $mfa-radius;
+        box-shadow: $mfa-shadow;
+        margin-bottom: 14px;
+        overflow: hidden;
+        min-height: 44px;
+    }
+    .mfa_ticker_label {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        align-self: stretch;
+        padding: 0 24px 0 16px;
+        background: $mfa-amber;
+        color: #1F2937;
+        font-weight: 800;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        white-space: nowrap;
+        z-index: 1;
+        clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+    }
+    .mfa_ticker_viewport {
+        flex: 1 1 auto;
+        overflow: hidden;
+        min-width: 0;
+        -webkit-mask-image: linear-gradient(90deg, transparent 0,
+            #000 24px, #000 calc(100% - 24px), transparent 100%);
+        mask-image: linear-gradient(90deg, transparent 0,
+            #000 24px, #000 calc(100% - 24px), transparent 100%);
+    }
+    .mfa_ticker_track {
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+        will-change: transform;
+        animation: mfa_ticker_scroll linear infinite;
+    }
+    .mfa_ticker:hover .mfa_ticker_track {
+        animation-play-state: paused;
+    }
+    .mfa_ticker_group { display: inline-flex; align-items: center; }
+    .mfa_ticker_item {
+        display: inline-flex;
+        align-items: center;
+        color: #ECFDF5;
+        font-size: 0.92rem;
+        padding: 0 28px;
+
+        + .mfa_ticker_item {
+            border-left: 1px solid rgba(255, 255, 255, 0.25);
+        }
+    }
+    .mfa_ticker_name { color: #FDE68A; margin-right: 6px; }
+    .mfa_ticker_sep { margin-right: 6px; opacity: 0.7; }
+    .mfa_ticker_high { color: #FEF2F2; font-weight: 700; }
+    .mfa_ticker_high .fa-exclamation-circle { color: #FCA5A5; }
+}
+
+@keyframes mfa_ticker_scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mfa_dash .mfa_ticker_track {
+        animation: none;
+        flex-wrap: wrap;
+        white-space: normal;
+    }
+    .mfa_dash .mfa_ticker_group[aria-hidden="true"] { display: none; }
+}

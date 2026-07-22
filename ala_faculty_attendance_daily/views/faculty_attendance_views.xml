@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_faculty_attendance_sheet_form" model="ir.ui.view">
+        <field name="name">ala.faculty.attendance.sheet.form</field>
+        <field name="model">ala.faculty.attendance.sheet</field>
+        <field name="arch" type="xml">
+            <form string="Faculty Attendance">
+                <header>
+                    <button name="action_create_lines" type="object"
+                            string="Create Attendance Lines" class="btn-primary"
+                            invisible="line_ids or state != 'draft'"/>
+                    <button name="action_apply_absent_rolls" type="object"
+                            string="Apply Leave Roll Nos"
+                            invisible="state != 'draft'"/>
+                    <button name="action_mark_all_present" type="object"
+                            string="Mark All Present"
+                            invisible="state != 'draft'"/>
+                    <button name="action_done" type="object" string="Validate"
+                            class="btn-primary" invisible="state != 'draft'"
+                            confirm="Validate this attendance sheet?"/>
+                    <button name="action_reset_draft" type="object"
+                            string="Reset to Draft"
+                            invisible="state != 'done'"
+                            groups="hr.group_hr_manager"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date" readonly="state != 'draft'"/>
+                            <field name="company_id"
+                                   readonly="state != 'draft'"
+                                   groups="base.group_multi_company"/>
+                            <field name="auto_closed" invisible="not auto_closed"/>
+                        </group>
+                        <group>
+                            <field name="total_count"/>
+                            <field name="present_count"/>
+                            <field name="leave_count"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="absent_roll_nos"
+                               placeholder="Roll nos on leave, e.g. 3, 7, 10-12  (empty = everyone present)"
+                               readonly="state != 'draft'"/>
+                    </group>
+                    <notebook>
+                        <page string="Attendance Lines">
+                            <field name="line_ids"
+                                   readonly="state != 'draft'">
+                                <list editable="bottom" create="false">
+                                    <field name="roll_no" readonly="1"/>
+                                    <field name="employee_id" readonly="1"/>
+                                    <field name="status" widget="selection_badge"
+                                           decoration-success="status == 'present'"
+                                           decoration-danger="status == 'leave'"
+                                           decoration-primary="status == 'on_duty'"
+                                           decoration-warning="status == 'med_leave'"/>
+                                    <field name="remarks"/>
+                                    <field name="attendance_id"
+                                           readonly="1" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_faculty_attendance_sheet_tree" model="ir.ui.view">
+        <field name="name">ala.faculty.attendance.sheet.tree</field>
+        <field name="model">ala.faculty.attendance.sheet</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'"
+                  decoration-success="state == 'done'">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="total_count"/>
+                <field name="present_count"/>
+                <field name="leave_count"/>
+                <field name="auto_closed" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-success="state == 'done'"/>
+                <field name="company_id" optional="hide"
+                       groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_faculty_attendance_sheet_search" model="ir.ui.view">
+        <field name="name">ala.faculty.attendance.sheet.search</field>
+        <field name="model">ala.faculty.attendance.sheet</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="date"/>
+                <filter string="Draft" name="draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter string="Done" name="done"
+                        domain="[('state', '=', 'done')]"/>
+                <filter string="Auto Closed" name="auto_closed"
+                        domain="[('auto_closed', '=', True)]"/>
+                <group>
+                    <filter string="Month" name="group_month"
+                            context="{'group_by': 'date:month'}"/>
+                    <filter string="State" name="group_state"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_faculty_attendance_sheet" model="ir.actions.act_window">
+        <field name="name">Faculty Attendance</field>
+        <field name="res_model">ala.faculty.attendance.sheet</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_group_month': 1}</field>
+    </record>
+
+    <!-- Line-level reporting view (per-employee history / pivot) -->
+    <record id="view_faculty_attendance_line_pivot" model="ir.ui.view">
+        <field name="name">ala.faculty.attendance.sheet.line.pivot</field>
+        <field name="model">ala.faculty.attendance.sheet.line</field>
+        <field name="arch" type="xml">
+            <pivot string="Faculty Attendance Analysis">
+                <field name="employee_id" type="row"/>
+                <field name="date" interval="month" type="col"/>
+                <field name="status" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_faculty_attendance_lines" model="ir.actions.act_window">
+        <field name="name">Attendance Analysis</field>
+        <field name="res_model">ala.faculty.attendance.sheet.line</field>
+        <field name="view_mode">pivot,list</field>
+    </record>
+
+    <menuitem id="menu_faculty_attendance_root" name="Faculty Attendance"
+              groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
+              web_icon="hr,static/description/icon.png" sequence="60"/>
+    <menuitem id="menu_faculty_attendance_sheet"
+              parent="menu_faculty_attendance_root"
+              action="action_faculty_attendance_sheet"
+              name="Daily Sheets" sequence="10"/>
+    <menuitem id="menu_faculty_attendance_analysis"
+              parent="menu_faculty_attendance_root"
+              action="action_faculty_attendance_lines"
+              name="Analysis" sequence="20"/>
+    <menuitem id="menu_faculty_roll_manager"
+              parent="menu_faculty_attendance_root"
+              action="action_faculty_roll_manager"
+              name="Roll Numbers" sequence="30"
+              groups="hr.group_hr_user"/>
+</odoo>

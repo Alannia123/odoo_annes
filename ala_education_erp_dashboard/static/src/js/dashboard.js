@@ -1,392 +1,223 @@
-/** @odoo-module **/
+/** @odoo-module */
 
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
-import { user } from "@web/core/user";
-import { Component, onMounted, onWillStart, useState } from "@odoo/owl";
+import { Component, useState, onWillStart } from "@odoo/owl";
 
-const PULSE = `<span class="skel-pulse" style="
-    display:inline-block;width:48px;height:20px;
-    background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);
-    background-size:200% 100%;animation:skelPulse 1.2s ease-in-out infinite;
-    border-radius:4px;vertical-align:middle;"></span>`;
+const { DateTime } = luxon;
 
 export class EducationalDashboard extends Component {
-    static template = "ala_education_erp_dashboard.EducationalDashboard";
-    static props = { "*": true };
+    static template = "EducationalDashboard";
+    static props = ["*"];
 
     setup() {
         this.orm = useService("orm");
         this.action = useService("action");
-        this.user = user;
-
-        this.detailsLoaded = false;
-
         this.state = useState({
-            canViewFaculty: false,
-            canViewStudents: false,
-            canViewExams: false,
-            canViewAmenities: false,
-            currentAcademicYearId: false,
+            loading: true,
+            allowed: false,
+            data: null,
+            teacherSearch: "",
+            facultySelf: null,
+            announcements: [],
+            tasks: { loading: false, loaded: false, rows: [] },
+            valuations: { loading: false, loaded: false, rows: [] },
         });
+        this.todayLabel = DateTime.local().toFormat("cccc, dd LLL yyyy");
 
         onWillStart(async () => {
-            const [isPrincipal, isOfficeAdmin] = await Promise.all([
-                this.user.hasGroup("ala_education_core.group_education_principal"),
-                this.user.hasGroup("ala_education_core.group_education_office_admin"),
-            ]);
-            const isAdmin = isPrincipal || isOfficeAdmin;
-            this.state.canViewFaculty = isAdmin;
-            this.state.canViewStudents = isAdmin;
-            this.state.canViewExams = isAdmin;
-            this.state.canViewAmenities = isAdmin;
-        });
-
-        onMounted(() => {
-            this._showCardSkeleton();
-            this._fetchCritical();
+            const result = await this.orm.call("ala.erp.dashboard", "erp_data", []);
+            this.state.allowed = Boolean(result.allowed);
+            this.state.data = result.allowed ? result : null;
+            this.state.facultySelf = result.faculty_self || null;
+            this.state.announcements = result.announcements || [];
+            this.state.loading = false;
         });
     }
 
-    // ─── Skeletons ───────────────────────────────────────────────────────────
-
-    _showCardSkeleton() {
-        // Only the top summary cards — shown on page open
-        const statIds = [
-            "all_students","student_male","student_female",
-            "all_faculties","faculty_male","faculty_female",
-            "all_amenities","amenities_indoor","amenities_outdoor",
-            "all_exams","exam_ongoing","exam_closed",
-        ];
-        statIds.forEach(id => this._setHTML(`#${id}`, PULSE));
-        this._setHTML("#total_students", PULSE);
-    }
-
-    _showDetailSkeleton() {
-        // Detail sections — shown only after "Load Data" is clicked
-        ["today_present","today_absent","today_homeworks"].forEach(id => {
-            this._setHTML(`#${id}`, PULSE);
-        });
-
-        const grid = document.querySelector("#division_summary_grid");
-        if (grid) {
-            grid.innerHTML = Array.from({length: 8}, () =>
-                `<div class="col-md-3 col-sm-6 col-12 p-1">
-                    <div style="height:72px;background:#e2e8f0;border-radius:8px;
-                         animation:skelPulse 1.2s ease-in-out infinite;"></div>
-                </div>`
-            ).join("");
-        }
-
-        ["teacher_task_body","valuation_summary_body"].forEach(id => {
-            const el = document.querySelector(`#${id}`);
-            if (el) el.innerHTML = `<tr><td colspan="4" class="text-center py-3">
-                <span class="skel-pulse" style="display:inline-block;width:200px;height:16px;
-                background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);
-                background-size:200% 100%;animation:skelPulse 1.2s ease-in-out infinite;
-                border-radius:4px;"></span></td></tr>`;
-        });
-    }
-
-    // ─── Page-open fetch: summary cards only ─────────────────────────────────
-
-    async _fetchCritical() {
-        const result = await this.orm.call("ala.erp.dashboard", "erp_data", []);
-
-        this._setHTML("#all_students",      `<span>${result.students || 0}</span>`);
-        this._setHTML("#student_male",      `<span>${result.male_student_count || 0}</span>`);
-        this._setHTML("#student_female",    `<span>${result.female_student_count || 0}</span>`);
-        this._setHTML("#all_faculties",     `<span>${result.faculties || 0}</span>`);
-        this._setHTML("#faculty_male",      `<span>${result.faculty_male || 0}</span>`);
-        this._setHTML("#faculty_female",    `<span>${result.faculty_female || 0}</span>`);
-        this._setHTML("#all_amenities",     `<span>${result.amenities || 0}</span>`);
-        this._setHTML("#amenities_outdoor", `<span>${result.amenities_outdoor || 0}</span>`);
-        this._setHTML("#amenities_indoor",  `<span>${result.amenities_indoor || 0}</span>`);
-        this._setHTML("#all_exams",         `<span>${result.exams || 0}</span>`);
-        this._setHTML("#exam_ongoing",      `<span>${result.exam_ongoing || 0}</span>`);
-        this._setHTML("#exam_closed",       `<span>${result.exam_closed || 0}</span>`);
-
-        this._setText("#total_students", result.total_students || result.students || "--");
-
-        this.state.currentAcademicYearId = result.current_academic_year_id || false;
-    }
-
-    // ─── "Load Data" button → fetch everything else ──────────────────────────
-
-    async loadDetails() {
-        const btn = document.querySelector("#load_details_btn");
-        if (btn) {
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa fa-spinner fa-spin me-1"></i>Loading...`;
-        }
-
-        this._showDetailSkeleton();
-
-        try {
-            const result = await this.orm.call("ala.erp.dashboard", "erp_data_deferred", []);
-            this._renderDetails(result);
-            this.detailsLoaded = true;
-            if (btn) {
-                btn.disabled = false;
-                btn.innerHTML = `<i class="fa fa-refresh me-1"></i>Refresh`;
-            }
-        } catch (err) {
-            console.error("Failed to load dashboard details:", err);
-            if (btn) {
-                btn.disabled = false;
-                btn.innerHTML = `<i class="fa fa-download me-1"></i>Load Data`;
-            }
-        }
-    }
-
-    _renderDetails(result) {
-        this._setText("#today_present",   result.today_present || "--");
-        this._setText("#today_homeworks", result.today_homeworks || "--");
-        this._setText("#today_absent",    result.today_absent || "--");
-
-        const updatedDiv = result.updated_divisions || 0;
-        const totalDiv   = result.total_divisions   || 0;
-        const percent    = totalDiv > 0 ? ((updatedDiv / totalDiv) * 100).toFixed(0) : 0;
-
-        this._setHTML(
-            "#div_update_ratio",
-            `<span>${updatedDiv}</span>/<span>${totalDiv}</span>
-             <small style="font-size:12px;color:#6b7280;">(${percent}% Updated)</small>`
+    // ------------------------------------------------------------------
+    // Getters
+    // ------------------------------------------------------------------
+    get tickerDuration() {
+        // ~18 chars/second reading speed, clamped so short and very
+        // long announcement sets both stay comfortable.
+        const chars = this.state.announcements.reduce(
+            (n, a) => n + (a.name || "").length + (a.message || "").length + 8,
+            0
         );
-        this._setStyle("#division_progress_bar", "width", `${percent}%`);
-
-        this.renderDivisionSummary(result.division_summary || []);
-        this.renderTeacherTasks(result.teacher_tasks || []);
-        this.renderValuationSummary(result.valuation_summary || []);
+        return Math.min(Math.max(Math.round(chars / 18), 15), 120);
     }
 
-    // ─── DOM helpers ─────────────────────────────────────────────────────────
-
-    _setHTML(selector, value) {
-        const el = document.querySelector(selector);
-        if (el) el.innerHTML = value;
-    }
-
-    _setText(selector, value) {
-        const el = document.querySelector(selector);
-        if (el) el.textContent = value;
-    }
-
-    _setStyle(selector, property, value) {
-        const el = document.querySelector(selector);
-        if (el) el.style[property] = value;
-    }
-
-    // ─── Division summary (batched DOM write) ─────────────────────────────────
-
-    renderDivisionSummary(divisions) {
-        const grid = document.querySelector("#division_summary_grid");
-        if (!grid) return;
-
-        if (!divisions.length) {
-            grid.innerHTML = `<div class="col-12 text-center text-muted">No divisions found</div>`;
-            return;
+    get divisionRatio() {
+        const att = this.state.data && this.state.data.attendance;
+        if (!att || !att.total_divisions) {
+            return 0;
         }
-
-        const frag = document.createDocumentFragment();
-
-        divisions.forEach((div) => {
-            const isNotUpdated = div.status === "Not Updated";
-            const cardColor = isNotUpdated
-                ? "background:#fffbea;border:1px solid #ffe58f;"
-                : "background:#e9f7ef;border:1px solid #b6e2c7;";
-
-            const cardContent = isNotUpdated
-                ? `<p class="mb-0" style="font-size:12px;color:#b8860b;">
-                       <i class="fa fa-clock-o me-1"></i>Not updated yet
-                   </p>`
-                : `<div class="stats d-flex justify-content-between mt-1" style="font-size:14px;">
-                       <span class="text-primary">👥 ${div.total || 0}</span>
-                       <span class="text-success">✅ ${div.present || 0}</span>
-                       <span class="text-danger">❌ ${div.absent || 0}</span>
-                   </div>`;
-
-            const wrapper = document.createElement("div");
-            wrapper.className = "col-md-3 col-sm-6 col-12 p-1";
-            wrapper.innerHTML = `
-                <div class="division-card${isNotUpdated ? " not-updated" : ""}"
-                     data-attendance-id="${div.id || ""}"
-                     data-division-id="${div.division_id || ""}"
-                     style="${cardColor}cursor:pointer;border-radius:8px;padding:6px 8px;
-                            box-shadow:0 1px 3px rgba(0,0,0,0.08);font-size:13px;">
-                    <h6 class="mb-0 text-center" style="font-weight:600;">${div.division || ""}</h6>
-                    <p class="text-info mb-0 text-center">
-                        🏠 Homeworks:
-                        <span class="badge bg-light text-dark">${div.div_homeworks || 0}</span>
-                    </p>
-                    ${cardContent}
-                </div>`;
-
-            wrapper.querySelector(".division-card")
-                .addEventListener("click", (e) => this.onclick_division_attendance(e));
-
-            frag.appendChild(wrapper);
-        });
-
-        grid.innerHTML = "";
-        grid.appendChild(frag);   // single reflow
+        return Math.round((att.updated_divisions / att.total_divisions) * 100);
     }
 
-    // ─── Task + valuation renders ────────────────────────────────────────────
-
-    renderTeacherTasks(tasks) {
-        const taskBody = document.querySelector("#teacher_task_body");
-        if (!taskBody) return;
-
-        if (!tasks.length) {
-            taskBody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-2">No tasks found</td></tr>`;
-            return;
+    get filteredTeachers() {
+        const block = this.state.data && this.state.data.faculty_attendance;
+        if (!block) {
+            return [];
         }
-
-        const frag = document.createDocumentFragment();
-        tasks.forEach((t) => {
-            const stateClass =
-                t.state === "Completed" ? "completed" :
-                t.state === "Pending"   ? "pending"   : "overdue";
-
-            const row = document.createElement("tr");
-            row.className = "task-row text-center";
-            row.dataset.id = t.id;
-            row.style.cursor = "pointer";
-            row.innerHTML = `
-                <td>${t.teacher_name || ""}</td>
-                <td>${t.task_name || ""}</td>
-                <td>${t.date || ""}</td>
-                <td><span class="task-status ${stateClass}">${t.state || ""}</span></td>`;
-            row.addEventListener("click", (e) => this.onclick_task(e));
-            frag.appendChild(row);
-        });
-
-        taskBody.innerHTML = "";
-        taskBody.appendChild(frag);
-    }
-
-    renderValuationSummary(valuations) {
-        const valuationBody = document.querySelector("#valuation_summary_body");
-        if (!valuationBody) return;
-
-        if (!valuations.length) {
-            valuationBody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-2">No valuations found</td></tr>`;
-            return;
+        const query = this.state.teacherSearch.trim().toLowerCase();
+        if (!query) {
+            return block.teachers;
         }
-
-        const frag = document.createDocumentFragment();
-        valuations.forEach((v) => {
-            const stateClass = v.state === "Completed" ? "completed" :
-                               v.state === "Draft"     ? "pending"   : "cancelled";
-            const row = document.createElement("tr");
-            row.className = "valuation-row text-center";
-            row.dataset.id = v.id;
-            row.style.cursor = "pointer";
-            row.innerHTML = `
-                <td>${v.exam_name || ""}</td>
-                <td>${v.subject_name || ""}</td>
-                <td>${v.class_name || ""} - ${v.division_name || ""}</td>
-                <td><span class="task-status ${stateClass}">${v.state || ""}</span></td>`;
-            row.addEventListener("click", (e) => this.onclick_valuation(e));
-            frag.appendChild(row);
-        });
-
-        valuationBody.innerHTML = "";
-        valuationBody.appendChild(frag);
+        return block.teachers.filter(
+            (t) =>
+                t.name.toLowerCase().includes(query) ||
+                String(t.roll).includes(query)
+        );
     }
 
-    // ─── Click handlers ──────────────────────────────────────────────────────
-
-    onDashboardCardClick(ev) {
-        const card = ev.currentTarget;
-        const actionType = card.dataset.action;
-        const permissionMap = {
-            faculties: this.state.canViewFaculty,
-            students:  this.state.canViewStudents,
-            exams:     this.state.canViewExams,
-            amenities: this.state.canViewAmenities,
+    myStatusChipClass(status) {
+        const map = {
+            present: "edb_chip_teal",
+            leave: "edb_chip_red",
+            on_duty: "edb_chip_amber",
+            med_leave: "edb_chip_muted",
         };
-        if (!permissionMap[actionType]) return;
+        return "edb_chip edb_chip_big " + (map[status] || "edb_chip_muted");
+    }
 
-        const currentAcademicYearId = this.state.currentAcademicYearId;
-        const actionMap = {
-            faculties: { name: "Faculties",  res_model: "ala.education.faculty" },
-            students:  { name: "Students",   res_model: "ala.education.student",
-                         domain: [["tc_issued","=",false],["drop_out","=",false],["active","=",true]] },
-            exams:     { name: "Exams",      res_model: "ala.education.exam",
-                         domain: currentAcademicYearId ? [["academic_year_id","=",currentAcademicYearId]] : [] },
-            amenities: { name: "Amenities",  res_model: "ala.education.amenities" },
+    divisionStatusLabel(status) {
+        return { updated: "Updated", not_updated: "Not Updated",
+                 not_created: "Not Created" }[status] || status;
+    }
+
+    // ------------------------------------------------------------------
+    // On-demand loads (Tasks / Exam Valuations only)
+    // ------------------------------------------------------------------
+    async loadTasks() {
+        this.state.tasks.loading = true;
+        try {
+            this.state.tasks.rows = await this.orm.call(
+                "ala.erp.dashboard", "erp_task_data", []);
+            this.state.tasks.loaded = true;
+        } finally {
+            this.state.tasks.loading = false;
+        }
+    }
+
+    async loadValuations() {
+        this.state.valuations.loading = true;
+        try {
+            this.state.valuations.rows = await this.orm.call(
+                "ala.erp.dashboard", "erp_valuation_data", []);
+            this.state.valuations.loaded = true;
+        } finally {
+            this.state.valuations.loading = false;
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // Faculty attendance actions
+    // ------------------------------------------------------------------
+    async openFacultyAttendanceEntry() {
+        const action = await this.orm.call(
+            "ala.erp.dashboard", "action_open_today_faculty_sheet", []);
+        if (action) {
+            this.action.doAction(action);
+        }
+    }
+
+    openFacultyAttendanceDashboard() {
+        this.action.doAction({
+            type: "ir.actions.client",
+            tag: "ala_faculty_attendance_dashboard",
+            name: "Faculty Attendance Dashboard",
+        });
+    }
+
+    openTeacher(teacher) {
+        this.action.doAction({
+            type: "ir.actions.client",
+            tag: "ala_faculty_attendance_dashboard",
+            name: `${teacher.name} — Attendance`,
+            context: {
+                mfa_employee_id: teacher.id,
+                mfa_employee_name: teacher.name,
+            },
+        });
+    }
+
+    // ------------------------------------------------------------------
+    // Record navigation
+    // ------------------------------------------------------------------
+    openCard(kind) {
+        const yearId = this.state.data
+            ? this.state.data.current_academic_year_id : false;
+        const map = {
+            faculties: { name: "Faculties", res_model: "ala.education.faculty",
+                         domain: [] },
+            students: {
+                name: "Students", res_model: "ala.education.student",
+                domain: [["tc_issued", "=", false], ["drop_out", "=", false],
+                         ["active", "=", true]],
+            },
+            exams: {
+                name: "Exams", res_model: "ala.education.exam",
+                domain: yearId ? [["academic_year_id", "=", yearId]] : [],
+            },
         };
-        const action = actionMap[actionType];
-        if (!action) return;
-
+        const cfg = map[kind];
+        if (!cfg) {
+            return;
+        }
         this.action.doAction({
             type: "ir.actions.act_window",
-            name: action.name,
-            res_model: action.res_model,
-            domain: action.domain || [],
-            views: [[false,"list"],[false,"form"]],
+            name: cfg.name,
+            res_model: cfg.res_model,
+            views: [[false, "list"], [false, "form"]],
+            domain: cfg.domain,
             target: "current",
         });
     }
 
-    onclick_task(e) {
-        e.preventDefault();
-        const row = e.currentTarget.closest(".task-row");
-        if (!row?.dataset.id) return;
-        this.action.doAction({
-            type: "ir.actions.act_window", name: "Task",
-            res_model: "ala.task.management", res_id: Number(row.dataset.id),
-            views: [[false,"form"]], target: "current",
-        });
-    }
-
-    onclick_valuation(e) {
-        e.preventDefault();
-        const row = e.currentTarget.closest(".valuation-row");
-        if (!row?.dataset.id) return;
-        this.action.doAction({
-            type: "ir.actions.act_window", name: "Exam Valuation",
-            res_model: "ala.education.exam.valuation", res_id: Number(row.dataset.id),
-            views: [[false,"form"]], target: "current",
-        });
-    }
-
-    onclick_division_attendance(e) {
-        e.preventDefault();
-        const card = e.currentTarget.closest(".division-card");
-        if (!card) return;
-        const attendanceId = card.dataset.attendanceId;
-        const divisionId   = card.dataset.divisionId;
-
-        if (attendanceId) {
-            return this.action.doAction({
-                type: "ir.actions.act_window", name: "Attendance",
-                res_model: "ala.education.attendance", res_id: Number(attendanceId),
-                views: [[false,"form"]], target: "current",
+    openDivision(div) {
+        if (div.attendance_id) {
+            this.action.doAction({
+                type: "ir.actions.act_window",
+                name: "Attendance",
+                res_model: "ala.education.attendance",
+                res_id: div.attendance_id,
+                views: [[false, "form"]],
+                target: "current",
             });
+            return;
         }
         this.action.doAction({
-            type: "ir.actions.act_window", name: "Attendance",
+            type: "ir.actions.act_window",
+            name: "Attendance",
             res_model: "ala.education.attendance",
-            views: [[false,"list"],[false,"form"]],
-            domain: [["division_id","=",Number(divisionId)]],
-            context: { default_division_id: Number(divisionId) },
+            views: [[false, "list"], [false, "form"]],
+            domain: [["division_id", "=", div.division_id]],
+            context: { default_division_id: div.division_id },
             target: "current",
         });
     }
 
-    onclick_student_list(e)    { e.preventDefault(); this._openList("Students",   "ala.education.student"); }
-    onclick_faculty_list(e)    { e.preventDefault(); this._openList("Faculties",  "ala.education.faculty"); }
-    onclick_attendance_list(e) { e.preventDefault(); this._openList("Attendance", "ala.education.attendance"); }
-    onclick_exam_list(e)       { e.preventDefault(); this._openList("Exams",      "ala.education.exam"); }
-    onclick_amenities_list(e)  { e.preventDefault(); this._openList("Amenities",  "ala.education.amenities"); }
-
-    _openList(name, res_model) {
+    openTask(task) {
         this.action.doAction({
-            type: "ir.actions.act_window", name, res_model,
-            views: [[false,"list"],[false,"form"]], target: "current",
+            type: "ir.actions.act_window",
+            name: "Task",
+            res_model: "ala.task.management",
+            res_id: task.id,
+            views: [[false, "form"]],
+            target: "current",
+        });
+    }
+
+    openValuation(valuation) {
+        this.action.doAction({
+            type: "ir.actions.act_window",
+            name: "Exam Valuation",
+            res_model: "ala.education.exam.valuation",
+            res_id: valuation.id,
+            views: [[false, "form"]],
+            target: "current",
         });
     }
 }

@@ -2,5 +2,6 @@ id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
 access_erp_dashboard,access_erp_dashboard,model_ala_erp_dashboard,base.group_user,1,1,1,1
 access_erp_dashboard_faculty,access_erp_dashboard faculty,model_ala_erp_dashboard,ala_education_erp_dashboard.group_education_faculty,1,1,1,0
 access_erp_dashboard_principal,access_erp_dashboard principal,model_ala_erp_dashboard,ala_education_erp_dashboard.group_education_principal,1,1,1,1
-
-
+access_ala_dashboard_announcement_user,ala.dashboard.announcement.user,model_ala_dashboard_announcement,base.group_user,1,0,0,0
+access_ala_dashboard_announcement_principal,ala.dashboard.announcement.principal,model_ala_dashboard_announcement,ala_education_core.group_education_principal,1,1,1,1
+access_ala_dashboard_announcement_office,ala.dashboard.announcement.office,model_ala_dashboard_announcement,ala_education_core.group_education_office_admin,1,1,1,1

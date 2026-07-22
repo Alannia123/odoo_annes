@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-  <template id="ala_home_page" name="MIS Welcome !!!">
+  <template id="ala_home_page" name="MIS St.Anne's !!!">
     <t t-call="website.layout">St.Anne's
       <div id="wrap" class="oe_structure o_cc3 o_colored_level">
         <t t-if="random_images">
