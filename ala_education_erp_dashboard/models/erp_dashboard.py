@@ -196,7 +196,9 @@ class ErpDashboard(models.Model):
         # ---------------- FACULTY COUNTS ----------------
         self.env.cr.execute("""
                 SELECT
-                    COUNT(*) AS total_faculty,
+                    COUNT(*) FILTER (
+                        WHERE COALESCE(faculty_left, false) = false
+                    ) AS total_faculty,
                     COUNT(*) FILTER (WHERE gender = 'male' AND COALESCE(faculty_left, false) = false) AS male_faculty,
                     COUNT(*) FILTER (WHERE gender = 'female' AND COALESCE(faculty_left, false) = false) AS female_faculty
                 FROM ala_education_faculty
