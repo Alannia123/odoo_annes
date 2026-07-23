@@ -8,7 +8,7 @@
     </record>
     <!--    Educational Dashboard Menu-->
     <menuitem id="education_erp_dashboard_menu_root"
-              name="Faculty Dashboard" sequence="-2" action="education_erp_dashboard_action"
+              name="EDU Dashboard" sequence="-2" action="education_erp_dashboard_action"
               web_icon="ala_education_erp_dashboard,static/description/icon.png"/>
 
 </odoo>

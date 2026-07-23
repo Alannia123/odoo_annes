@@ -21,7 +21,7 @@
         <div t-if="!state.loading and state.announcements.length"
              class="edb_ticker" role="marquee" aria-label="Announcements">
             <span class="edb_ticker_label">
-                <i class="fa fa-bullhorn me-1"/>Announcements
+                <i class="fa fa-bullhorn me-1"/>NOTICE:
             </span>
             <div class="edb_ticker_viewport">
                 <div class="edb_ticker_track"

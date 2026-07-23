@@ -151,7 +151,7 @@ export class EducationalDashboard extends Component {
             ? this.state.data.current_academic_year_id : false;
         const map = {
             faculties: { name: "Faculties", res_model: "ala.education.faculty",
-                         domain: [] },
+                         domain: [["faculty_left", "=", false]] },
             students: {
                 name: "Students", res_model: "ala.education.student",
                 domain: [["tc_issued", "=", false], ["drop_out", "=", false],
