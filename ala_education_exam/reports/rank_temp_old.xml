@@ -185,191 +185,269 @@
                                                         <th name="term_3"  style="background-color: #ffddcc;width : 11%;" class="text-center"><span>Unit Test-II<br></br>(50)</span></th>
                                                         <th name="term_3" style="background-color: #ecc6d9;width : 29%;" colspan="3" class="text-center"><span>Annual<br></br>Exam(100)</span></th>
                                                     </tr>
+<!--                                                    <tr>-->
+<!--&lt;!&ndash;                                                        <th name="exam_1" class="text-center"><span>Exam</span></th>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        <th name="assign_1" class="text-center"><span>Assign</span></th>&ndash;&gt;-->
+<!--                                                        <th name="total_1" style="background-color: #c6d9ec;" class="text-center"><span>Total<span style="font-weight: normal;">(50)</span></span></th>-->
+<!--                                                        <th name="exam_2" style="background-color: #d9f2e6;" class="text-center"><span>Exam<span style="font-weight: normal;">(80)</span></span></th>-->
+<!--                                                        <th name="assign_2" style="background-color: #d9f2e6;" class="text-center"><span>Assign<span style="font-weight: normal;">(20)</span></span></th>-->
+<!--                                                        <th name="total_2" style="background-color: #d9f2e6;" class="text-center"><span>Total<span style="font-weight: normal;">(100)</span></span></th>-->
+<!--                                                        <th name="total_1" style="background-color: #ffddcc;" class="text-center"><span>Total<span style="font-weight: normal;">(50)</span></span></th>-->
+<!--                                                        <th name="exam_3" style="background-color: #ecc6d9;" class="text-center"><span>Exam<span style="font-weight: normal;">(80)</span></span></th>-->
+<!--                                                        <th name="assign_3" style="background-color: #ecc6d9;" class="text-center"><span>Assign<span style="font-weight: normal;">(20)</span></span></th>-->
+<!--                                                        <th name="total_3" style="background-color: #ecc6d9;" class="text-center"><span>Total<span style="font-weight: normal;">(100)</span></span></th>-->
+<!--                                                    </tr>-->
                                                 </thead>
                                                 <tbody>
 
 
                                                     <t t-set="gr_id" t-value="False"/>
-                                                    <t t-set="non_grade_subjects" t-value="doc.class_id.subject_ids.filtered(lambda subject: subject.evaluation_mode == 'marks')"/>
-                                                    <t t-set="grade_subjects" t-value="doc.class_id.subject_ids.filtered(lambda subject: subject.evaluation_mode != 'marks')"/>
+                                                    <t t-foreach="doc.class_id.subject_ids" t-as="subject_line">
 
-<!--                                                    On NON- Grade subjects-->
-                                                    <t t-foreach="non_grade_subjects" t-as="non_grade_subject">
-
-                                                        <tr>
-                                                            <t t-set="fir_subject_mark" t-value="first_unit_result.subject_line_ids.filtered(lambda fir_subject: fir_subject.subject_id.id == non_grade_subject.subject_id.id)"/>
-                                                            <t t-set="half_subject_mark" t-value="halfly_result.subject_line_ids.filtered(lambda half_subject: half_subject.subject_id.id == non_grade_subject.subject_id.id)"/>
-                                                            <t t-set="sec_subject_mark" t-value="second_unit_result.subject_line_ids.filtered(lambda sec_subject: sec_subject.subject_id.id == non_grade_subject.subject_id.id)"/>
-                                                            <t t-set="ann_subject_mark" t-value="annual_result.subject_line_ids.filtered(lambda ann_subject: ann_subject.subject_id.id == non_grade_subject.subject_id.id)"/>
-                                                            <td name="subject" style="background-color: #e0ebeb;" class="text-start"><span><t t-esc="non_grade_subject.subject_id.name"></t></span></td>
-                                                            <td class="text-center">
-                                                                <t t-if="first_unit_result">
-                                                                    <t t-if="fir_subject_mark.mark_scored == 0"> -
-<!--                                                                        <t t-esc="int(fir_subject_mark.mark_scored)"/>-->
+                                                        <t t-if="subject_line.subject_id.group_id">
+                                                            <t t-set="group_summary" t-value="student.get_gruop_marks_assign(subject_line.subject_id.group_id, halfly_result, annual_result)"/>
+                                                            <t t-if="gr_id != group_summary.get('gr_id')">
+                                                                <tr>
+                                                                    <td name="subject_group" style="background-color: #ecf2f9;" class="text-start"><span style="color:#660000;"><b><t t-esc="subject_line.subject_id.group_id.ref_name"></t></b></span></td>
+                                                                    <td  class="text-center"></td>
+                                                                    <td  class="text-center"></td>
+                                                                    <td  class="text-center"></td>
+                                                                    <td  class="text-center"><t t-esc="group_summary.get('halfly_mark')"/></td>
+                                                                    <td  class="text-center"></td>
+                                                                    <td  class="text-center"></td>
+                                                                    <td  class="text-center"></td>
+                                                                    <td  class="text-center"><t t-esc="group_summary.get('annual_mark')"/></td>
+                                                                    <t t-set="gr_id" t-value="subject_line.subject_id.group_id.id"/>
+                                                                </tr>
+                                                            </t>
+                                                            <tr>
+                                                                <t t-set="fir_subject_mark" t-value="first_unit_result.subject_line_ids.filtered(lambda fir_subject: fir_subject.subject_id.id == subject_line.subject_id.id)"/>
+                                                                <t t-set="half_subject_mark" t-value="halfly_result.subject_line_ids.filtered(lambda half_subject: half_subject.subject_id.id == subject_line.subject_id.id)"/>
+                                                                <t t-set="sec_subject_mark" t-value="second_unit_result.subject_line_ids.filtered(lambda sec_subject: sec_subject.subject_id.id == subject_line.subject_id.id)"/>
+                                                                <t t-set="ann_subject_mark" t-value="annual_result.subject_line_ids.filtered(lambda ann_subject: ann_subject.subject_id.id == subject_line.subject_id.id)"/>
+                                                                <td name="subject" style="background-color: #e0ebeb;" class="text-end"><span><t t-esc="subject_line.subject_id.name"></t></span></td>
+                                                                <td class="text-center">
+                                                                    <t t-if="first_unit_result">
+                                                                        <t t-if="fir_subject_mark.mark_scored == 0"> -
+    <!--                                                                        <t t-esc="int(fir_subject_mark.mark_scored)"/>-->
+                                                                        </t>
+                                                                        <t t-elif="fir_subject_mark.mark_scored &lt; fir_subject_mark.pass_mark">
+                                                                            <span style="color: red;"> <t t-esc="int(fir_subject_mark.mark_scored)"/></span>
+                                                                        </t>
+                                                                        <t t-else="">
+                                                                            <span style="color: green;"> <t t-esc="int(fir_subject_mark.mark_scored)"/></span>
+                                                                        </t>
                                                                     </t>
-                                                                    <t t-elif="fir_subject_mark.mark_scored &lt; fir_subject_mark.pass_mark">
-                                                                        <span style="color: red;"> <t t-esc="int(fir_subject_mark.mark_scored)"/></span>
+                                                                    <t t-else=""></t>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <t t-if="halfly_result">
+                                                                        <t t-if="half_subject_mark.exam_mark == 0">-</t>
+                                                                        <t t-else="" t-esc="int(half_subject_mark.exam_mark)"/>
                                                                     </t>
-                                                                    <t t-else="">
-                                                                        <span style="color: green;"> <t t-esc="int(fir_subject_mark.mark_scored)"/></span>
+                                                                    <t t-else=""></t>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <t t-if="halfly_result">
+                                                                        <t t-if="half_subject_mark.assign_mark == 0">-</t>
+                                                                        <t t-else="" t-esc="int(half_subject_mark.assign_mark)"/>
                                                                     </t>
-                                                                </t>
-                                                                <t t-else=""></t>
-                                                            </td>
-
-                                                            <td class="text-center">
-                                                                <t t-if="halfly_result">
-                                                                    <t t-if="half_subject_mark.mark_scored == 0"> -
-<!--                                                                        <t t-esc="int(half_subject_mark.mark_scored)"/>-->
+                                                                    <t t-else=""></t>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <t t-if="halfly_result">
+                                                                        <t t-if="half_subject_mark.mark_scored == 0"> -
+    <!--                                                                        <t t-esc="int(half_subject_mark.mark_scored)"/>-->
+                                                                        </t>
+                                                                        <t t-elif="half_subject_mark.mark_scored &lt; half_subject_mark.pass_mark">
+                                                                            <span style="color: red;"> <t t-esc="int(half_subject_mark.mark_scored)"/></span>
+                                                                        </t>
+                                                                        <t t-else="">
+                                                                            <span style="color: green;"> <t t-esc="int(half_subject_mark.mark_scored)"/></span>
+                                                                        </t>
                                                                     </t>
-                                                                    <t t-elif="half_subject_mark.mark_scored &lt; half_subject_mark.pass_mark">
-                                                                        <span style="color: red;"> <t t-esc="int(half_subject_mark.mark_scored)"/></span>
+                                                                    <t t-else=""></t>
+                                                                </td><td class="text-center">
+                                                                    <t t-if="second_unit_result">
+                                                                        <t t-if="sec_subject_mark.mark_scored == 0">
+                                                                            <t t-esc="int(sec_subject_mark.mark_scored)"/>
+                                                                        </t>
+                                                                        <t t-elif="sec_subject_mark.mark_scored &lt; sec_subject_mark.pass_mark">
+                                                                            <span style="color: red;"> <t t-esc="int(sec_subject_mark.mark_scored)"/></span>
+                                                                        </t>
+                                                                        <t t-else="">
+                                                                            <span style="color: green;"> <t t-esc="int(sec_subject_mark.mark_scored)"/></span>
+                                                                        </t>
                                                                     </t>
-                                                                    <t t-else="">
-                                                                        <span style="color: green;"> <t t-esc="int(half_subject_mark.mark_scored)"/></span>
+                                                                    <t t-else=""></t>
+                                                                </td><td class="text-center">
+                                                                    <t t-if="annual_result">
+                                                                        <t t-if="ann_subject_mark.exam_mark == 0">-</t>
+                                                                        <t t-else="" t-esc="int(ann_subject_mark.exam_mark)"/>
                                                                     </t>
-                                                                </t>
-                                                                <t t-else=""></t>
-                                                            </td>
-                                                            <td class="text-center">
-                                                                <t t-if="second_unit_result">
-                                                                    <t t-if="sec_subject_mark.mark_scored == 0">
-                                                                        <t t-esc="int(sec_subject_mark.mark_scored)"/>
+                                                                    <t t-else=""></t>
+                                                                </td><td class="text-center">
+                                                                    <t t-if="annual_result">
+                                                                        <t t-if="ann_subject_mark.assign_mark == 0">-</t>
+                                                                        <t t-else="" t-esc="int(ann_subject_mark.assign_mark)"/>
                                                                     </t>
-                                                                    <t t-elif="sec_subject_mark.mark_scored &lt; sec_subject_mark.pass_mark">
-                                                                        <span style="color: red;"> <t t-esc="int(sec_subject_mark.mark_scored)"/></span>
+                                                                    <t t-else=""></t>
+                                                                </td><td class="text-center">
+                                                                    <t t-if="annual_result">
+                                                                        <t t-if="ann_subject_mark.mark_scored == 0">
+                                                                            <t t-esc="int(ann_subject_mark.mark_scored)"/>
+                                                                        </t>
+                                                                        <t t-elif="ann_subject_mark.mark_scored &lt; ann_subject_mark.pass_mark">
+                                                                            <span style="color: red;"> <t t-esc="int(ann_subject_mark.mark_scored)"/></span>
+                                                                        </t>
+                                                                        <t t-else="">
+                                                                            <span style="color: green;"> <t t-esc="int(ann_subject_mark.mark_scored)"/></span>
+                                                                        </t>
                                                                     </t>
-                                                                    <t t-else="">
-                                                                        <span style="color: green;"> <t t-esc="int(sec_subject_mark.mark_scored)"/></span>
+                                                                    <t t-else=""></t>
+                                                                </td>
+                                                            </tr>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <tr>
+                                                                <t t-set="fir_subject_mark" t-value="first_unit_result.subject_line_ids.filtered(lambda fir_subject: fir_subject.subject_id.id == subject_line.subject_id.id)"/>
+                                                                <t t-set="half_subject_mark" t-value="halfly_result.subject_line_ids.filtered(lambda half_subject: half_subject.subject_id.id == subject_line.subject_id.id)"/>
+                                                                <t t-set="sec_subject_mark" t-value="second_unit_result.subject_line_ids.filtered(lambda sec_subject: sec_subject.subject_id.id == subject_line.subject_id.id)"/>
+                                                                <t t-set="ann_subject_mark" t-value="annual_result.subject_line_ids.filtered(lambda ann_subject: ann_subject.subject_id.id == subject_line.subject_id.id)"/>
+                                                                <td name="subject" style="background-color: #e0ebeb;" class="text-start"><span><t t-esc="subject_line.subject_id.name"></t></span></td>
+                                                                <td class="text-center">
+                                                                    <t t-if="first_unit_result">
+                                                                        <t t-if="fir_subject_mark.mark_scored == 0"> -
+    <!--                                                                        <t t-esc="int(fir_subject_mark.mark_scored)"/>-->
+                                                                        </t>
+                                                                        <t t-elif="fir_subject_mark.mark_scored &lt; fir_subject_mark.pass_mark">
+                                                                            <span style="color: red;"> <t t-esc="int(fir_subject_mark.mark_scored)"/></span>
+                                                                        </t>
+                                                                        <t t-else="">
+                                                                            <span style="color: green;"> <t t-esc="int(fir_subject_mark.mark_scored)"/></span>
+                                                                        </t>
                                                                     </t>
-                                                                </t>
-                                                                <t t-else=""></t>
-                                                            </td>
-                                                            
-                                                            <td class="text-center">
-                                                                <t t-if="annual_result">
-                                                                    <t t-if="ann_subject_mark.mark_scored == 0">
-                                                                        <t t-esc="int(ann_subject_mark.mark_scored)"/>
+                                                                    <t t-else=""></t>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <t t-if="halfly_result">
+                                                                        <t t-if="half_subject_mark.exam_mark == 0">-</t>
+                                                                        <t t-else="" t-esc="int(half_subject_mark.exam_mark)"/>
                                                                     </t>
-                                                                    <t t-elif="ann_subject_mark.mark_scored &lt; ann_subject_mark.pass_mark">
-                                                                        <span style="color: red;"> <t t-esc="int(ann_subject_mark.mark_scored)"/></span>
+                                                                    <t t-else=""></t>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <t t-if="halfly_result">
+                                                                        <t t-if="half_subject_mark.assign_mark == 0">-</t>
+                                                                        <t t-else="" t-esc="int(half_subject_mark.assign_mark)"/>
                                                                     </t>
-                                                                    <t t-else="">
-                                                                        <span style="color: green;"> <t t-esc="int(ann_subject_mark.mark_scored)"/></span>
+                                                                    <t t-else=""></t>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <t t-if="halfly_result">
+                                                                        <t t-if="half_subject_mark.mark_scored == 0"> -
+    <!--                                                                        <t t-esc="int(half_subject_mark.mark_scored)"/>-->
+                                                                        </t>
+                                                                        <t t-elif="half_subject_mark.mark_scored &lt; half_subject_mark.pass_mark">
+                                                                            <span style="color: red;"> <t t-esc="int(half_subject_mark.mark_scored)"/></span>
+                                                                        </t>
+                                                                        <t t-else="">
+                                                                            <span style="color: green;"> <t t-esc="int(half_subject_mark.mark_scored)"/></span>
+                                                                        </t>
                                                                     </t>
-                                                                </t>
-                                                                <t t-else=""></t>
-                                                            </td>
-                                                        </tr>
-                                                </t>
-
-<!--                                                    On GRADE Subjects-->
-                                                    <t t-foreach="grade_subjects" t-as="grade_subject">
-
-                                                        <tr>
-                                                            <t t-set="fir_subject_mark" t-value="first_unit_result.subject_line_ids.filtered(lambda fir_subject: fir_subject.subject_id.id == grade_subject.subject_id.id)"/>
-                                                            <t t-set="half_subject_mark" t-value="halfly_result.subject_line_ids.filtered(lambda half_subject: half_subject.subject_id.id == grade_subject.subject_id.id)"/>
-                                                            <t t-set="sec_subject_mark" t-value="second_unit_result.subject_line_ids.filtered(lambda sec_subject: sec_subject.subject_id.id == grade_subject.subject_id.id)"/>
-                                                            <t t-set="ann_subject_mark" t-value="annual_result.subject_line_ids.filtered(lambda ann_subject: ann_subject.subject_id.id == grade_subject.subject_id.id)"/>
-                                                            <td name="subject" style="background-color: #e0ebeb;" class="text-start"><span><t t-esc="grade_subject.subject_id.name"></t></span></td>
-                                                            <td class="text-center">
-                                                                <t t-if="first_unit_result">
-                                                                    <span style="color: green;"> <t t-esc="int(fir_subject_mark.mark_scored)"/></span>
-                                                                </t>
-                                                                <t t-else=""></t>
-                                                            </td>
-
-                                                            <td class="text-center">
-                                                                <t t-if="halfly_result">
-                                                                    <t t-if="half_subject_mark.mark_scored == 0"> -
-<!--                                                                        <t t-esc="int(half_subject_mark.mark_scored)"/>-->
+                                                                    <t t-else=""></t>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <t t-if="second_unit_result">
+                                                                        <t t-if="sec_subject_mark.mark_scored == 0">
+                                                                            <t t-esc="int(sec_subject_mark.mark_scored)"/>
+                                                                        </t>
+                                                                        <t t-elif="sec_subject_mark.mark_scored &lt; sec_subject_mark.pass_mark">
+                                                                            <span style="color: red;"> <t t-esc="int(sec_subject_mark.mark_scored)"/></span>
+                                                                        </t>
+                                                                        <t t-else="">
+                                                                            <span style="color: green;"> <t t-esc="int(sec_subject_mark.mark_scored)"/></span>
+                                                                        </t>
                                                                     </t>
-                                                                    <t t-elif="half_subject_mark.mark_scored &lt; half_subject_mark.pass_mark">
-                                                                        <span style="color: red;"> <t t-esc="int(half_subject_mark.mark_scored)"/></span>
+                                                                    <t t-else=""></t>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <t t-if="annual_result">
+                                                                        <t t-if="ann_subject_mark.exam_mark == 0">-</t>
+                                                                        <t t-else="" t-esc="int(ann_subject_mark.exam_mark)"/>
                                                                     </t>
-                                                                    <t t-else="">
-                                                                        <span style="color: green;"> <t t-esc="int(half_subject_mark.mark_scored)"/></span>
+                                                                    <t t-else=""></t>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <t t-if="annual_result">
+                                                                        <t t-if="ann_subject_mark.assign_mark == 0">-</t>
+                                                                        <t t-else="" t-esc="int(ann_subject_mark.assign_mark)"/>
                                                                     </t>
-                                                                </t>
-                                                                <t t-else=""></t>
-                                                            </td>
-                                                            <td class="text-center">
-                                                                <t t-if="second_unit_result">
-                                                                    <t t-if="sec_subject_mark.mark_scored == 0">
-                                                                        <t t-esc="int(sec_subject_mark.mark_scored)"/>
+                                                                    <t t-else=""></t>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <t t-if="annual_result">
+                                                                        <t t-if="ann_subject_mark.mark_scored == 0">
+                                                                            <t t-esc="int(ann_subject_mark.mark_scored)"/>
+                                                                        </t>
+                                                                        <t t-elif="ann_subject_mark.mark_scored &lt; ann_subject_mark.pass_mark">
+                                                                            <span style="color: red;"> <t t-esc="int(ann_subject_mark.mark_scored)"/></span>
+                                                                        </t>
+                                                                        <t t-else="">
+                                                                            <span style="color: green;"> <t t-esc="int(ann_subject_mark.mark_scored)"/></span>
+                                                                        </t>
                                                                     </t>
-                                                                    <t t-elif="sec_subject_mark.mark_scored &lt; sec_subject_mark.pass_mark">
-                                                                        <span style="color: red;"> <t t-esc="int(sec_subject_mark.mark_scored)"/></span>
-                                                                    </t>
-                                                                    <t t-else="">
-                                                                        <span style="color: green;"> <t t-esc="int(sec_subject_mark.mark_scored)"/></span>
-                                                                    </t>
-                                                                </t>
-                                                                <t t-else=""></t>
-                                                            </td>
-
-                                                            <td class="text-center">
-                                                                <t t-if="annual_result">
-                                                                    <t t-if="ann_subject_mark.mark_scored == 0">
-                                                                        <t t-esc="int(ann_subject_mark.mark_scored)"/>
-                                                                    </t>
-                                                                    <t t-elif="ann_subject_mark.mark_scored &lt; ann_subject_mark.pass_mark">
-                                                                        <span style="color: red;"> <t t-esc="int(ann_subject_mark.mark_scored)"/></span>
-                                                                    </t>
-                                                                    <t t-else="">
-                                                                        <span style="color: green;"> <t t-esc="int(ann_subject_mark.mark_scored)"/></span>
-                                                                    </t>
-                                                                </t>
-                                                                <t t-else=""></t>
-                                                            </td>
-                                                        </tr>
-                                                </t>
+                                                                    <t t-else=""></t>
+                                                                </td>
+                                                            </tr>
+                                                        </t>
+                                                    </t>
 <!--                                                    ADD EMpty lines-->
-                                                <t t-foreach="range(max(14-len(doc.class_id.subject_ids),0))" t-as="ln">
+                                                    <t t-foreach="range(max(14-len(doc.class_id.subject_ids),0))" t-as="ln">
+                                                        <tr>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td style="color: #ffffff;" >SKU</td>
+                                                        </tr>
+                                                    </t>
                                                     <tr>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td style="color: #ffffff;" >SKU</td>
+                                                        <td class="text-right" style="background-color: #e0ebeb;"><span><b>TOTAL</b></span></td>
+                                                        <td class="text-center"><t t-esc="int(first_unit_result.total_mark_scored)"/></td>
+                                                        <td colspan="2" style="color: #ffffff;"></td>
+                                                        <td class="text-center"><t t-esc="int(halfly_result.total_mark_scored)"/></td>
+                                                        <td class="text-center"><t t-esc="int(second_unit_result.total_mark_scored)"/></td>
+                                                        <td colspan="2" style="color: #ffffff;"></td>
+                                                        <td class="text-center"><t t-esc="int(annual_result.total_mark_scored)"/></td>
                                                     </tr>
-                                                </t>
-                                                <tr>
-                                                    <td class="text-right" style="background-color: #e0ebeb;"><span><b>TOTAL</b></span></td>
-                                                    <td class="text-center"><t t-esc="int(first_unit_result.total_mark_scored)"/></td>
-                                                    <td colspan="2" style="color: #ffffff;"></td>
-                                                    <td class="text-center"><t t-esc="int(halfly_result.total_mark_scored)"/></td>
-                                                    <td class="text-center"><t t-esc="int(second_unit_result.total_mark_scored)"/></td>
-                                                    <td colspan="2" style="color: #ffffff;"></td>
-                                                    <td class="text-center"><t t-esc="int(annual_result.total_mark_scored)"/></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-right" style="background-color: #e0ebeb;"><span><b>PERCENTAGE</b></span></td>
-                                                    <td class="text-center"><t t-esc="round((first_unit_result.total_mark_percentage), 2)"/></td>
-                                                    <td colspan="2" style="color: #ffffff;"></td>
-                                                    <td class="text-center"><t t-esc="round((halfly_result.total_mark_percentage), 2)"/></td>
-                                                    <td class="text-center"><t t-esc="round((second_unit_result.total_mark_percentage), 2)"/></td>
-                                                    <td colspan="2" style="color: #ffffff;"></td>
-                                                    <td class="text-center"><t t-esc="round((annual_result.total_mark_percentage), 2)"/></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-right" style="background-color: #e0ebeb;"><span><b>GRADE</b></span></td>
-                                                    <td class="text-center"><b><t t-esc="first_unit_result.grade"/></b></td>
-                                                    <td class="text-center" colspan="3" ><b><t t-esc="halfly_result.grade"/></b></td>
-                                                    <td class="text-center" ><b><t t-esc="second_unit_result.grade"/></b></td>
-                                                    <td class="text-center" colspan="3" ><b><t t-esc="annual_result.grade"/></b></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-right" style="background-color: #e0ebeb;"><span><b>ATTENDANCE</b></span></td>
-                                                    <td style="color: #ffffff;"></td>
-                                                    <td colspan="3" style="color: #ffffff;"></td>
-                                                    <td style="color: #ffffff;"></td>
-                                                    <td colspan="3" style="color: #ffffff;"></td>
-                                                </tr>
+                                                    <tr>
+                                                        <td class="text-right" style="background-color: #e0ebeb;"><span><b>PERCENTAGE</b></span></td>
+                                                        <td class="text-center"><t t-esc="round((first_unit_result.total_mark_percentage), 2)"/></td>
+                                                        <td colspan="2" style="color: #ffffff;"></td>
+                                                        <td class="text-center"><t t-esc="round((halfly_result.total_mark_percentage), 2)"/></td>
+                                                        <td class="text-center"><t t-esc="round((second_unit_result.total_mark_percentage), 2)"/></td>
+                                                        <td colspan="2" style="color: #ffffff;"></td>
+                                                        <td class="text-center"><t t-esc="round((annual_result.total_mark_percentage), 2)"/></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-right" style="background-color: #e0ebeb;"><span><b>GRADE</b></span></td>
+                                                        <td class="text-center"><b><t t-esc="first_unit_result.grade"/></b></td>
+                                                        <td class="text-center" colspan="3" ><b><t t-esc="halfly_result.grade"/></b></td>
+                                                        <td class="text-center" ><b><t t-esc="second_unit_result.grade"/></b></td>
+                                                        <td class="text-center" colspan="3" ><b><t t-esc="annual_result.grade"/></b></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-right" style="background-color: #e0ebeb;"><span><b>ATTENDANCE</b></span></td>
+                                                        <td style="color: #ffffff;"></td>
+                                                        <td colspan="3" style="color: #ffffff;"></td>
+                                                        <td style="color: #ffffff;"></td>
+                                                        <td colspan="3" style="color: #ffffff;"></td>
+                                                    </tr>
                                                 </tbody>
                                             </table>
                                         </td>
@@ -808,18 +886,18 @@
                                                         PROMOTED TO
                                                     </div>
 
-<!--                                                    <t t-if="not student.promoted">-->
-<!--                                                        <div style="-->
-<!--                                                            margin-top:5px;-->
-<!--                                                            font-size:16px;-->
-<!--                                                            font-weight:bold;-->
-<!--                                                            color:#006600;-->
-<!--                                                            border:2px solid #006600;-->
-<!--                                                            padding:5px;-->
-<!--                                                            border-radius:5px;">-->
-<!--                                                            <t t-esc="doc.promote_class_id.name"/>-->
-<!--                                                        </div>-->
-<!--                                                    </t>-->
+                                                    <t t-if="not student.promoted">
+                                                        <div style="
+                                                            margin-top:5px;
+                                                            font-size:16px;
+                                                            font-weight:bold;
+                                                            color:#006600;
+                                                            border:2px solid #006600;
+                                                            padding:5px;
+                                                            border-radius:5px;">
+                                                            <t t-esc="doc.promote_class_id.name"/>
+                                                        </div>
+                                                    </t>
                                                 </td>
                                             </tr>
                                             <tr>

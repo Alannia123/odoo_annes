@@ -20,6 +20,9 @@
                         class="oe_stat_button"
                         icon="fa-graduation-cap" string="Exam Results"/>
             </xpath>
+            <xpath expr="//field[@name='roll_no']" position="after">
+                <field name="unit_attendance_days"/>
+            </xpath>
         </field>
     </record>
 </odoo>
