@@ -5,3 +5,4 @@ from . import exam_extend
 from . import gray_scale
 from . import valuation_extend
 from . import results_extend
+from . import report_rank_card
