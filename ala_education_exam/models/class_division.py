@@ -55,7 +55,7 @@ class EducationStudent(models.Model):
     _inherit = 'ala.education.student'
     _description = 'Education Student'
 
-    unit_attendance_days = fields.Integer('No of Present Days', copy=False)
+    unit_attendance_days = fields.Char('No of Present Days', copy=False)
 
 
     def _get_exams_type(self):

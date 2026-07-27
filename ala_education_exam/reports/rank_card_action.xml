@@ -31,17 +31,17 @@
 
 
 
-    <!--Report action of Rank card-->
-    <record id="action_generate_rank_card" model="ir.actions.report">
-        <field name="name">Class Rank Card</field>
-        <field name="model">ala.education.class.division</field>
-        <field name="report_type">qweb-html</field>
-        <field name="report_name">ala_education_exam.report_rank_card_template</field>
-        <field name="report_file">ala_education_exam.report_rank_card_template</field>
-        <field name="print_report_name">'Rank Card - %s' % (object.name)</field>
-        <field name="paperformat_id" ref="ala_education_exam.paperformat_a4_landscape"/>
-        <field name="binding_model_id" ref="ala_education_core.model_ala_education_class_division"/>
-    </record>
+<!--    &lt;!&ndash;Report action of Rank card&ndash;&gt;-->
+<!--    <record id="action_generate_rank_card" model="ir.actions.report">-->
+<!--        <field name="name">Class Rank Card</field>-->
+<!--        <field name="model">ala.education.class.division</field>-->
+<!--        <field name="report_type">qweb-html</field>-->
+<!--        <field name="report_name">ala_education_exam.report_rank_card_template</field>-->
+<!--        <field name="report_file">ala_education_exam.report_rank_card_template</field>-->
+<!--        <field name="print_report_name">'Rank Card - %s' % (object.name)</field>-->
+<!--        <field name="paperformat_id" ref="ala_education_exam.paperformat_a4_landscape"/>-->
+<!--        <field name="binding_model_id" ref="ala_education_core.model_ala_education_class_division"/>-->
+<!--    </record>-->
 
 
     <!--Report action of Rank card-->
