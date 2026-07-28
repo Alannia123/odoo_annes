@@ -1946,13 +1946,16 @@ As a Catholic educational institution conducted by the Sisters of St. Anne, Chot
               <div class="col-lg-6">
                 <div class="mis-profile-card">
                   <t t-set="president" t-value="member_id.member_line_ids.filtered(lambda x: x.designation == 'president')"/>
-                  <div class="mis-profile-photo">
-                    <img t-att-src="image_data_uri(president.image)"/>
-                  </div>
-                  <div class="mis-profile-info">
-                    <h4><b><t t-esc="president.name"/></b></h4>
-                    <p>St.Anne's School,<br/>Duttapukur, Basirhat.<br/></p>
-                  </div>
+                    <t t-if="president">
+                        <div class="mis-profile-photo">
+                        <img t-att-src="image_data_uri(president.image)"/>
+                      </div>
+                      <div class="mis-profile-info">
+                        <h4><b><t t-esc="president.name"/></b></h4>
+                        <p>St.Anne's School,<br/>Duttapukur, Basirhat.<br/></p>
+                      </div>
+                    </t>
+
                 </div>
               </div>
 
@@ -1960,6 +1963,7 @@ As a Catholic educational institution conducted by the Sisters of St. Anne, Chot
               <div class="col-lg-6">
                 <div class="mis-profile-card">
                   <t t-set="secretary" t-value="member_id.member_line_ids.filtered(lambda x: x.designation == 'secretary')"/>
+                    <t t-if="secretary">
                   <div class="mis-profile-photo">
                     <img t-att-src="image_data_uri(secretary.image)"/>
                   </div>
@@ -1967,6 +1971,7 @@ As a Catholic educational institution conducted by the Sisters of St. Anne, Chot
                     <h4><b><t t-esc="secretary.name"/></b></h4>
                     <p>St.Anne's School,<br/>Duttapukur, Barasat.<br/></p>
                   </div>
+                    </t>
                 </div>
               </div>
 
@@ -1974,6 +1979,7 @@ As a Catholic educational institution conducted by the Sisters of St. Anne, Chot
               <div class="col-lg-6">
                 <div class="mis-profile-card">
                   <t t-set="principal" t-value="member_id.member_line_ids.filtered(lambda x: x.designation == 'principal')"/>
+                    <t t-if="principal">
                   <div class="mis-profile-photo">
                     <img t-att-src="image_data_uri(principal.image)"/>
                   </div>
@@ -1981,6 +1987,7 @@ As a Catholic educational institution conducted by the Sisters of St. Anne, Chot
                     <h4><b><t t-esc="principal.name"/></b></h4>
                     <p>St.Anne's School,<br/>Duttapukur, Barasat.<br/></p>
                   </div>
+                    </t>
                 </div>
               </div>
 
@@ -1988,6 +1995,7 @@ As a Catholic educational institution conducted by the Sisters of St. Anne, Chot
               <div class="col-lg-6">
                 <div class="mis-profile-card">
                   <t t-set="manager" t-value="member_id.member_line_ids.filtered(lambda x: x.designation == 'manager')"/>
+                    <t t-if="manager">
                   <div class="mis-profile-photo">
                     <img t-att-src="image_data_uri(manager.image)"/>
                   </div>
@@ -1995,6 +2003,7 @@ As a Catholic educational institution conducted by the Sisters of St. Anne, Chot
                     <h4><b><t t-esc="manager.name"/></b></h4>
                     <p>St.Anne's School,<br/>Duttapukur, Barasat.<br/></p>
                   </div>
+                    </t>
                 </div>
               </div>
 
@@ -2004,6 +2013,7 @@ As a Catholic educational institution conducted by the Sisters of St. Anne, Chot
 
                 <div class="mis-profile-card wide">
                   <t t-set="administrator" t-value="member_id.member_line_ids.filtered(lambda x: x.designation == 'administrator')"/>
+                    <t t-if="administrator">
                   <div class="mis-profile-photo">
                     <img t-att-src="image_data_uri(administrator.image)"/>
                   </div>
@@ -2011,6 +2021,7 @@ As a Catholic educational institution conducted by the Sisters of St. Anne, Chot
                     <h4><b><t t-esc="administrator.name"/></b></h4>
                     <p>St.Anne's School,<br/>Duttapukur, Barasat.<br/></p>
                   </div>
+                    </t>
                 </div>
               </div>
 
