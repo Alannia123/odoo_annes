@@ -18,3 +18,19 @@ class RankCard(models.TransientModel):
         return self.env.ref(
             'ala_exam_extend.action_generate_rank_card'
         ).report_action(self, data=data)
+
+
+class StudentMarksheetWizard(models.TransientModel):
+    _inherit = 'ala.student.marksheet.wizard'
+    _description = 'Student Marksheet Wizard'
+
+
+
+    def action_print_marksheet(self):
+        data = {
+            'student_id': self.student_id.id,
+            'academic_year_id': self.academic_year_id.id,
+        }
+        return self.env.ref(
+            'ala_exam_extend.action_generate_rank_student_card'
+        ).report_action(self.student_id, data=data)

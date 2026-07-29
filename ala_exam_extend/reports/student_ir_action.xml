@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+<!--    Paper Format-->
+    <record id="paperformat_a4_landscape_student" model="report.paperformat">
+        <field name="name">A4 Landscape</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">10</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+    </record>
+
+
+
+    <!--Report action of Rank card-->
+    <record id="action_generate_rank_student_card" model="ir.actions.report">
+        <field name="name">Student Rank Card</field>
+        <field name="model">ala.education.student</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">ala_exam_extend.report_student_rank_card_template</field>
+        <field name="report_file">ala_exam_extend.report_student_rank_card_template</field>
+        <field name="print_report_name">'Rank Card - %s' % (object.name)</field>
+        <field name="paperformat_id" ref="ala_exam_extend.paperformat_a4_landscape_student"/>
+        <field name="binding_model_id" ref="ala_education_core.model_ala_education_student"/>
+    </record>
+
+
+
+</odoo>

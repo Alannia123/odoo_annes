@@ -2,10 +2,10 @@
 <odoo>
 
 
-    <template id="report_rank_card_template_document">
+    <template id="report_student_rank_card_template_document">
             <t t-call="web.html_container">
                 <t t-call="web.basic_layout">
-                        <style>
+                    <style>
                     @page {
     size: A4 landscape;
     margin: 10mm 5mm 6mm 10mm;
@@ -57,7 +57,7 @@
 <!--                    <t t-set="exam_types" t-value="student._get_exams_type()"/>-->
 <!--                    <t t-set="aca_exams" t-value="student._get_exams_aca_class()"/>-->
 <!--                    <t t-set="student_aca_exam_results" t-value="student._get_exam_academic_year()"/>-->
-                    <t t-set="student_aca_exam_results" t-value="student._get_exam_academic_year(academic_year_id.id)"/>
+<!--                    <t t-set="student_aca_exam_results" t-value="student._get_exam_academic_year(academic_year_id.id)"/>-->
 <!--                    <t t-set="student_aca_exam_results" t-value="student._get_exam_academic_year()"/>-->
                     <t t-set="first_unit" t-value="aca_exams.filtered(lambda aca_exam: aca_exam.exam_type_id.exam_order == 'first')"/>
                     <t t-set="half_year" t-value="aca_exams.filtered(lambda aca_exam: aca_exam.exam_type_id.exam_order == 'half')"/>
@@ -70,89 +70,7 @@
                     <t t-set="annual_result" t-value="student_aca_exam_results.filtered(lambda aca_exam_result: aca_exam_result.exam_id.id == annual.id)"/>
                     <div class="page" style="page-break-after:always !important;" >
                         <div id="header">
-                            <div style="border:1.8px solid black;border-bottom:none;">
-                                <table style="width:100%; border:none;">
-                                    <tr style="border:none;">
 
-                                        <!-- LOGO -->
-                            <td style="width:150px; vertical-align:middle; text-align:right;border:none;">
-                                <img t-if="doc.company_id.logo"
-                                     t-att-src="image_data_uri(doc.company_id.logo)"
-                                     style="height:65px;width:65px;"
-                                     alt="Logo"/>
-                            </td>
-                                        <!-- TITLE -->
-<td style="text-align:center; vertical-align:middle; border:none;">
-
-    <!-- School Name -->
-    <h2 style="
-        margin:0;
-        font-size:18px;
-        color:#0b3d91;
-        font-family:Times New Roman, Times, serif;
-        font-weight:bold;
-        letter-spacing:1.5px;
-        text-transform:uppercase;">
-        ST. ANNE’S SCHOOL
-    </h2>
-
-    <!-- Divider Line -->
-    <div style="
-        width:80%;
-        height:2px;
-        background:#0b3d91;
-        margin:6px auto 6px auto;">
-    </div>
-
-    <!-- Report Title -->
-    <h4 style="
-        margin:0;
-        font-size:18px;
-        font-family:Times New Roman, Times, serif;
-        font-weight:bold;
-        color:#222;
-        letter-spacing:1px;">
-        Vill. &amp; Post Chhoto Jagulia, P S, Duttapukur, Dist, North 24 Parganas
-        <span style="font-weight:bold;">
-            <t t-esc="academic_year_id.name"/>
-        </span>
-    </h4>
-    <!-- Report Title -->
-    <h3 style="
-        margin:0;
-        font-size:18px;
-        font-family:Times New Roman, Times, serif;
-        font-weight:bold;
-        color:#222;
-        letter-spacing:1px;">
-        PROGRESS REPORT, Academic Year :
-        <span style="font-weight:bold;">
-            <t t-esc="academic_year_id.name"/>
-        </span>
-    </h3>
-
-<!--    &lt;!&ndash; Academic Year &ndash;&gt;-->
-<!--    <div style="-->
-<!--        margin-top:4px;-->
-<!--        font-size:15px;-->
-<!--        font-family:Georgia, serif;-->
-<!--        color:#444;">-->
-<!--        Academic Year :-->
-<!--        <span style="font-weight:bold;">-->
-<!--            <t t-esc="student_aca_exam_results[0].academic_year_id.name"/>-->
-<!--        </span>-->
-<!--    </div>-->
-
-</td>
-
-                                        <!-- EMPTY SPACE (balances center) -->
-                                        <td style="width:120px;border:none;"></td>
-
-                                    </tr>
-                                </table>
-                            </div>
-
-<!--                            <t t-foreach="doc.student_ids" t-as="student">-->
                                 <table width="100%" style="padding-top:10px;border : 1.8px solid black;border-bottom: none;">
                                     <tr class="no-border" style="background-color: #e6ecff;">
                                         <td width="42%" class="text-center no-border">
@@ -946,8 +864,6 @@
 <!--                            </t>-->
                         </div>
                     </div>
-<!--                    <br/>-->
-<!--                    </t>-->
                 </t>
             </t>
         </template>
@@ -955,12 +871,10 @@
 
 
 
-        <template id="report_rank_card_template">
+        <template id="report_student_rank_card_template">
             <t t-call="web.html_container">
                 <t t-foreach="docs" t-as="doc">
-                    <t t-foreach="students" t-as="student">
-                        <t t-call="ala_exam_extend.report_rank_card_template_document" />
-                    </t>
+                    <t t-call="ala_education_exam.report_student_rank_card_template_document" />
                 </t>
             </t>
         </template>

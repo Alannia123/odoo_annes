@@ -31,6 +31,8 @@ Foundation layer for the new grade configuration (session 2026-27).
         'views/exam_valuation_views.xml',
         'reports/rank_card_action.xml',
         'reports/rank_card_template.xml',
+        'reports/student_ir_action.xml',
+        'reports/student_rank_card_temp.xml',
     ],
     'license': 'AGPL-3',
     'installable': True,

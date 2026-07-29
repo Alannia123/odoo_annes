@@ -61,6 +61,14 @@ class EducationStudent(models.Model):
             }
         }
 
+    def result_bulk_release(self):
+        for rec in self:
+            rec.hide_result = False
+
+    def result_bulk_hide(self):
+        for rec in self:
+            rec.hide_result = True
+
 
     def action_view_student_discipline_history(self):
         discipline_id = self.env['ala.student.green.book'].search([('student_id', '=', self.id)])
