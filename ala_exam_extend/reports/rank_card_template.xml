@@ -381,7 +381,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td class="text-right" style="background-color: #e0ebeb;"><span><b>ATTENDANCE</b></span></td>
-                                                    <td ><t t-esc="student.unit_attendance_days"/></td>
+                                                    <td class="text-center"><t t-esc="student.unit_attendance_days"/></td>
                                                     <td  style="color: #ffffff;"></td>
                                                     <td style="color: #ffffff;"></td>
                                                     <td  style="color: #ffffff;"></td>
