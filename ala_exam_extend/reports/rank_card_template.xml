@@ -958,7 +958,8 @@
         <template id="report_rank_card_template">
             <t t-call="web.html_container">
                 <t t-foreach="docs" t-as="doc">
-                    <t t-foreach="students" t-as="student">
+                    <t t-foreach="sorted( students,
+        key=lambda s: int(s.roll_no) if s.roll_no and s.roll_no.isdigit() else 999999)"  t-as="student">
                         <t t-call="ala_exam_extend.report_rank_card_template_document" />
                     </t>
                 </t>
