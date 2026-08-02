@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="ala_fee_dashboard.PrincipalFeeOverview">
+    <div class="pfo">
+
+        <!-- Header -->
+        <div class="pfo-head">
+            <div class="pfo-head__title">
+                <h2>Fee Collection Overview</h2>
+                <span class="pfo-head__sub">
+                    <t t-esc="state.meta.company_name"/>
+                    <span class="pfo-dot">•</span>
+                    <t t-esc="rangeLabel"/>
+                </span>
+            </div>
+            <div class="pfo-head__actions">
+                <button class="pfo-btn pfo-btn--ghost" t-on-click="onExportPdf">
+                    <i class="fa fa-file-pdf-o"/> PDF
+                </button>
+                <button class="pfo-btn pfo-btn--ghost" t-on-click="onExportExcel">
+                    <i class="fa fa-file-excel-o"/> Excel
+                </button>
+            </div>
+        </div>
+
+        <!-- Presets -->
+        <div class="pfo-presets">
+            <button t-foreach="presets" t-as="preset" t-key="preset.key"
+                    class="pfo-preset"
+                    t-att-class="{ 'pfo-preset--on': state.preset === preset.key }"
+                    t-on-click="() => this.applyPreset(preset.key)">
+                <t t-esc="preset.label"/>
+            </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="pfo-filters">
+            <div class="pfo-field">
+                <label>From</label>
+                <input type="date" t-model="state.dateFrom" t-on-change="onDateInput"/>
+            </div>
+            <div class="pfo-field">
+                <label>To</label>
+                <input type="date" t-model="state.dateTo" t-on-change="onDateInput"/>
+            </div>
+            <div class="pfo-field">
+                <label>Payment Mode</label>
+                <select t-model="state.paymentMode">
+                    <option value="">All modes</option>
+                    <option t-foreach="state.meta.payment_modes" t-as="mode"
+                            t-key="mode.key" t-att-value="mode.key">
+                        <t t-esc="mode.label"/>
+                    </option>
+                </select>
+            </div>
+            <div class="pfo-field">
+                <label>Division</label>
+                <select t-model="state.divisionId">
+                    <option value="">All divisions</option>
+                    <option t-foreach="state.meta.divisions" t-as="div"
+                            t-key="div.id" t-att-value="div.id">
+                        <t t-esc="div.name"/>
+                    </option>
+                </select>
+            </div>
+            <div class="pfo-field pfo-field--actions">
+                <button class="pfo-btn pfo-btn--primary" t-on-click="onApply">
+                    <i class="fa fa-search"/> Apply
+                </button>
+                <button class="pfo-btn pfo-btn--ghost" t-on-click="onReset">
+                    Reset
+                </button>
+            </div>
+        </div>
+
+        <!-- KPIs -->
+        <div class="pfo-kpis">
+            <div class="pfo-kpi pfo-kpi--total">
+                <span class="pfo-kpi__label">Collected</span>
+                <span class="pfo-kpi__value" t-esc="moneyShort(state.totals.amount)"/>
+                <span class="pfo-kpi__foot">
+                    <t t-esc="state.totals.count or 0"/> receipts
+                </span>
+            </div>
+            <div class="pfo-kpi" t-if="state.viewType === 'summary'">
+                <span class="pfo-kpi__label">Daily Average</span>
+                <span class="pfo-kpi__value" t-esc="moneyShort(state.totals.average)"/>
+                <span class="pfo-kpi__foot">
+                    over <t t-esc="state.totals.days or 0"/> days
+                </span>
+            </div>
+            <div class="pfo-kpi" t-if="state.viewType === 'summary' and state.totals.best_day">
+                <span class="pfo-kpi__label">Best Day</span>
+                <span class="pfo-kpi__value pfo-kpi__value--sm"
+                      t-esc="formatDate(state.totals.best_day)"/>
+                <span class="pfo-kpi__foot">highest collection</span>
+            </div>
+            <div class="pfo-kpi" t-if="state.viewType === 'detail'">
+                <span class="pfo-kpi__label">Fine Collected</span>
+                <span class="pfo-kpi__value" t-esc="moneyShort(state.totals.fine)"/>
+                <span class="pfo-kpi__foot">late fees</span>
+            </div>
+            <div class="pfo-kpi" t-if="state.viewType === 'detail'">
+                <span class="pfo-kpi__label">Concession</span>
+                <span class="pfo-kpi__value" t-esc="moneyShort(state.totals.concession)"/>
+                <span class="pfo-kpi__foot">waived</span>
+            </div>
+            <div class="pfo-kpi pfo-kpi--mode"
+                 t-foreach="state.modeColumns" t-as="col" t-key="col.key">
+                <span class="pfo-kpi__label" t-esc="col.label"/>
+                <span class="pfo-kpi__value"
+                      t-esc="moneyShort((state.totals.by_mode or {})[col.key])"/>
+                <span class="pfo-kpi__foot">by mode</span>
+            </div>
+        </div>
+
+        <!-- View switch -->
+        <div class="pfo-tabs">
+            <button class="pfo-tab"
+                    t-att-class="{ 'pfo-tab--on': state.viewType === 'summary' }"
+                    t-on-click="() => this.setViewType('summary')">
+                <i class="fa fa-calendar"/> Day-wise Summary
+            </button>
+            <button class="pfo-tab"
+                    t-att-class="{ 'pfo-tab--on': state.viewType === 'detail' }"
+                    t-on-click="() => this.setViewType('detail')">
+                <i class="fa fa-list-ul"/> Receipt Detail
+            </button>
+        </div>
+
+        <!-- Loading -->
+        <div t-if="state.loading" class="pfo-state">
+            <i class="fa fa-circle-o-notch fa-spin"/> Loading collections…
+        </div>
+
+        <!-- Empty -->
+        <div t-elif="!hasData" class="pfo-state">
+            <i class="fa fa-inbox"/>
+            <p>No payments recorded for this period.</p>
+        </div>
+
+        <!-- Summary grid -->
+        <div t-elif="state.viewType === 'summary'" class="pfo-table-wrap">
+            <table class="pfo-table">
+                <thead>
+                    <tr>
+                        <th class="pfo-num">#</th>
+                        <th>Date</th>
+                        <th t-foreach="state.modeColumns" t-as="col" t-key="col.key"
+                            class="pfo-right" t-esc="col.label"/>
+                        <th class="pfo-right">Total</th>
+                        <th class="pfo-bar-col">Share</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="state.summaryRows" t-as="row" t-key="row.date">
+                        <td class="pfo-num" t-esc="row.sno"/>
+                        <td class="pfo-date">
+                            <span t-esc="formatDate(row.date)"/>
+                            <small t-esc="dayName(row.date)"/>
+                        </td>
+                        <td t-foreach="state.modeColumns" t-as="col" t-key="col.key"
+                            class="pfo-right"
+                            t-att-class="{ 'pfo-zero': !modeAmount(row, col.key) }"
+                            t-esc="money(modeAmount(row, col.key))"/>
+                        <td class="pfo-right pfo-strong" t-esc="money(row.total)"/>
+                        <td class="pfo-bar-col">
+                            <span class="pfo-bar">
+                                <span class="pfo-bar__fill"
+                                      t-attf-style="width: {{ barWidth(row.total) }}%"/>
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td/>
+                        <td class="pfo-strong">
+                            Grand Total
+                            <small>(<t t-esc="state.totals.days"/> days)</small>
+                        </td>
+                        <td t-foreach="state.modeColumns" t-as="col" t-key="col.key"
+                            class="pfo-right pfo-strong"
+                            t-esc="money((state.totals.by_mode or {})[col.key])"/>
+                        <td class="pfo-right pfo-strong" t-esc="money(state.totals.amount)"/>
+                        <td/>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <!-- Detail grid -->
+        <div t-else="" class="pfo-table-wrap">
+            <table class="pfo-table">
+                <thead>
+                    <tr>
+                        <th class="pfo-num">#</th>
+                        <th>Date</th>
+                        <th>Student</th>
+                        <th>Reg. No</th>
+                        <th>Division</th>
+                        <th>Particulars</th>
+                        <th>Mode</th>
+                        <th class="pfo-right">Fine</th>
+                        <th class="pfo-right">Concession</th>
+                        <th class="pfo-right">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="state.lines" t-as="line" t-key="line.id">
+                        <td class="pfo-num" t-esc="line.sno"/>
+                        <td t-esc="formatDate(line.date)"/>
+                        <td class="pfo-strong" t-esc="line.student"/>
+                        <td t-esc="line.register_number"/>
+                        <td t-esc="line.division"/>
+                        <td class="pfo-desc" t-esc="line.description"/>
+                        <td>
+                            <span class="pfo-pill"
+                                  t-attf-class="pfo-pill--{{ line.mode }}"
+                                  t-esc="line.mode_label"/>
+                        </td>
+                        <td class="pfo-right" t-att-class="{ 'pfo-zero': !line.fine }"
+                            t-esc="money(line.fine)"/>
+                        <td class="pfo-right" t-att-class="{ 'pfo-zero': !line.concession }"
+                            t-esc="money(line.concession)"/>
+                        <td class="pfo-right pfo-strong" t-esc="money(line.amount)"/>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="7" class="pfo-strong">
+                            Total — <t t-esc="state.totals.count"/> receipts
+                        </td>
+                        <td class="pfo-right pfo-strong" t-esc="money(state.totals.fine)"/>
+                        <td class="pfo-right pfo-strong" t-esc="money(state.totals.concession)"/>
+                        <td class="pfo-right pfo-strong" t-esc="money(state.totals.amount)"/>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+    </div>
+</t>
+
+</templates>

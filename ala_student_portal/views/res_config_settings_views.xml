@@ -38,6 +38,15 @@
                         </setting>
                     </block>
                 </app>
+
+                <app string="School Portal" name="ala_school_portal_settings">
+                    <block title="Parent Feedback" name="ala_feedback_block">
+                        <setting string="Principal"
+                                 help="Internal user notified whenever a parent submits feedback from the student portal. Leave empty to disable notifications; feedback is still saved.">
+                            <field name="ala_principal_user_id"/>
+                        </setting>
+                    </block>
+                </app>
             </xpath>
         </field>
     </record>

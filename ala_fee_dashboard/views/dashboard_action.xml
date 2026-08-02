@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_fee_dashboard" model="ir.actions.client">
+        <field name="name">Student Fee Payment Tracker</field>
+        <field name="tag">ala_fee_dashboard.dashboard</field>
+    </record>
+
+    <menuitem id="menu_fee_dashboard_root"
+              name="Fee Dashboard"
+              sequence="18" groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
+              web_icon="ala_fee_dashboard,static/description/icon.png"/>
+
+    <menuitem id="menu_fee_dashboard"
+              name="Fee Payment Tracker"
+              parent="menu_fee_dashboard_root"
+              action="action_fee_dashboard"
+              sequence="10"/>
+</odoo>

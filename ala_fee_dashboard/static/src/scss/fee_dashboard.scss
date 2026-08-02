@@ -1,0 +1,339 @@
+// =====================================================================
+// MIS Student Fee Payment Tracker — Deep Teal + Amber
+// =====================================================================
+$mfd-teal-900: #134E4A;
+$mfd-teal-700: #0F766E;
+$mfd-teal-600: #0D9488;
+$mfd-teal-050: #F0FDFA;
+$mfd-slate-900: #0F172A;
+$mfd-slate-600: #475569;
+$mfd-slate-400: #94A3B8;
+$mfd-slate-100: #F1F5F9;
+$mfd-green-700: #15803D;
+$mfd-green-100: #DCFCE7;
+$mfd-amber-700: #B45309;
+$mfd-amber-100: #FEF3C7;
+$mfd-red-700: #B91C1C;
+$mfd-red-100: #FEE2E2;
+
+// Sticky column widths — must match the SCSS offsets below
+$mfd-w-sno: 44px;
+$mfd-w-student: 210px;
+
+.mfd-dashboard {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0; // flex scroll fix — never remove
+    background: #F8FAFC;
+    font-size: 13px;
+
+    // -----------------------------------------------------------------
+    // Header
+    // -----------------------------------------------------------------
+    .mfd-header {
+        flex: 0 0 auto;
+        padding: 12px 16px 8px;
+        background: #fff;
+        border-bottom: 1px solid #E2E8F0;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    }
+
+    .mfd-title-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 10px;
+
+        .mfd-title {
+            margin: 0;
+            font-size: 19px;
+            font-weight: 700;
+            color: $mfd-teal-900;
+        }
+        .mfd-subtitle { font-size: 12px; color: $mfd-slate-400; }
+    }
+
+    .mfd-export-btns {
+        display: flex;
+        gap: 8px;
+
+        .btn { font-weight: 600; border-radius: 8px; padding: 6px 14px; font-size: 13px; }
+        .mfd-btn-pdf {
+            background: #fff; color: $mfd-red-700; border: 1px solid $mfd-red-700;
+            &:hover { background: $mfd-red-100; color: $mfd-red-700; }
+        }
+        .mfd-btn-xlsx {
+            background: $mfd-teal-700; color: #fff; border: 1px solid $mfd-teal-700;
+            &:hover { background: $mfd-teal-900; color: #fff; }
+        }
+    }
+
+    .mfd-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: flex-end;
+        margin-bottom: 10px;
+
+        .mfd-filter {
+            display: flex;
+            flex-direction: column;
+            min-width: 132px;
+
+            label {
+                font-size: 10.5px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.03em;
+                color: $mfd-slate-600;
+                margin-bottom: 3px;
+            }
+            .form-control, .form-select {
+                font-size: 13px;
+                border-radius: 8px;
+                border-color: #CBD5E1;
+                padding: 4px 8px;
+                &:focus {
+                    border-color: $mfd-teal-600;
+                    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+                }
+            }
+        }
+        .mfd-filter-wide { min-width: 230px; flex: 1 1 230px; }
+        .mfd-filter-sm { min-width: 104px; }
+        .mfd-filter-actions .mfd-btn-reset {
+            background: $mfd-slate-100;
+            color: $mfd-slate-600;
+            border: 1px solid #CBD5E1;
+            border-radius: 8px;
+            font-weight: 600;
+            &:hover { background: #E2E8F0; }
+        }
+    }
+
+    .mfd-kpis {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 8px;
+        margin-bottom: 8px;
+
+        .mfd-kpi {
+            border-radius: 9px;
+            padding: 7px 12px;
+            border: 1px solid transparent;
+
+            .mfd-kpi-label {
+                font-size: 10px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                opacity: 0.78;
+            }
+            .mfd-kpi-value { font-size: 17px; font-weight: 700; margin-top: 1px; }
+        }
+        .mfd-kpi-students  { background: $mfd-teal-050; border-color: #99F6E4; color: $mfd-teal-900; }
+        .mfd-kpi-payable   { background: $mfd-slate-100; border-color: #E2E8F0; color: $mfd-slate-900; }
+        .mfd-kpi-paid      { background: $mfd-green-100; border-color: #BBF7D0; color: $mfd-green-700; }
+        .mfd-kpi-balance   { background: $mfd-red-100; border-color: #FECACA; color: $mfd-red-700; }
+        .mfd-kpi-admpaid   { background: $mfd-green-100; border-color: #BBF7D0; color: $mfd-green-700; }
+        .mfd-kpi-admunpaid { background: $mfd-amber-100; border-color: #FDE68A; color: $mfd-amber-700; }
+    }
+
+    .mfd-legend {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 14px;
+        font-size: 11.5px;
+        color: $mfd-slate-600;
+
+        .mfd-dot {
+            display: inline-block;
+            width: 11px; height: 11px;
+            border-radius: 3px;
+            margin-right: 4px;
+            vertical-align: -1px;
+            border: 1px solid rgba(15, 23, 42, 0.12);
+        }
+        .mfd-legend-note { margin-left: auto; font-style: italic; color: $mfd-slate-400; }
+    }
+
+    // -----------------------------------------------------------------
+    // Scroll container
+    // -----------------------------------------------------------------
+    .mfd-table-wrap {
+        flex: 1 1 auto;
+        min-height: 0; // flex scroll fix — never remove
+        overflow: auto;
+        padding: 10px 16px 16px;
+    }
+
+    .mfd-loading, .mfd-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 60px 0;
+        color: $mfd-slate-400;
+        font-size: 14px;
+    }
+
+    // -----------------------------------------------------------------
+    // The grid
+    // -----------------------------------------------------------------
+    .mfd-grid {
+        border-collapse: separate;
+        border-spacing: 0;
+        background: #fff;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+        font-size: 12px;
+        width: max-content;
+        min-width: 100%;
+
+        th, td {
+            border-right: 1px solid #EEF2F7;
+            border-bottom: 1px solid #EEF2F7;
+            padding: 5px 7px;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+
+        // ---- header (two tiers, both sticky) ----
+        thead th {
+            position: sticky;
+            background: $mfd-teal-700;
+            color: #fff;
+            font-size: 10.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            text-align: center;
+            z-index: 2;
+            border-right-color: rgba(255, 255, 255, 0.18);
+            border-bottom-color: rgba(255, 255, 255, 0.18);
+        }
+        thead .mfd-grouprow th { top: 0; height: 26px; }
+        thead .mfd-subrow th { top: 26px; background: $mfd-teal-600; height: 22px; }
+        thead .mfd-grouprow th[rowspan="2"] { top: 0; }
+
+        .mfd-grp-onetime { background: $mfd-teal-900 !important; }
+        .mfd-grp-months  { background: $mfd-slate-900 !important; }
+        .mfd-month-head  { min-width: 62px; }
+        .mfd-sub { font-size: 9.5px; }
+
+        // ---- sticky left columns ----
+        .mfd-sticky { position: sticky; }
+        .mfd-s1 { left: 0; width: $mfd-w-sno; min-width: $mfd-w-sno; text-align: center; }
+        .mfd-s2 {
+            left: $mfd-w-sno;
+            width: $mfd-w-student;
+            min-width: $mfd-w-student;
+            text-align: left;
+            border-right: 2px solid #CBD5E1;
+        }
+        thead .mfd-sticky { z-index: 4; }
+        tbody .mfd-sticky { z-index: 1; }
+        tfoot .mfd-sticky { z-index: 3; }
+
+        // ---- body ----
+        tbody tr {
+            background: #fff;
+            &:nth-child(even) { background: #FAFCFE; }
+            &:nth-child(even) .mfd-sticky { background: #FAFCFE; }
+            &:nth-child(odd) .mfd-sticky { background: #fff; }
+            &:hover { background: $mfd-teal-050; }
+            &:hover .mfd-sticky { background: $mfd-teal-050; }
+
+            td { color: $mfd-slate-900; }
+        }
+
+        .mfd-student-name { font-weight: 600; font-size: 12.5px; }
+        .mfd-student-sub  { font-size: 10px; color: $mfd-slate-400; }
+        .mfd-mono { font-variant-numeric: tabular-nums; }
+        .mfd-num  { text-align: center; }
+        .mfd-amt  {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+            font-weight: 600;
+        }
+        .mfd-text-paid { color: $mfd-green-700; }
+        .mfd-text-due  { color: $mfd-red-700; }
+        .mfd-text-bold { color: $mfd-slate-900; }
+
+        .mfd-division-badge {
+            display: inline-block;
+            padding: 1px 9px;
+            border-radius: 999px;
+            background: $mfd-teal-050;
+            border: 1px solid #99F6E4;
+            color: $mfd-teal-900;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .mfd-status {
+            text-align: center;
+            font-size: 10.5px;
+            font-weight: 700;
+            min-width: 72px;
+        }
+
+        .mfd-month {
+            text-align: center;
+            min-width: 62px;
+            line-height: 1.15;
+            cursor: default;
+
+            .mfd-month-status { display: block; font-size: 10.5px; font-weight: 700; }
+            .mfd-month-amt    { display: block; font-size: 9.5px; opacity: 0.75; font-variant-numeric: tabular-nums; }
+        }
+
+        .mfd-months-count {
+            text-align: center;
+            font-weight: 600;
+            .mfd-mc-paid { color: $mfd-green-700; }
+        }
+
+        // ---- footer ----
+        tfoot td {
+            position: sticky;
+            bottom: 0;
+            background: #FDE68A;
+            font-weight: 700;
+            border-top: 2px solid #F59E0B;
+            z-index: 2;
+        }
+        tfoot .mfd-sticky { background: #FDE68A; }
+    }
+
+    // -----------------------------------------------------------------
+    // Status colours (shared by legend, buckets and month cells)
+    // -----------------------------------------------------------------
+    .mfd-c-paid     { background: $mfd-green-100; color: $mfd-green-700; }
+    .mfd-c-unpaid   { background: $mfd-amber-100; color: $mfd-amber-700; }
+    .mfd-c-overdue  { background: $mfd-red-100;   color: $mfd-red-700; }
+    .mfd-c-upcoming { background: $mfd-slate-100; color: $mfd-slate-600; }
+    .mfd-c-none     { background: #FFFFFF;        color: #CBD5E1; }
+
+    // Striping must not wash out the status colours
+    .mfd-grid tbody tr:nth-child(even) {
+        .mfd-c-paid     { background: darken($mfd-green-100, 2%); }
+        .mfd-c-unpaid   { background: darken($mfd-amber-100, 2%); }
+        .mfd-c-overdue  { background: darken($mfd-red-100, 2%); }
+        .mfd-c-upcoming { background: darken($mfd-slate-100, 2%); }
+        .mfd-c-none     { background: #FAFCFE; }
+    }
+}
+
+// Responsive
+@media (max-width: 1400px) {
+    .mfd-dashboard .mfd-kpis { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 768px) {
+    .mfd-dashboard {
+        .mfd-kpis { grid-template-columns: repeat(2, 1fr); }
+        .mfd-filters .mfd-filter { min-width: 100%; }
+        .mfd-legend .mfd-legend-note { display: none; }
+    }
+}

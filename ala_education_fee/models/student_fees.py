@@ -368,6 +368,7 @@ class StudentFeeLine(models.Model):
         store=True
     )
     invoice_id = fields.Many2one('account.move', string='Invoice',index=True)
+    invoice_date = fields.Date(related='invoice_id.invoice_date', string='Invoice Date', store=True)
     payment_status = fields.Selection([
         ('upcoming', 'Upcoming'),
         ('unpaid', 'Un Paid'),

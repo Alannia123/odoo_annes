@@ -77,10 +77,10 @@
                                             <span >Student's Name :<b >  <t t-esc="student.name"/> </b> </span>
                                         </td>
                                         <td width="14%" class="no-border">
-                                            <span>Class :<b>  <t t-esc="doc.class_id.name"/></b> </span>
+                                            <span>Class :<b>  <t t-esc="class_div.class_id.name"/></b> </span>
                                         </td>
                                         <td width="13%" class="no-border">
-                                            <span>Section :<b>  <t t-esc="doc.division_id.name"/></b> </span>
+                                            <span>Section :<b>  <t t-esc="class_div.name"/></b> </span>
                                         </td>
                                         <td width="13%" class="no-border">
                                             <span>Roll No :<b>  <t t-esc="student.roll_no"/></b> </span>
@@ -108,8 +108,8 @@
 
 
                                                     <t t-set="gr_id" t-value="False"/>
-                                                    <t t-set="non_grade_subjects" t-value="doc.class_id.subject_ids.filtered(lambda subject: subject.evaluation_mode == 'mark')"/>
-                                                    <t t-set="grade_subjects" t-value="doc.class_id.subject_ids.filtered(lambda subject: subject.evaluation_mode != 'mark')"/>
+                                                    <t t-set="non_grade_subjects" t-value="class_div.class_id.subject_ids.filtered(lambda subject: subject.evaluation_mode == 'mark')"/>
+                                                    <t t-set="grade_subjects" t-value="class_div.class_id.subject_ids.filtered(lambda subject: subject.evaluation_mode != 'mark')"/>
 
 <!--                                                    On NON- Grade subjects-->
                                                     <t t-foreach="non_grade_subjects" t-as="non_grade_subject">
@@ -119,7 +119,9 @@
                                                             <t t-set="half_subject_mark" t-value="halfly_result.subject_line_ids.filtered(lambda half_subject: half_subject.subject_id.id == non_grade_subject.subject_id.id)"/>
                                                             <t t-set="sec_subject_mark" t-value="second_unit_result.subject_line_ids.filtered(lambda sec_subject: sec_subject.subject_id.id == non_grade_subject.subject_id.id)"/>
                                                             <t t-set="ann_subject_mark" t-value="annual_result.subject_line_ids.filtered(lambda ann_subject: ann_subject.subject_id.id == non_grade_subject.subject_id.id)"/>
-                                                            <td name="subject" style="background-color: #e0ebeb;" class="text-start"><span><t t-esc="non_grade_subject.subject_id.name"></t>
+                                                            <td name="subject" style="background-color: #e0ebeb;" class="text-start"><span><t t-esc="non_grade_subject.subject_id.name">
+                                                                <t t-esc="non_grade_subject.evaluation_mode"/>
+                                                            </t>
                                                             <t t-esc="non_grade_subject.evaluation_mode"></t></span></td>
                                                             <td class="text-center">
                                                                 <t t-if="first_unit_result">
@@ -223,7 +225,8 @@
                                                             <t t-set="half_subject_mark" t-value="halfly_result.subject_line_ids.filtered(lambda half_subject: half_subject.subject_id.id == grade_subject.subject_id.id)"/>
                                                             <t t-set="sec_subject_mark" t-value="second_unit_result.subject_line_ids.filtered(lambda sec_subject: sec_subject.subject_id.id == grade_subject.subject_id.id)"/>
                                                             <t t-set="ann_subject_mark" t-value="annual_result.subject_line_ids.filtered(lambda ann_subject: ann_subject.subject_id.id == grade_subject.subject_id.id)"/>
-                                                            <td name="subject" style="background-color: #e0ebeb;" class="text-start"><span><t t-esc="grade_subject.subject_id.name"></t></span></td>
+                                                            <td name="subject" style="background-color: #e0ebeb;" class="text-start"><span><t t-esc="grade_subject.subject_id.name"></t>
+                                                            <t t-esc="grade_subject.evaluation_mode"/></span></td>
                                                             <td class="text-center">
                                                                 <t t-if="first_unit_result">
                                                                     <span > <t t-esc="fir_subject_mark.grade_label"/></span>
@@ -253,7 +256,7 @@
                                                         </tr>
                                                 </t>
 <!--                                                    ADD EMpty lines-->
-                                                <t t-foreach="range(max(13-len(doc.class_id.subject_ids),0))" t-as="ln">
+                                                <t t-foreach="range(max(13-len(class_div.class_id.subject_ids),0))" t-as="ln">
                                                     <tr style="height: 13px;">
                                                         <td style="height: 13px;"></td>
                                                         <td style="height: 13px;"></td>
@@ -307,558 +310,8 @@
                                                 </tbody>
                                             </table>
                                         </td>
-                                        <td width="40%" class="no-border">
-                                            <table width="100%" class="no-border">
-                                                <tr class="no-border">
-                                                    <td class="no-border">
-                                                        <t t-set="half_md" t-value="student.get_half_evaluations()"/>
-                                                        <t t-set="annual_md" t-value="student.get_annual_evaluations()"/>
-<!--                                            Table Maturity-->
-                                                        <table width="100%" style="border: 1.5px solid black;">
-                                                            <thead >
-                                                                <tr style="background-color: #e0ebeb;">
-                                                                    <th name="maturity" style="width: 40%;" class="text-center"><span>MATURITY DEVELOPMENT</span></th>
-                                                                    <th name="term_2" style="width: 30%;" class="text-center"><span>Half Yearly</span></th>
-                                                                    <th name="term_3" style="width: 30%;" class="text-center"><span>Annual</span></th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody style="line-height:10px">
-<!-- Emotional Maturity -->
-<tr>
-    <td style="background:#f0f0f5;" class="text-center">
-        Emotional Maturity
-    </td>
-
-    <td class="text-center">
-        <t t-if="half_md and half_md.emotional_maturity">
-             <t t-if="half_md.emotional_maturity == 'high_mature'">
-                 <span style="color:#339933; "><b>Higly Mature</b></span>
-             </t>
-            <t t-elif="half_md.emotional_maturity == 'mature'">
-                 <span style="color:#69005c; "><b>Mature</b></span>
-             </t>
-            <t t-elif="half_md.emotional_maturity == 'develop'">
-                 <span style="color:#000099; "><b>Developing</b></span>
-             </t>
-            <t t-elif="half_md.emotional_maturity == 'need_guide'">
-                 <span style="color:#ff9e2e; "><b>Needs Guidence</b></span>
-             </t>
-            <t t-elif="half_md.emotional_maturity == 'immature'">
-                 <span style="color:#ff0000; "><b>Immature</b></span>
-             </t>
-            <t t-else="">
-                 <span style="color:#ff0000; "><b>-</b></span>
-             </t>
-        </t>
-    </td>
-
-    <td class="text-center">
-        <t t-if="annual_md and annual_md.emotional_maturity">
-             <t t-if="annual_md.emotional_maturity == 'high_mature'">
-                 <span style="color:#339933; "><b>Higly Mature</b></span>
-             </t>
-            <t t-elif="annual_md.emotional_maturity == 'mature'">
-                 <span style="color:#69005c; "><b>Mature</b></span>
-             </t>
-            <t t-elif="annual_md.emotional_maturity == 'develop'">
-                 <span style="color:#000099; "><b>Developing</b></span>
-             </t>
-            <t t-elif="annual_md.emotional_maturity == 'need_guide'">
-                 <span style="color:#ff9e2e; "><b>Needs Guidence</b></span>
-             </t>
-            <t t-elif="annual_md.emotional_maturity == 'immature'">
-                 <span style="color:#ff0000; "><b>Immature</b></span>
-             </t>
-            <t t-else="">
-                 <span style="color:#ff0000; "><b>-</b></span>
-             </t>
-        </t>
-    </td>
-</tr>
-
-
-<!-- Social Maturity -->
-<tr>
-    <td style="background:#f0f0f5;" class="text-center">
-        Social Maturity
-    </td>
-
-
-    <td class="text-center">
-        <t t-if="half_md and half_md.social_maturity">
-             <t t-if="half_md.social_maturity == 'high_mature'">
-                 <span style="color:#339933; "><b>Higly Mature</b></span>
-             </t>
-            <t t-elif="half_md.social_maturity == 'mature'">
-                 <span style="color:#69005c; "><b>Mature</b></span>
-             </t>
-            <t t-elif="half_md.social_maturity == 'develop'">
-                 <span style="color:#000099; "><b>Developing</b></span>
-             </t>
-            <t t-elif="half_md.social_maturity == 'need_guide'">
-                 <span style="color:#ff9e2e; "><b>Needs Guidence</b></span>
-             </t>
-            <t t-elif="half_md.social_maturity == 'immature'">
-                 <span style="color:#ff0000; "><b>Immature</b></span>
-             </t>
-            <t t-else="">
-                 <span style="color:#ff0000; "><b>-</b></span>
-             </t>
-        </t>
-    </td>
-
-    <td class="text-center">
-        <t t-if="annual_md and annual_md.social_maturity">
-             <t t-if="annual_md.social_maturity == 'high_mature'">
-                 <span style="color:#339933; "><b>Higly Mature</b></span>
-             </t>
-            <t t-elif="annual_md.social_maturity == 'mature'">
-                 <span style="color:#69005c; "><b>Mature</b></span>
-             </t>
-            <t t-elif="annual_md.social_maturity == 'develop'">
-                 <span style="color:#000099; "><b>Developing</b></span>
-             </t>
-            <t t-elif="annual_md.social_maturity == 'need_guide'">
-                 <span style="color:#ff9e2e; "><b>Needs Guidence</b></span>
-             </t>
-            <t t-elif="annual_md.social_maturity == 'immature'">
-                 <span style="color:#ff0000; "><b>Immature</b></span>
-             </t>
-            <t t-else="">
-                 <span style="color:#ff0000; "><b>-</b></span>
-             </t>
-        </t>
-    </td>
-
-</tr>
-
-
-<!-- Intellectual Maturity -->
-<tr>
-    <td style="background:#f0f0f5;" class="text-center">
-        Intellectual Maturity
-    </td>
-
-    <td class="text-center">
-        <t t-if="half_md and half_md.intellectual_maturity">
-             <t t-if="half_md.intellectual_maturity == 'high_mature'">
-                 <span style="color:#339933; "><b>Higly Mature</b></span>
-             </t>
-            <t t-elif="half_md.intellectual_maturity == 'mature'">
-                 <span style="color:#69005c; "><b>Mature</b></span>
-             </t>
-            <t t-elif="half_md.intellectual_maturity == 'develop'">
-                 <span style="color:#000099; "><b>Developing</b></span>
-             </t>
-            <t t-elif="half_md.intellectual_maturity == 'need_guide'">
-                 <span style="color:#ff9e2e; "><b>Needs Guidence</b></span>
-             </t>
-            <t t-elif="half_md.intellectual_maturity == 'immature'">
-                 <span style="color:#ff0000; "><b>Immature</b></span>
-             </t>
-            <t t-else="">
-                 <span style="color:#ff0000; "><b>-</b></span>
-             </t>
-        </t>
-    </td>
-
-    <td class="text-center">
-        <t t-if="annual_md and annual_md.intellectual_maturity">
-             <t t-if="annual_md.intellectual_maturity == 'high_mature'">
-                 <span style="color:#339933; "><b>Higly Mature</b></span>
-             </t>
-            <t t-elif="annual_md.intellectual_maturity == 'mature'">
-                 <span style="color:#69005c; "><b>Mature</b></span>
-             </t>
-            <t t-elif="annual_md.intellectual_maturity == 'develop'">
-                 <span style="color:#000099; "><b>Developing</b></span>
-             </t>
-            <t t-elif="annual_md.intellectual_maturity == 'need_guide'">
-                 <span style="color:#ff9e2e; "><b>Needs Guidence</b></span>
-             </t>
-            <t t-elif="annual_md.intellectual_maturity == 'immature'">
-                 <span style="color:#ff0000; "><b>Immature</b></span>
-             </t>
-            <t t-else="">
-                 <span style="color:#ff0000; "><b>-</b></span>
-             </t>
-        </t>
-    </td>
-</tr>
-
-
-<!-- Moral/Ethical Maturity -->
-<tr>
-    <td style="background:#f0f0f5;" class="text-center">
-        Moral / Ethical Maturity
-    </td>
-
-    <td class="text-center">
-        <t t-if="half_md and half_md.moral_maturity">
-             <t t-if="half_md.moral_maturity == 'high_mature'">
-                 <span style="color:#339933; "><b>Higly Mature</b></span>
-             </t>
-            <t t-elif="half_md.moral_maturity == 'mature'">
-                 <span style="color:#69005c; "><b>Mature</b></span>
-             </t>
-            <t t-elif="half_md.moral_maturity == 'develop'">
-                 <span style="color:#000099; "><b>Developing</b></span>
-             </t>
-            <t t-elif="half_md.moral_maturity == 'need_guide'">
-                 <span style="color:#ff9e2e; "><b>Needs Guidence</b></span>
-             </t>
-            <t t-elif="half_md.moral_maturity == 'immature'">
-                 <span style="color:#ff0000; "><b>Immature</b></span>
-             </t>
-            <t t-else="">
-                 <span style="color:#ff0000; "><b>-</b></span>
-             </t>
-        </t>
-    </td>
-
-    <td class="text-center">
-        <t t-if="annual_md and annual_md.moral_maturity">
-             <t t-if="annual_md.moral_maturity == 'high_mature'">
-                 <span style="color:#339933; "><b>Higly Mature</b></span>
-             </t>
-            <t t-elif="annual_md.moral_maturity == 'mature'">
-                 <span style="color:#69005c; "><b>Mature</b></span>
-             </t>
-            <t t-elif="annual_md.moral_maturity == 'develop'">
-                 <span style="color:#000099; "><b>Developing</b></span>
-             </t>
-            <t t-elif="annual_md.moral_maturity == 'need_guide'">
-                 <span style="color:#ff9e2e; "><b>Needs Guidence</b></span>
-             </t>
-            <t t-elif="annual_md.moral_maturity == 'immature'">
-                 <span style="color:#ff0000; "><b>Immature</b></span>
-             </t>
-            <t t-else="">
-                 <span style="color:#ff0000; "><b>-</b></span>
-             </t>
-        </t>
-    </td>
-</tr>
-
-
-<!-- Personal Responsibility -->
-<tr>
-    <td style="background:#f0f0f5;" class="text-center">
-        Personal Responsibility
-    </td>
-
-    <td class="text-center">
-        <t t-if="half_md and half_md.personal_resp">
-             <t t-if="half_md.personal_resp == 'high_mature'">
-                 <span style="color:#339933; "><b>Higly Mature</b></span>
-             </t>
-            <t t-elif="half_md.personal_resp == 'mature'">
-                 <span style="color:#69005c; "><b>Mature</b></span>
-             </t>
-            <t t-elif="half_md.personal_resp == 'develop'">
-                 <span style="color:#000099; "><b>Developing</b></span>
-             </t>
-            <t t-elif="half_md.personal_resp == 'need_guide'">
-                 <span style="color:#ff9e2e; "><b>Needs Guidence</b></span>
-             </t>
-            <t t-elif="half_md.personal_resp == 'immature'">
-                 <span style="color:#ff0000; "><b>Immature</b></span>
-             </t>
-            <t t-else="">
-                 <span style="color:#ff0000; "><b>-</b></span>
-             </t>
-        </t>
-    </td>
-
-    <td class="text-center">
-        <t t-if="annual_md and annual_md.personal_resp">
-             <t t-if="annual_md.personal_resp == 'high_mature'">
-                 <span style="color:#339933; "><b>Higly Mature</b></span>
-             </t>
-            <t t-elif="annual_md.personal_resp == 'mature'">
-                 <span style="color:#69005c; "><b>Mature</b></span>
-             </t>
-            <t t-elif="annual_md.personal_resp == 'develop'">
-                 <span style="color:#000099; "><b>Developing</b></span>
-             </t>
-            <t t-elif="annual_md.personal_resp == 'need_guide'">
-                 <span style="color:#ff9e2e; "><b>Needs Guidence</b></span>
-             </t>
-            <t t-elif="annual_md.personal_resp == 'immature'">
-                 <span style="color:#ff0000; "><b>Immature</b></span>
-             </t>
-            <t t-else="">
-                 <span style="color:#ff0000; "><b>-</b></span>
-             </t>
-        </t>
-    </td>
-</tr>
-
-
-<!-- Adaptability / Resilience -->
-<tr>
-    <td style="background:#f0f0f5;" class="text-center">
-        Adaptability / Resilience
-    </td>
-
-    <td class="text-center">
-        <t t-if="half_md and half_md.adaptobilty_resilience">
-             <t t-if="half_md.adaptobilty_resilience == 'high_mature'">
-                 <span style="color:#339933; "><b>Higly Mature</b></span>
-             </t>
-            <t t-elif="half_md.adaptobilty_resilience == 'mature'">
-                 <span style="color:#69005c; "><b>Mature</b></span>
-             </t>
-            <t t-elif="half_md.adaptobilty_resilience == 'develop'">
-                 <span style="color:#000099; "><b>Developing</b></span>
-             </t>
-            <t t-elif="half_md.adaptobilty_resilience == 'need_guide'">
-                 <span style="color:#ff9e2e; "><b>Needs Guidence</b></span>
-             </t>
-            <t t-elif="half_md.adaptobilty_resilience == 'immature'">
-                 <span style="color:#ff0000; "><b>Immature</b></span>
-             </t>
-            <t t-else="">
-                 <span style="color:#ff0000; "><b>-</b></span>
-             </t>
-        </t>
-    </td>
-
-    <td class="text-center">
-        <t t-if="annual_md and annual_md.adaptobilty_resilience">
-             <t t-if="annual_md.adaptobilty_resilience == 'high_mature'">
-                 <span style="color:#339933; "><b>Higly Mature</b></span>
-             </t>
-            <t t-elif="annual_md.adaptobilty_resilience == 'mature'">
-                 <span style="color:#69005c; "><b>Mature</b></span>
-             </t>
-            <t t-elif="annual_md.adaptobilty_resilience == 'develop'">
-                 <span style="color:#000099; "><b>Developing</b></span>
-             </t>
-            <t t-elif="annual_md.adaptobilty_resilience == 'need_guide'">
-                 <span style="color:#ff9e2e; "><b>Needs Guidence</b></span>
-             </t>
-            <t t-elif="annual_md.adaptobilty_resilience == 'immature'">
-                 <span style="color:#ff0000; "><b>Immature</b></span>
-             </t>
-            <t t-else="">
-                 <span style="color:#ff0000; "><b>-</b></span>
-             </t>
-        </t>
-    </td>
-</tr>
-
-</tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-<!--                                                <tr class="no-border">-->
-<!--                                                    <td class="no-border">-->
-<!--&lt;!&ndash;                                                        Table Grade&ndash;&gt;-->
-<!--                                                        <table width="100%" style="border: 1.5px solid black;">-->
-<!--                                                            <tr>-->
-<!--                                                                <td class="text-center" style="background-color: #9494b8;" colspan="2">-->
-<!--                                                                    <b>MATURITY DEVELOPMENT TABLE</b><br/>-->
-<!--                                                                    <span>(Out of 35)</span>-->
-<!--                                                                </td>-->
-<!--                                                            </tr>-->
-<!--                                                            <tr>-->
-<!--                                                                <td class="text-center" style="background-color: #f0f0f5;" width="70%"><b>30 - 35</b></td>-->
-<!--                                                                <td class="text-center" style="color: #339933;" width="30%"><b>Highly Mature</b></td>-->
-<!--                                                            </tr>-->
-<!--                                                            <tr>-->
-<!--                                                                <td class="text-center" style="background-color: #f0f0f5;" width="70%"><b>24 - 29</b></td>-->
-<!--                                                                <td class="text-center" style="color: #69005c;" width="30%"><b>Mature</b></td>-->
-<!--                                                            </tr>-->
-<!--                                                            <tr>-->
-<!--                                                                <td class="text-center" style="background-color: #f0f0f5;" width="70%"><b>18 - 23</b></td>-->
-<!--                                                                <td class="text-center" style="color: #000099;" width="30%"><b>Developing</b></td>-->
-<!--                                                            </tr>-->
-<!--                                                            <tr>-->
-<!--                                                                <td class="text-center" style="background-color: #f0f0f5;" width="70%"><b>12 - 17</b></td>-->
-<!--                                                                <td class="text-center" style="color: #ff9e2e;" width="30%"><b>Needs Guidence</b></td>-->
-<!--                                                            </tr>-->
-<!--                                                            <tr>-->
-<!--                                                                <td class="text-center" style="background-color: #f0f0f5;" width="70%"><b>Below 12</b></td>-->
-<!--                                                                <td class="text-center" style="color: #ff0000;" width="30%"><b>Immature</b></td>-->
-<!--                                                            </tr>-->
-<!--                                                        </table>-->
-<!--                                                    </td>-->
-<!--                                                </tr>-->
-                                                <tr class="no-border">
-                                                    <td class="no-border">
-<!--                                                        Table Grade-->
-                                                        <table width="100%" style="border: 1.5px solid black;">
-                                                            <tr>
-                                                                <td class="text-center" style="background-color: #8cb3d9;" colspan="3"><b>GRADE TABLE</b></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="text-center" style="background-color: #f0f0f5;" width="35%"><b>90-100</b></td>
-                                                                <td class="text-center" width="30%"><b>A+</b></td>
-                                                                <td class="text-center" style="color: #339933;" width="35%"><b>Excellent</b></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="text-center" style="background-color: #f0f0f5;" width="35%"><b>80-89.99</b></td>
-                                                                <td class="text-center" width="30%"><b>A</b></td>
-                                                                <td class="text-center" style="color: #69005c;" width="35%"><b>Advance</b></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="text-center" style="background-color: #f0f0f5;" width="35%"><b>60-79.9</b></td>
-                                                                <td class="text-center" width="30%"><b>B</b></td>
-                                                                <td class="text-center" style="color: #000099;" width="35%"><b>Good</b></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="text-center" style="background-color: #f0f0f5;" width="35%"><b>39.01-59.99</b></td>
-                                                                <td class="text-center" width="30%"><b>C</b></td>
-                                                                <td class="text-center" style="color: #ff9e2e;" width="35%"><b>Average</b></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="text-center" style="background-color: #f0f0f5;" width="35%"><b>1-39</b></td>
-                                                                <td class="text-center" width="30%"><b>D</b></td>
-                                                                <td class="text-center" style="color: #0000cc;" width="35%"><b>Need to improve</b></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="text-center" style="background-color: #f0f0f5;" width="35%"><b>0-0.1</b></td>
-                                                                <td class="text-center" width="30%"><b>AB</b></td>
-                                                                <td class="text-center" style="color: #ff0000;" width="35%"><b>Absent</b></td>
-                                                            </tr>
-
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <tr class="no-border">
-                                        <table width="100%" style="border: 1.5px solid black;padding-top: 20px;padding-left: 20px;padding-right: 20px">
-                                            <tr>
-                                                <td class="text-center" style="background-color: #f0f0f5;vertical-align: middle;" rowspan="2">
-                                                    <span ><b>REMARKS</b></span>
-                                                </td>
-                                                <td style="background-color: #f0f0f5;text-align: center"><span><b>UNIT-I</b></span></td>
-                                                <td style="background-color: #f0f0f5;text-align: center"><span><b>Half Yearly</b></span></td>
-                                                <td style="background-color: #f0f0f5;text-align: center"><span><b>UNIT-II</b></span></td>
-                                                <td style="background-color: #f0f0f5;text-align: center"><span><b>Annual</b></span></td>
-                                                <td style="background-color:#f0f0f5; text-align:center; vertical-align:middle;" >
-                                                    <div style="font-weight:bold; font-size:13px;">
-                                                        PROMOTED TO
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="text-align: center">
-                                                    <t ><b><t t-esc="first_unit_result.grade"/></b> </t>
-                                                </td>
-                                                <td style="text-align: center">
-                                                    <t ><b><t t-esc="halfly_result.grade"/></b> </t>
-                                                </td>
-                                                <td style="text-align: center">
-                                                    <t ><b><t t-esc="second_unit_result.grade"/></b> </t>
-                                                </td>
-                                                <td style="text-align: center">
-                                                    <t ><b><t t-esc="annual_result.grade"/></b> </t>
-                                                </td>
-                                                <td style="text-align: center">
-
-                                                </td>
-                                            </tr>
-                                        </table>
                                     </tr>
 <!--                                </table>-->
-                                    <tr style="border: #ffffff;">
-    <td colspan="100"
-        style="border: #ffffff; padding: 0; margin: 0;">
-
-        <table width="100%"
-               cellspacing="0"
-               cellpadding="0"
-               style="border: #ffffff;
-                      border-collapse: collapse;
-                      border-spacing: 0;">
-
-            <t t-set="members" t-value="student.get_members()"/>
-            <t t-set="control_exam"
-               t-value="members.member_line_ids.filtered(lambda x: x.designation == 'contol_exam')"/>
-            <t t-set="principal"
-               t-value="members.member_line_ids.filtered(lambda x: x.designation == 'principal')"/>
-
-            <tr style="border: #ffffff;">
-
-                <!-- Controller of Examination -->
-                <td style="text-align: center;
-                           font-size: 12px;
-                           width: 25%; padding-top: 80px;
-                           border: 0 !important;">
-
-                    <t t-if="control_exam.signature">
-                        <img t-att-src="'data:image/png;base64,%s' % (control_exam.signature.decode())"
-                             style="max-height: 25px; max-width: 140px;"/>
-                    </t>
-                    <br/>
-
-                    <b>
-                        <t t-esc="control_exam.name"/>
-                    </b>
-                    <br/>
-                    Controller of Examination
-                </td>
-
-                <!-- Principal -->
-                <td style="text-align: center;
-                           font-size: 12px;
-                           width: 25%;
-                           border: 0 !important;">
-
-                    <t t-if="principal.signature">
-                        <img t-att-src="'data:image/png;base64,%s' % (principal.signature.decode())"
-                             style="max-height: 25px; max-width: 140px;"/>
-                    </t>
-                    <br/>
-
-                    <b>
-                        <t t-esc="principal.name"/>
-                    </b>
-                    <br/>
-                    Principal
-                </td>
-
-                <!-- Class Teacher -->
-                <td style="text-align: center;
-                           font-size: 12px;
-                           width: 25%;
-                           border: 0 !important;">
-
-                    <t t-if="doc.faculty_id.signature">
-                        <img t-att-src="'data:image/png;base64,%s' % (doc.faculty_id.signature.decode())"
-                             style="max-height: 25px; max-width: 140px;"/>
-                    </t>
-
-                    <br/><br/>
-
-                    <b>
-                        Tr. <t t-esc="doc.faculty_id.name"/>
-                    </b>
-                    <br/>
-                    Class Teacher
-                </td>
-
-                <!-- Parent -->
-                <td style="text-align: center;
-                           font-size: 12px;
-                           width: 25%;
-                           border: 0 !important;">
-
-                    <br/><br/>
-                    <br/><br/>
-
-                    <b>Parent Signature</b>
-                </td>
-
-            </tr>
-        </table>
-
-    </td>
-</tr>
                                 </table>
 
 <!--                            </t>-->
@@ -874,7 +327,7 @@
         <template id="report_student_rank_card_template">
             <t t-call="web.html_container">
                 <t t-foreach="docs" t-as="doc">
-                    <t t-call="ala_education_exam.report_student_rank_card_template_document" />
+                    <t t-call="ala_exam_extend.report_student_rank_card_template_document" />
                 </t>
             </t>
         </template>

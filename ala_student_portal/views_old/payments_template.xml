@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_monthly_payment_tiles" name="Monthly Payment Tiles">
+    <t t-call="portal.portal_layout">
+        <style>
+            .fee-title {
+                font-size: 32px;
+                font-weight: 700;
+                margin-bottom: 25px;
+            }
+            .fee-card {
+                background: linear-gradient(145deg, #fff7fb, #ffffff);
+                border: 1px solid #f08ab5;
+                border-radius: 18px;
+                box-shadow: 0 6px 18px rgba(0,0,0,.08);
+                min-height: 235px;
+                padding: 18px 10px;
+                transition: .2s;
+            }
+            .fee-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 10px 25px rgba(0,0,0,.12);
+            }
+            .fee-name {
+                font-size: 20px;
+                font-weight: 600;
+                color: #222;
+            }
+            .fee-amount {
+                font-size: 22px;
+                font-weight: 800;
+                color: #111;
+                margin-top: 6px;
+            }
+            .fee-status {
+                display: inline-block;
+                min-width: 105px;
+                padding: 6px 12px;
+                border-radius: 25px;
+                font-size: 14px;
+                font-weight: 700;
+                color: #fff;
+                white-space: nowrap;
+                margin: 12px 0;
+            }
+            .status-paid { background: #198754; }
+            .status-upcoming { background: #5d87d8; }
+            .status-unpaid { background: #f0a020; }
+            .status-overdue { background: #dc3545; }
+
+            .fee-btn {
+                display: inline-block;
+                padding: 7px 16px;
+                border-radius: 22px;
+                font-size: 14px;
+                font-weight: 600;
+                text-decoration: none;
+                margin-top: 5px;
+            }
+            .pay-btn {
+                background: #7b3f61;
+                color: #fff !important;
+            }
+            .download-btn {
+                background: #0d6efd;
+                color: #fff !important;
+            }
+            .overdue-text {
+                display: block;
+                font-size: 12px;
+                color: #dc3545;
+                font-weight: 600;
+                margin-bottom: 4px;
+            }
+            @media(max-width: 576px) {
+                .fee-title { font-size: 26px; }
+                .fee-card { min-height: 220px; padding: 15px 8px; }
+                .fee-name { font-size: 18px; }
+                .fee-amount { font-size: 20px; }
+                .fee-status { font-size: 13px; min-width: 90px; }
+            }
+
+            .fee-breakup {
+    margin-top: 6px;
+    padding: 6px 10px;
+    background: #fff3f5;
+    border-radius: 10px;
+    font-size: 13px;
+}
+.fee-breakup-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 1px 0;
+    color: #444;
+}
+.fee-breakup-row.fine-row span:last-child {
+    color: #dc3545;
+    font-weight: 700;
+}
+.fee-breakup-row.concession-row span:last-child {
+    color: #198754;
+    font-weight: 700;
+}
+@media(max-width: 576px) {
+    .fee-breakup { font-size: 12px; padding: 5px 8px; }
+}
+            .fee-status-card {
+    background: #eef1fb;
+    border-radius: 22px;
+    padding: 16px 18px 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.06);
+}
+.fee-status-head {
+    font-size: 18px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 10px;
+    text-align: left;
+}
+.fee-status-body {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.fee-donut-wrap { flex: 1 1 50%; max-width: 210px; }
+.fee-donut { width: 100%; height: auto; display: block; }
+.fee-legend {
+    flex: 1 1 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.legend-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    border: 1.5px solid #4a63d8;
+    border-radius: 14px;
+    padding: 8px 14px;
+}
+.legend-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    flex: 0 0 16px;
+}
+.legend-text {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    line-height: 1.25;
+}
+.legend-label { font-size: 15px; font-weight: 700; color: #222; }
+.legend-amt { font-size: 14px; color: #333; }
+
+@media(max-width: 576px) {
+    .fee-status-body { gap: 12px; }
+    .legend-pill { padding: 6px 10px; border-radius: 12px; }
+    .legend-label { font-size: 14px; }
+    .legend-amt { font-size: 13px; }
+}
+        </style>
+
+        <h3 class="fee-title">School Payments</h3>
+
+        <t t-set="pay_status" t-value="request.params.get('payment')"/>
+        <t t-if="pay_status == 'success'">
+            <div class="alert alert-success text-center">Payment successful. Thank you!</div>
+        </t>
+        <t t-if="pay_status == 'already'">
+            <div class="alert alert-info text-center">This fee is already paid.</div>
+        </t>
+        <t t-if="pay_status == 'failed'">
+            <div class="alert alert-danger text-center">Payment failed or cancelled. Please try again.</div>
+        </t>
+        <t t-if="pay_status == 'config'">
+            <div class="alert alert-warning text-center">Online payment is not configured yet. Please contact the office.</div>
+        </t>
+
+        <t t-if="pay_status">
+            <script>
+                (function () {
+                    if (window.history &amp;&amp; window.history.replaceState) {
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    }
+                })();
+            </script>
+        </t>
+        <t t-if="student_fees">
+    <t t-set="all_lines" t-value="student_fees.fee_line_ids"/>
+    <t t-set="paid_lines" t-value="all_lines.filtered(lambda l: l.payment_status == 'paid')"/>
+    <t t-set="payable" t-value="sum(l.amount + l.fine_amount for l in all_lines)"/>
+    <t t-set="concession" t-value="sum(l.concession_amount for l in all_lines)"/>
+    <t t-set="paid" t-value="sum(l.amount - l.concession_amount + l.fine_amount for l in paid_lines)"/>
+    <t t-set="balance" t-value="payable - concession - paid"/>
+
+    <!-- donut geometry: r=70, circumference = 2*pi*70 = 439.8 -->
+    <t t-set="circ" t-value="439.8"/>
+    <t t-set="net_payable" t-value="payable - concession"/>
+    <t t-set="paid_frac" t-value="(paid / net_payable) if net_payable else 0"/>
+    <t t-set="gap" t-value="10"/>
+    <t t-set="paid_len" t-value="max(circ * paid_frac - gap, 0)"/>
+    <t t-set="bal_len" t-value="max(circ * (1 - paid_frac) - gap, 0)"/>
+
+    <div class="fee-status-card">
+        <div class="fee-status-head">
+            <span>Fee Status</span>
+        </div>
+        <div class="fee-status-body">
+            <div class="fee-donut-wrap">
+                <svg viewBox="0 0 200 200" class="fee-donut">
+                    <!-- Paid (green) starts at 12 o'clock -->
+                    <circle cx="100" cy="100" r="70" fill="none"
+                            stroke="#7cc48f" stroke-width="34"
+                            stroke-linecap="round"
+                            t-att-stroke-dasharray="'%s %s' % (paid_len, circ - paid_len)"
+                            transform="rotate(-90 100 100)"/>
+                    <!-- Balance (red) fills the rest -->
+                    <circle cx="100" cy="100" r="70" fill="none"
+                            stroke="#f2726f" stroke-width="34"
+                            stroke-linecap="round"
+                            t-att-stroke-dasharray="'0 %s %s %s' % (circ * paid_frac + gap/2, bal_len, gap/2)"
+                            transform="rotate(-90 100 100)"/>
+                </svg>
+            </div>
+            <div class="fee-legend">
+                <div class="legend-pill">
+                    <span class="legend-dot" style="background:#4a63d8;"></span>
+                    <span class="legend-text">
+                        <span class="legend-label">Payable</span>
+                        <span class="legend-amt">₹<t t-esc="'{:,.0f}'.format(payable)"/></span>
+                    </span>
+                </div>
+                <div class="legend-pill">
+                    <span class="legend-dot" style="background:#f0a020;"></span>
+                    <span class="legend-text">
+                        <span class="legend-label">Con/Dis</span>
+                        <span class="legend-amt">₹<t t-esc="'{:,.0f}'.format(concession)"/></span>
+                    </span>
+                </div>
+                <div class="legend-pill">
+                    <span class="legend-dot" style="background:#7cc48f;"></span>
+                    <span class="legend-text">
+                        <span class="legend-label">Paid</span>
+                        <span class="legend-amt">₹<t t-esc="'{:,.0f}'.format(paid)"/></span>
+                    </span>
+                </div>
+                <div class="legend-pill">
+                    <span class="legend-dot" style="background:#f2726f;"></span>
+                    <span class="legend-text">
+                        <span class="legend-label">Balance</span>
+                        <span class="legend-amt">₹<t t-esc="'{:,.0f}'.format(balance)"/></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</t>
+
+        <div class="row text-center">
+
+            <t t-if="student_fees">
+                <t t-foreach="student_fees.fee_line_ids" t-as="fee">
+                    <t t-set="is_paid" t-value="fee.payment_status == 'paid'"/>
+
+                    <div class="col-6 col-md-3 mb-4">
+                        <div class="fee-card">
+                            <div class="fee-name">
+                                <span t-field="fee.fee_description"/>
+                            </div>
+
+                            <t t-set="has_fine" t-value="fee.fine_amount > 0 and not is_paid"/>
+<t t-set="total_payable" t-value="fee.amount - fee.concession_amount + fee.fine_amount"/>
+
+<div class="fee-name">
+    <span t-field="fee.fee_description"/>
+</div>
+
+<t t-if="has_fine">
+    <div class="fee-breakup">
+        <div class="fee-breakup-row">
+            <span>Fee</span>
+            <span>₹<t t-esc="'%.2f' % fee.amount"/></span>
+        </div>
+        <div class="fee-breakup-row fine-row">
+            <span>Late Fine</span>
+            <span>+ ₹<t t-esc="'%.2f' % fee.fine_amount"/></span>
+        </div>
+        <t t-if="fee.concession_amount > 0">
+            <div class="fee-breakup-row concession-row">
+                <span>Concession</span>
+                <span>− ₹<t t-esc="'%.2f' % fee.concession_amount"/></span>
+            </div>
+        </t>
+    </div>
+    <div class="fee-amount">
+        ₹<t t-esc="'%.2f' % total_payable"/>
+    </div>
+</t>
+<t t-else="">
+    <div class="fee-amount">
+        ₹<span t-field="fee.amount"/>
+    </div>
+</t>
+
+                            <t t-if="is_paid">
+                                <span class="fee-status status-paid">Paid</span>
+                                <br/>
+                                <a t-att-href="'/my/fees/invoice/download/%s' % fee.id"
+                                   class="invoice-icon"
+                                   title="Download Invoice">
+                                    <i class="fa fa-file-pdf-o"></i>
+                                </a>
+                            </t>
+
+                            <t t-elif="fee.payment_status == 'upcoming'">
+                                <span class="fee-status status-upcoming">Upcoming</span>
+                                <br/>
+                                <a t-att-href="'/my/fees/pay/%s' % fee.id"
+                                   class="fee-btn pay-btn">
+                                    Pay Now
+                                </a>
+                            </t>
+
+                            <t t-elif="fee.payment_status == 'unpaid'">
+                                <span class="fee-status status-unpaid">Unpaid</span>
+                                <br/>
+                                <a t-att-href="'/my/fees/pay/%s' % fee.id"
+                                   class="fee-btn pay-btn">
+                                    Pay Now
+                                </a>
+                            </t>
+
+                            <t t-elif="fee.payment_status == 'over_due'">
+                                <span class="fee-status status-overdue">Overdue</span>
+                                <t t-if="fee.overdue_days &gt; 0">
+                                    <span class="overdue-text">
+                                        <t t-esc="fee.overdue_days"/> days ago
+                                    </span>
+                                </t>
+                                <a t-att-href="'/my/fees/pay/%s' % fee.id"
+                                   class="fee-btn pay-btn">
+                                    Pay Now
+                                </a>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </t>
+
+
+            <t t-else="">
+                <div class="alert alert-warning text-center">
+                    <strong>Sorry for your inconvenience.</strong><br/>
+                    No fees details found. Please contact the office admin.
+                </div>
+            </t>
+        </div>
+    </t>
+</template>
+
+    <!-- Auto-opening Razorpay checkout (website) -->
+    <template id="razorpay_checkout_page" name="Razorpay Checkout">
+        <t t-call="portal.portal_layout">
+            <div class="container text-center mt-5">
+                <h3>Redirecting to secure payment…</h3>
+                <p>Please don't close or refresh this page.</p>
+                <a href="/my/fees" class="btn btn-link">Cancel and go back</a>
+            </div>
+            <div id="rzp-data"
+                 t-att-data-key="key_id"
+                 t-att-data-amount="amount"
+                 t-att-data-order="order_id"
+                 t-att-data-name="school_name"
+                 t-att-data-desc="description"
+                 t-att-data-callback="callback_url"
+                 t-att-data-email="prefill_email"
+                 t-att-data-contact="prefill_contact"/>
+            <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    var d = document.getElementById("rzp-data");
+                    var rzp = new Razorpay({
+                        key: d.dataset.key,
+                        amount: d.dataset.amount,
+                        currency: "INR",
+                        name: d.dataset.name,
+                        description: d.dataset.desc,
+                        order_id: d.dataset.order,
+                        callback_url: d.dataset.callback,
+                        prefill: { email: d.dataset.email, contact: d.dataset.contact },
+                        theme: { color: "#e64d00" }
+                    });
+                    rzp.on("payment.failed", function () { window.location = "/my/fees?payment=failed"; });
+                    rzp.open();
+                });
+            </script>
+        </t>
+    </template>
+</odoo>

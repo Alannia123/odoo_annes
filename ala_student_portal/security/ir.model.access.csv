@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ala_parent_feedback_user,ala.parent.feedback.user,model_ala_parent_feedback,base.group_user,1,1,0,0
+access_ala_parent_feedback_manager,ala.parent.feedback.manager,model_ala_parent_feedback,ala_student_portal.group_ala_feedback_manager,1,1,1,1

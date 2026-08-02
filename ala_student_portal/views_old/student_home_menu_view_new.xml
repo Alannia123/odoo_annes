@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================
+         SHARED STYLE BLOCK
+         t-call this from every portal page so the look stays in sync.
+         Move to an SCSS asset bundle later (see notes in chat).
+         ============================================================ -->
+    <template id="ala_portal_app_styles" name="ALA Portal App Styles">
+        <style>
+            .ala-app{
+                -webkit-tap-highlight-color: transparent;
+                font-family: -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+                padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+            }
+
+            /* ---------- Identity card ---------- */
+            .ala-hero{
+                position: relative;
+                overflow: hidden;
+                border-radius: 22px;
+                padding: 16px 18px;
+                color: #fff;
+                background: linear-gradient(140deg, #14306b 0%, #1e4fa3 55%, #2c6fd1 100%);
+                box-shadow: 0 12px 26px rgba(20, 48, 107, .30);
+            }
+            .ala-hero:before{
+                content: "";
+                position: absolute;
+                top: -60%; left: -10%;
+                width: 70%; height: 180%;
+                background: linear-gradient(180deg, rgba(255,255,255,.30), rgba(255,255,255,0) 60%);
+                transform: rotate(18deg);
+                pointer-events: none;
+            }
+            .ala-hero__row{
+                position: relative;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            .ala-hero__avatar{
+                width: 52px; height: 52px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid rgba(255,255,255,.65);
+                box-shadow: 0 4px 10px rgba(0,0,0,.25);
+                flex: 0 0 auto;
+                background: rgba(255,255,255,.15);
+            }
+            .ala-hero__meta{ min-width: 0; flex: 1 1 auto; }
+            .ala-hero__eyebrow{
+                font-size: 10.5px;
+                letter-spacing: .14em;
+                text-transform: uppercase;
+                color: #f2c14e;
+                margin: 0 0 2px;
+                font-weight: 700;
+            }
+            .ala-hero__name{
+                font-size: 18px;
+                font-weight: 700;
+                line-height: 1.2;
+                margin: 0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .ala-hero__sub{
+                font-size: 12px;
+                margin: 2px 0 0;
+                color: rgba(255,255,255,.82);
+            }
+            .ala-hero__chips{
+                position: relative;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+                margin-top: 12px;
+            }
+            .ala-chip{
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                padding: 4px 10px;
+                border-radius: 999px;
+                font-size: 11px;
+                font-weight: 600;
+                background: rgba(255,255,255,.16);
+                border: 1px solid rgba(255,255,255,.22);
+                color: #fff;
+            }
+            .ala-chip i{ font-size: 11px; }
+            .ala-chip--ok{ background: rgba(34,197,94,.92); border-color: rgba(255,255,255,.35); }
+            .ala-chip--warn{ background: rgba(245,158,11,.95); border-color: rgba(255,255,255,.35); color: #1f2937; }
+            .ala-chip--danger{ background: rgba(220,38,38,.95); border-color: rgba(255,255,255,.35); }
+
+            /* ---------- Event ticker (CSS only, WebView safe) ---------- */
+            .ala-ticker{
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-top: 12px;
+                padding: 8px 12px;
+                border-radius: 14px;
+                background: #fff8e6;
+                border: 1px solid #f3dfa8;
+                color: #7c4a03;
+                font-size: 12.5px;
+                font-weight: 600;
+                overflow: hidden;
+            }
+            .ala-ticker i{ flex: 0 0 auto; color: #b45309; }
+            .ala-ticker__view{ flex: 1 1 auto; overflow: hidden; }
+            .ala-ticker__track{
+                display: inline-block;
+                white-space: nowrap;
+                padding-left: 100%;
+                animation: ala-slide 16s linear infinite;
+            }
+            @keyframes ala-slide{
+                0%{ transform: translateX(0); }
+                100%{ transform: translateX(-100%); }
+            }
+
+            /* ---------- Section heading ---------- */
+            .ala-section{
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin: 22px 2px 12px;
+            }
+            .ala-section__label{
+                font-size: 11px;
+                font-weight: 700;
+                letter-spacing: .12em;
+                text-transform: uppercase;
+                color: #64748b;
+                white-space: nowrap;
+            }
+            .ala-section__rule{
+                flex: 1 1 auto;
+                height: 1px;
+                background: linear-gradient(90deg, #cbd5e1, rgba(203,213,225,0));
+            }
+
+            /* ---------- Tile grid ---------- */
+            .ala-grid{
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 14px 10px;
+            }
+            @media (max-width: 340px){
+                .ala-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            }
+            @media (min-width: 768px){
+                .ala-grid{ grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 18px 14px; }
+            }
+
+            .ala-tile{
+                position: relative;
+                display: block;
+                text-decoration: none;
+                text-align: center;
+            }
+            .ala-tile:hover, .ala-tile:focus{ text-decoration: none; }
+
+            /* square badge-plate, no aspect-ratio dependency */
+            .ala-tile__plate{
+                position: relative;
+                width: 100%;
+                padding-top: 100%;
+                border-radius: 20px;
+                overflow: hidden;
+                box-shadow: 0 6px 14px rgba(15, 23, 42, .18);
+                transition: transform .18s ease, box-shadow .18s ease;
+            }
+            .ala-tile__plate:before{
+                content: "";
+                position: absolute;
+                top: 0; left: 0; right: 0; height: 52%;
+                background: linear-gradient(180deg, rgba(255,255,255,.34), rgba(255,255,255,0));
+                pointer-events: none;
+            }
+            .ala-tile__plate:after{
+                content: "";
+                position: absolute;
+                top: 0; left: 0; right: 0; bottom: 0;
+                border-radius: 20px;
+                border: 1px solid rgba(255,255,255,.32);
+                pointer-events: none;
+            }
+            .ala-tile__plate i{
+                position: absolute;
+                top: 50%; left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 27px;
+                color: #fff;
+                text-shadow: 0 2px 4px rgba(0,0,0,.22);
+            }
+            .ala-tile:active .ala-tile__plate{
+                transform: scale(.94);
+                box-shadow: 0 3px 8px rgba(15, 23, 42, .20);
+            }
+            .ala-tile__label{
+                display: block;
+                margin-top: 7px;
+                font-size: 11.5px;
+                line-height: 1.25;
+                font-weight: 600;
+                color: #1f2937;
+                min-height: 2.5em;
+            }
+            @media (min-width: 768px){
+                .ala-tile__plate i{ font-size: 34px; }
+                .ala-tile__label{ font-size: 12.5px; }
+            }
+
+            /* ---------- Tile palette (one family, distinct hues) ---------- */
+            .ala-t-info   { background: linear-gradient(150deg, #2563eb, #1d4ed8); }
+            .ala-t-news   { background: linear-gradient(150deg, #a21caf, #7e22ce); }
+            .ala-t-work   { background: linear-gradient(150deg, #7c3aed, #5b21b6); }
+            .ala-t-time   { background: linear-gradient(150deg, #0891b2, #0e7490); }
+            .ala-t-att    { background: linear-gradient(150deg, #db2777, #be185d); }
+            .ala-t-class  { background: linear-gradient(150deg, #1d4ed8, #1e3a8a); }
+            .ala-t-teacher{ background: linear-gradient(150deg, #0d9488, #115e59); }
+            .ala-t-fees   { background: linear-gradient(150deg, #16a34a, #15803d); }
+            .ala-t-exam   { background: linear-gradient(150deg, #ea580c, #c2410c); }
+            .ala-t-syl    { background: linear-gradient(150deg, #475569, #334155); }
+            .ala-t-muted  { background: linear-gradient(150deg, #94a3b8, #64748b); }
+
+            /* ---------- Badges ---------- */
+            .ala-badge{
+                position: absolute;
+                top: -6px; right: -4px;
+                z-index: 2;
+                min-width: 20px;
+                height: 20px;
+                padding: 0 6px;
+                border-radius: 999px;
+                background: #dc2626;
+                color: #fff;
+                font-size: 10.5px;
+                font-weight: 700;
+                line-height: 20px;
+                text-align: center;
+                border: 2px solid #fff;
+                box-shadow: 0 2px 6px rgba(0,0,0,.20);
+            }
+            .ala-badge--ok{ background: #16a34a; }
+            .ala-badge--warn{ background: #f59e0b; color: #1f2937; }
+            .ala-badge--pulse{ animation: ala-pulse 2.2s ease-in-out infinite; }
+            @keyframes ala-pulse{
+                0%, 100%{ opacity: 1; }
+                50%{ opacity: .45; }
+            }
+
+            /* ---------- Utility cards ---------- */
+            .ala-card{
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 14px 16px;
+                border-radius: 16px;
+                background: #fff;
+                border: 1px solid #e2e8f0;
+                box-shadow: 0 4px 12px rgba(15, 23, 42, .06);
+                text-decoration: none;
+                color: #0f172a;
+            }
+            .ala-card + .ala-card{ margin-top: 10px; }
+            .ala-card:hover{ text-decoration: none; color: #0f172a; border-color: #cbd5e1; }
+            .ala-card__icon{
+                flex: 0 0 auto;
+                width: 40px; height: 40px;
+                border-radius: 12px;
+                display: flex; align-items: center; justify-content: center;
+                background: #eff6ff;
+                color: #1d4ed8;
+                font-size: 17px;
+            }
+            .ala-card__title{ font-size: 14px; font-weight: 600; margin: 0; }
+            .ala-card__text{ font-size: 12px; color: #64748b; margin: 1px 0 0; }
+            .ala-card__go{ margin-left: auto; color: #94a3b8; }
+
+            .ala-site-btn{
+                display: inline-flex;
+                align-items: center;
+                gap: 7px;
+                padding: 8px 16px;
+                border-radius: 999px;
+                font-size: 12.5px;
+                font-weight: 600;
+                color: #fff;
+                text-decoration: none;
+                background: linear-gradient(135deg, #1e4fa3, #7c3aed);
+                box-shadow: 0 5px 14px rgba(30, 79, 163, .28);
+            }
+            .ala-site-btn:hover{ color: #fff; text-decoration: none; }
+
+            @media (prefers-reduced-motion: reduce){
+                .ala-ticker__track, .ala-badge--pulse{ animation: none; }
+                .ala-tile__plate{ transition: none; }
+            }
+        </style>
+    </template>
+
+    <!-- ============================================================
+         STUDENT / PARENT HOME
+         ============================================================ -->
+    <template id="student_portal_my_home" name="My Student Portal">
+        <t t-call="portal.portal_layout">
+            <t t-set="my_details" t-value="True"/>
+            <t t-call="ala_student_portal.ala_portal_app_styles"/>
+
+            <t t-set="student_fee" t-value="student_fees[:1] if student_fees else False"/>
+            <t t-set="fee_status" t-value="student_fee.payment_status if student_fee else False"/>
+
+            <div class="o_portal_my_home ala-app">
+                <div class="oe_structure" id="oe_structure_portal_my_home_1"/>
+
+                <!-- Identity card -->
+                <div class="ala-hero">
+                    <div class="ala-hero__row">
+                        <img class="ala-hero__avatar"
+                             t-att-src="image_data_uri(user_id.partner_id.avatar_128)"
+                             t-att-alt="user_id.partner_id.name"/>
+                        <div class="ala-hero__meta">
+                            <p class="ala-hero__eyebrow">St. Anne's Convent School</p>
+                            <h1 class="ala-hero__name"><t t-esc="user_id.partner_id.name"/></h1>
+                            <p class="ala-hero__sub" t-if="div_name">
+                                Class <t t-esc="div_name"/>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="ala-hero__chips">
+                        <span t-if="attendance == 'Present'" class="ala-chip ala-chip--ok">
+                            <i class="fa fa-check-circle"/> Present today
+                        </span>
+                        <span t-if="attendance == 'Absent'" class="ala-chip ala-chip--danger">
+                            <i class="fa fa-times-circle"/> Absent today
+                        </span>
+                        <span t-if="fee_status == 'unpaid'" class="ala-chip ala-chip--warn">
+                            <i class="fa fa-inr"/> Fees due
+                        </span>
+                        <span t-if="fee_status == 'over_due'" class="ala-chip ala-chip--danger">
+                            <i class="fa fa-exclamation-circle"/> Fees overdue
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Today's event ticker -->
+                <div class="ala-ticker" t-if="today_event">
+                    <i class="fa fa-bullhorn"/>
+                    <div class="ala-ticker__view">
+                        <span class="ala-ticker__track"><t t-esc="today_event.name"/></span>
+                    </div>
+                </div>
+
+                <!-- Daily -->
+                <div class="ala-section">
+                    <span class="ala-section__label">Today</span>
+                    <span class="ala-section__rule"/>
+                </div>
+
+                <div class="ala-grid">
+                    <a href="/school/announcements" class="ala-tile">
+                        <span class="ala-badge ala-badge--pulse" t-if="today_announce_count">
+                            <t t-esc="today_announce_count"/>
+                        </span>
+                        <span class="ala-tile__plate ala-t-news"><i class="fa fa-bullhorn"/></span>
+                        <span class="ala-tile__label">Announcements</span>
+                    </a>
+
+                    <a href="/school/all_homeworks" class="ala-tile">
+                        <span class="ala-badge ala-badge--pulse" t-if="today_home_work_count">
+                            <t t-esc="today_home_work_count"/>
+                        </span>
+                        <span class="ala-tile__plate ala-t-work"><i class="fa fa-book"/></span>
+                        <span class="ala-tile__label">Homework</span>
+                    </a>
+
+                    <a href="/school/timetable" class="ala-tile">
+                        <span class="ala-tile__plate ala-t-time"><i class="fa fa-clock-o"/></span>
+                        <span class="ala-tile__label">Timetable</span>
+                    </a>
+
+                    <a href="/school/student_attendance" class="ala-tile">
+                        <span t-if="attendance == 'Present'" class="ala-badge ala-badge--ok">
+                            <i class="fa fa-check"/>
+                        </span>
+                        <span t-if="attendance == 'Absent'" class="ala-badge">
+                            <i class="fa fa-times"/>
+                        </span>
+                        <span class="ala-tile__plate ala-t-att"><i class="fa fa-calendar-check-o"/></span>
+                        <span class="ala-tile__label">Attendance</span>
+                    </a>
+                </div>
+
+                <!-- Messages -->
+                <div class="ala-section">
+                    <span class="ala-section__label">Messages</span>
+                    <span class="ala-section__rule"/>
+                </div>
+
+                <div class="ala-grid">
+                    <a href="/school/class_communation" class="ala-tile">
+                        <span class="ala-badge" t-if="today_cl_comm_count">
+                            <t t-esc="today_cl_comm_count"/>
+                        </span>
+                        <span class="ala-tile__plate ala-t-class"><i class="fa fa-comments"/></span>
+                        <span class="ala-tile__label">Class Notes</span>
+                    </a>
+
+                    <a href="/school/teacher_communation" class="ala-tile">
+                        <span class="ala-badge" t-if="today_stu_comm_count">
+                            <t t-esc="today_stu_comm_count"/>
+                        </span>
+                        <span class="ala-tile__plate ala-t-teacher"><i class="fa fa-comment"/></span>
+                        <span class="ala-tile__label">Teacher Notes</span>
+                    </a>
+
+                    <a href="/school/student_info" class="ala-tile">
+                        <span class="ala-tile__plate ala-t-info"><i class="fa fa-address-card"/></span>
+                        <span class="ala-tile__label">Student Info</span>
+                    </a>
+                </div>
+
+                <!-- Academics and fees -->
+                <div class="ala-section">
+                    <span class="ala-section__label">Academics</span>
+                    <span class="ala-section__rule"/>
+                </div>
+
+                <div class="ala-grid">
+                    <a href="/my/result" class="ala-tile">
+                        <span class="ala-tile__plate ala-t-exam"><i class="fa fa-graduation-cap"/></span>
+                        <span class="ala-tile__label">Exam Results</span>
+                    </a>
+
+                    <a href="/my/fees" class="ala-tile">
+                        <span t-if="fee_status == 'unpaid'" class="ala-badge ala-badge--warn ala-badge--pulse">Due</span>
+                        <span t-if="fee_status == 'over_due'" class="ala-badge ala-badge--pulse">Late</span>
+                        <span class="ala-tile__plate ala-t-fees"><i class="fa fa-university"/></span>
+                        <span class="ala-tile__label">Fees &amp; Payments</span>
+                    </a>
+
+                    <!-- Syllabus has no route yet: render as disabled, not a dead link -->
+                    <span class="ala-tile" t-if="not syllabus_url">
+                        <span class="ala-tile__plate ala-t-muted"><i class="fa fa-wpforms"/></span>
+                        <span class="ala-tile__label">Syllabus<br/><small>Coming soon</small></span>
+                    </span>
+                    <a t-if="syllabus_url" t-att-href="syllabus_url" class="ala-tile">
+                        <span class="ala-tile__plate ala-t-syl"><i class="fa fa-wpforms"/></span>
+                        <span class="ala-tile__label">Syllabus</span>
+                    </a>
+                </div>
+
+                <!-- Account -->
+                <div class="ala-section">
+                    <span class="ala-section__label">Account</span>
+                    <span class="ala-section__rule"/>
+                </div>
+
+                <t t-set="partner_sudo" t-value="request.env.user.partner_id"/>
+                <t t-set="providers_sudo"
+                   t-value="request.env['payment.provider'].sudo()._get_compatible_providers(
+                                request.env.company.id, partner_sudo.id, 0.,
+                                force_tokenization=True, is_validation=True)"/>
+                <t t-set="methods_allowing_tokenization"
+                   t-value="request.env['payment.method'].sudo()._get_compatible_payment_methods(
+                                providers_sudo.ids, partner_sudo.id, force_tokenization=True)"/>
+                <t t-set="existing_tokens"
+                   t-value="partner_sudo.payment_token_ids + partner_sudo.commercial_partner_id.payment_token_ids"/>
+
+                <a t-if="methods_allowing_tokenization or existing_tokens"
+                   href="/my/payment_method" class="ala-card">
+                    <span class="ala-card__icon"><i class="fa fa-credit-card"/></span>
+                    <span>
+                        <p class="ala-card__title">Payment methods</p>
+                        <p class="ala-card__text">Manage your saved cards and UPI</p>
+                    </span>
+                    <i class="fa fa-angle-right ala-card__go"/>
+                </a>
+
+                <a href="/my/security" class="ala-card">
+                    <span class="ala-card__icon"><i class="fa fa-lock"/></span>
+                    <span>
+                        <p class="ala-card__title">Password &amp; security</p>
+                        <p class="ala-card__text">Change your password or sign out everywhere</p>
+                    </span>
+                    <i class="fa fa-angle-right ala-card__go"/>
+                </a>
+
+                <div class="oe_structure" id="oe_structure_portal_my_home_2"/>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============================================================
+         FACULTY HOME
+         Keeping the original template id so the controller keeps working.
+         Add faculty tiles into the grid below as those routes land.
+         ============================================================ -->
+    <template id="teachsers_portal_my_home" name="My Faculty Portal">
+        <t t-call="portal.portal_layout">
+            <t t-set="my_details" t-value="True"/>
+            <t t-call="ala_student_portal.ala_portal_app_styles"/>
+
+            <div class="o_portal_my_home ala-app">
+                <div class="oe_structure" id="oe_structure_portal_my_home_1"/>
+
+                <div class="ala-hero">
+                    <div class="ala-hero__row">
+                        <img class="ala-hero__avatar"
+                             t-att-src="image_data_uri(user_id.partner_id.avatar_128)"
+                             t-att-alt="user_id.partner_id.name"/>
+                        <div class="ala-hero__meta">
+                            <p class="ala-hero__eyebrow">Faculty</p>
+                            <h1 class="ala-hero__name"><t t-esc="user_id.partner_id.name"/></h1>
+                            <p class="ala-hero__sub">St. Anne's Convent School</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!--
+                <div class="ala-section">
+                    <span class="ala-section__label">Classroom</span>
+                    <span class="ala-section__rule"/>
+                </div>
+                <div class="ala-grid">
+                    <a href="/faculty/attendance" class="ala-tile">
+                        <span class="ala-tile__plate ala-t-att"><i class="fa fa-calendar-check-o"/></span>
+                        <span class="ala-tile__label">Mark Attendance</span>
+                    </a>
+                </div>
+                -->
+
+                <div class="ala-section">
+                    <span class="ala-section__label">Account</span>
+                    <span class="ala-section__rule"/>
+                </div>
+
+                <a href="/my/security" class="ala-card">
+                    <span class="ala-card__icon"><i class="fa fa-lock"/></span>
+                    <span>
+                        <p class="ala-card__title">Password &amp; security</p>
+                        <p class="ala-card__text">Change your password or sign out everywhere</p>
+                    </span>
+                    <i class="fa fa-angle-right ala-card__go"/>
+                </a>
+
+                <div class="oe_structure" id="oe_structure_portal_my_home_2"/>
+            </div>
+        </t>
+    </template>
+
+</odoo>

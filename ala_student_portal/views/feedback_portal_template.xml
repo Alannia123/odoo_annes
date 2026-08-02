@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_parent_feedback" name="Parent Feedback">
+        <t t-call="portal.portal_layout">
+            <t t-set="my_details" t-value="True"/>
+            <t t-call="ala_student_portal.ala_portal_app_styles"/>
+
+            <style>
+                .ala-fb__field{ margin-bottom: 14px; }
+                .ala-fb__label{
+                    display: block;
+                    margin-bottom: 6px;
+                    font-size: 12px;
+                    font-weight: 700;
+                    color: #334155;
+                }
+                .ala-fb__input, .ala-fb__select, .ala-fb__area{
+                    width: 100%;
+                    padding: 11px 13px;
+                    border: 1px solid #d8e0ea;
+                    border-radius: 12px;
+                    background: #fff;
+                    font-size: 13.5px;
+                    color: #0f172a;
+                    -webkit-appearance: none;
+                    appearance: none;
+                }
+                .ala-fb__select{
+                    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%2364748b' d='M4 6l4 4 4-4z'/%3E%3C/svg%3E");
+                    background-repeat: no-repeat;
+                    background-position: right 12px center;
+                    padding-right: 34px;
+                }
+                .ala-fb__area{ min-height: 120px; resize: vertical; line-height: 1.5; }
+                .ala-fb__input:focus, .ala-fb__select:focus, .ala-fb__area:focus{
+                    outline: none;
+                    border-color: #1e4fa3;
+                    box-shadow: 0 0 0 3px rgba(30,79,163,.14);
+                }
+                .ala-fb__hint{
+                    margin: 5px 0 0;
+                    font-size: 11px;
+                    color: #94a3b8;
+                }
+
+                /* CSS-only star rating: reversed row so ~ can reach earlier stars */
+                .ala-fb__stars{
+                    display: inline-flex;
+                    flex-direction: row-reverse;
+                    justify-content: flex-end;
+                    gap: 6px;
+                }
+                .ala-fb__stars input{
+                    position: absolute;
+                    opacity: 0;
+                    width: 0;
+                    height: 0;
+                }
+                .ala-fb__stars label{
+                    cursor: pointer;
+                    font-size: 27px;
+                    line-height: 1;
+                    color: #d8e0ea;
+                    margin: 0;
+                    transition: color .12s ease;
+                }
+                .ala-fb__stars input:checked ~ label{ color: #f2c14e; }
+                .ala-fb__stars input:focus-visible ~ label{ outline: 2px solid #1e4fa3; }
+
+                .ala-fb__submit{
+                    display: block;
+                    width: 100%;
+                    padding: 13px 16px;
+                    border: 0;
+                    border-radius: 13px;
+                    background: linear-gradient(135deg,#14306b,#2c6fd1);
+                    color: #fff;
+                    font-size: 14px;
+                    font-weight: 700;
+                    box-shadow: 0 6px 16px rgba(20,48,107,.28);
+                }
+                .ala-fb__submit:active{ transform: scale(.98); }
+
+                .ala-fb__alert{
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 9px;
+                    padding: 12px 14px;
+                    border-radius: 13px;
+                    font-size: 12.5px;
+                    font-weight: 600;
+                    line-height: 1.45;
+                    margin-bottom: 14px;
+                }
+                .ala-fb__alert--ok{
+                    background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0;
+                }
+                .ala-fb__alert--err{
+                    background: #fef2f2; color: #991b1b; border: 1px solid #fecaca;
+                }
+
+                .ala-fb__item{
+                    padding: 13px 0;
+                    border-bottom: 1px solid #f1f5f9;
+                }
+                .ala-fb__item:last-child{ border-bottom: 0; }
+                .ala-fb__top{
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    margin-bottom: 5px;
+                }
+                .ala-fb__ref{
+                    font-size: 11px;
+                    font-weight: 700;
+                    color: #94a3b8;
+                }
+                .ala-fb__state{
+                    margin-left: auto;
+                    padding: 2px 10px;
+                    border-radius: 999px;
+                    font-size: 10px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: .05em;
+                }
+                .ala-fb__state--new{ background: #eff6ff; color: #1d4ed8; }
+                .ala-fb__state--in_progress{ background: #fff7ed; color: #c2410c; }
+                .ala-fb__state--resolved{ background: #ecfdf5; color: #047857; }
+                .ala-fb__state--closed{ background: #f1f5f9; color: #64748b; }
+                .ala-fb__subject{
+                    margin: 0;
+                    font-size: 13.5px;
+                    font-weight: 700;
+                    color: #0f172a;
+                }
+                .ala-fb__body{
+                    margin: 4px 0 0;
+                    font-size: 12.5px;
+                    color: #64748b;
+                    line-height: 1.5;
+                }
+                .ala-fb__reply{
+                    margin: 9px 0 0;
+                    padding: 10px 12px;
+                    border-radius: 11px;
+                    background: #f8fafc;
+                    border-left: 3px solid #1e4fa3;
+                    font-size: 12.5px;
+                    color: #334155;
+                    line-height: 1.5;
+                }
+                .ala-fb__reply b{ display: block; margin-bottom: 3px; color: #14306b; font-size: 11px; }
+            </style>
+
+            <div class="o_portal_my_home ala-app">
+
+                <div class="ala-greet">
+                    <div class="ala-greet__row">
+                        <div class="ala-greet__meta">
+                            <p class="ala-greet__hello">We are listening</p>
+                            <h1 class="ala-greet__name">Share your feedback</h1>
+                        </div>
+                    </div>
+                    <div class="ala-greet__chips">
+                        <span class="ala-chip">
+                            <i class="fa fa-lock"/> Goes directly to the Principal
+                        </span>
+                    </div>
+                </div>
+
+                <div class="ala-sheet">
+                    <div t-if="submitted" class="ala-fb__alert ala-fb__alert--ok">
+                        <i class="fa fa-check-circle" style="margin-top:1px"/>
+                        <span>Thank you. Your feedback has reached the Principal's
+                        desk. You can track its status below.</span>
+                    </div>
+
+                    <div t-if="error == 'missing'" class="ala-fb__alert ala-fb__alert--err">
+                        <i class="fa fa-exclamation-circle" style="margin-top:1px"/>
+                        <span>Add a subject and your message before sending.</span>
+                    </div>
+                    <div t-if="error == 'nostudent'" class="ala-fb__alert ala-fb__alert--err">
+                        <i class="fa fa-exclamation-circle" style="margin-top:1px"/>
+                        <span>Your login is not linked to a student record.
+                        Please contact the school office.</span>
+                    </div>
+                    <div t-if="error == 'server'" class="ala-fb__alert ala-fb__alert--err">
+                        <i class="fa fa-exclamation-circle" style="margin-top:1px"/>
+                        <span>We could not save your feedback. Please try again,
+                        or call the school office if it keeps failing.</span>
+                    </div>
+
+                    <form action="/my/feedback/submit" method="post">
+                        <input type="hidden" name="csrf_token"
+                               t-att-value="request.csrf_token()"/>
+
+                        <div class="ala-fb__field">
+                            <label class="ala-fb__label" for="fb_category">What is this about?</label>
+                            <select class="ala-fb__select" id="fb_category" name="category">
+                                <option value="academic">Academics &amp; Teaching</option>
+                                <option value="teacher">Teacher Conduct</option>
+                                <option value="facility">Infrastructure &amp; Facilities</option>
+                                <option value="transport">Transport</option>
+                                <option value="fees">Fees &amp; Billing</option>
+                                <option value="safety">Safety &amp; Wellbeing</option>
+                                <option value="suggestion">Suggestion</option>
+                                <option value="other" selected="selected">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="ala-fb__field">
+                            <label class="ala-fb__label" for="fb_subject">Subject</label>
+                            <input class="ala-fb__input" type="text" id="fb_subject"
+                                   name="subject" maxlength="200" required="required"
+                                   placeholder="A one-line summary"/>
+                        </div>
+
+                        <div class="ala-fb__field">
+                            <label class="ala-fb__label" for="fb_description">Your message</label>
+                            <textarea class="ala-fb__area" id="fb_description"
+                                      name="description" maxlength="5000" required="required"
+                                      placeholder="Tell us what happened, and what you would like the school to do."/>
+                            <p class="ala-fb__hint">The Principal sees your name and
+                            your child's class along with this message.</p>
+                        </div>
+
+                        <div class="ala-fb__field">
+                            <span class="ala-fb__label">How would you rate the school this term?</span>
+                            <span class="ala-fb__stars">
+                                <input type="radio" name="rating" value="5" id="fb_r5"/>
+                                <label for="fb_r5" title="5">★</label>
+                                <input type="radio" name="rating" value="4" id="fb_r4"/>
+                                <label for="fb_r4" title="4">★</label>
+                                <input type="radio" name="rating" value="3" id="fb_r3"/>
+                                <label for="fb_r3" title="3">★</label>
+                                <input type="radio" name="rating" value="2" id="fb_r2"/>
+                                <label for="fb_r2" title="2">★</label>
+                                <input type="radio" name="rating" value="1" id="fb_r1"/>
+                                <label for="fb_r1" title="1">★</label>
+                            </span>
+                        </div>
+
+                        <button type="submit" class="ala-fb__submit">
+                            <i class="fa fa-paper-plane"/> Send to Principal
+                        </button>
+                    </form>
+                </div>
+
+                <div class="ala-head">
+                    <h2 class="ala-head__title">Your past feedback</h2>
+                </div>
+
+                <div class="ala-card" t-if="history">
+                    <div t-foreach="history" t-as="fb" class="ala-fb__item">
+                        <div class="ala-fb__top">
+                            <span class="ala-fb__ref"><t t-esc="fb.name"/></span>
+                            <span class="ala-fb__ref">
+                                <t t-esc="fb.create_date.strftime('%d %b %Y')"/>
+                            </span>
+                            <span t-attf-class="ala-fb__state ala-fb__state--#{fb.state}">
+                                <t t-esc="dict(fb._fields['state'].selection).get(fb.state)"/>
+                            </span>
+                        </div>
+                        <p class="ala-fb__subject" t-esc="fb.subject"/>
+                        <p class="ala-fb__body" t-esc="fb.description"/>
+                        <div t-if="fb.response" class="ala-fb__reply">
+                            <b>School response</b>
+                            <t t-esc="fb.response"/>
+                        </div>
+                    </div>
+                </div>
+                <div t-else="" class="ala-card ala-empty">
+                    You have not sent any feedback yet.
+                </div>
+
+            </div>
+
+            <div class="ala-tabs">
+                <a href="/my/home" class="ala-tabs__item">
+                    <i class="fa fa-home"/><span>Home</span>
+                </a>
+                <a href="/school/all_homeworks" class="ala-tabs__item">
+                    <i class="fa fa-book"/><span>Work</span>
+                </a>
+                <a href="/school/class_communation" class="ala-tabs__item">
+                    <i class="fa fa-paper-plane"/><span>Messages</span>
+                </a>
+                <a href="/my/feedback" class="ala-tabs__item ala-tabs__item--on">
+                    <i class="fa fa-commenting-o"/><span>Feedback</span>
+                </a>
+                <a href="/school/student_info" class="ala-tabs__item">
+                    <i class="fa fa-user"/><span>Profile</span>
+                </a>
+            </div>
+        </t>
+    </template>
+
+</odoo>

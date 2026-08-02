@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_razorpay" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.razorpay</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="Razorpay" name="ala_razorpay_settings">
+                    <block title="Razorpay Credentials" name="razorpay_credentials_block">
+                        <setting string="Test Mode"
+                                 help="Use rzp_test_ keys. Turn off only for live payments.">
+                            <field name="razorpay_test_mode"/>
+                        </setting>
+                        <setting string="Key ID">
+                            <field name="razorpay_key_id" placeholder="rzp_test_xxxxxxxxxxxx"/>
+                        </setting>
+                        <setting string="Key Secret">
+                            <field name="razorpay_key_secret" password="True" placeholder="••••••••"/>
+                        </setting>
+                        <setting string="Webhook Secret"
+                                 help="Must match the secret set when registering the webhook.">
+                            <field name="razorpay_webhook_secret" password="True" placeholder="••••••••"/>
+                        </setting>
+                        <setting string="Gateway Fee Bearer"
+                                 help="Who pays the Razorpay fee. 'Payer' requires Customer Fee Bearer enabled on the Razorpay account.">
+                            <field name="razorpay_fee_bearer" widget="radio"/>
+                        </setting>
+                    </block>
+                    <block title="Accounting" name="razorpay_accounting_block">
+                        <setting string="Bank Journal"
+                                 help="Online payments received via Razorpay are recorded here.">
+                            <field name="razorpay_journal_id"/>
+                        </setting>
+                        <setting string="Webhook URL"
+                                 help="Register in the Razorpay dashboard for events: payment.captured, order.paid, payment.failed.">
+                            <div class="text-muted">&lt;your-base-url&gt;/razorpay/webhook</div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="ala_fee_dashboard.Dashboard">
+    <div class="mfd-dashboard">
+
+        <!-- ================= Header ================= -->
+        <div class="mfd-header">
+            <div class="mfd-title-row">
+                <div>
+                    <h2 class="mfd-title">Student Fee Payment Tracker</h2>
+                    <span class="mfd-subtitle" t-esc="state.meta.company_name"/>
+                </div>
+                <div class="mfd-export-btns">
+                    <button class="btn mfd-btn-pdf" t-on-click="exportPdf">
+                        <i class="fa fa-file-pdf-o me-1"/> Export as PDF
+                    </button>
+                    <button class="btn mfd-btn-xlsx" t-on-click="exportXlsx">
+                        <i class="fa fa-file-excel-o me-1"/> Export as Excel
+                    </button>
+                </div>
+            </div>
+
+            <!-- ================= Filters ================= -->
+            <div class="mfd-filters">
+                <div class="mfd-filter mfd-filter-wide">
+                    <label>Student / Register No</label>
+                    <input type="text" class="form-control" placeholder="Search name or register no..."
+                           t-att-value="state.filters.search"
+                           t-on-input="(ev) => this.onDebouncedInput('search', ev)"/>
+                </div>
+                <div class="mfd-filter mfd-filter-sm">
+                    <label>Roll No</label>
+                    <input type="text" class="form-control" placeholder="Roll"
+                           t-att-value="state.filters.roll_no"
+                           t-on-input="(ev) => this.onDebouncedInput('roll_no', ev)"/>
+                </div>
+                <div class="mfd-filter">
+                    <label>Division</label>
+                    <select class="form-select" t-on-change="(ev) => this.onFilterChange('division_id', ev)">
+                        <option value="">All Divisions</option>
+                        <t t-foreach="state.meta.divisions" t-as="d" t-key="d.id">
+                            <option t-att-value="d.id"
+                                    t-att-selected="state.filters.division_id == d.id ? 'selected' : undefined"
+                                    t-esc="d.name"/>
+                        </t>
+                    </select>
+                </div>
+                <div class="mfd-filter">
+                    <label>Academic Year</label>
+                    <select class="form-select" t-on-change="(ev) => this.onFilterChange('academic_year_id', ev)">
+                        <option value="">All Years</option>
+                        <t t-foreach="state.meta.academic_years" t-as="y" t-key="y.id">
+                            <option t-att-value="y.id"
+                                    t-att-selected="state.filters.academic_year_id == y.id ? 'selected' : undefined"
+                                    t-esc="y.name"/>
+                        </t>
+                    </select>
+                </div>
+                <div class="mfd-filter">
+                    <label>Payment Status</label>
+                    <select class="form-select" t-on-change="(ev) => this.onFilterChange('payment_status', ev)">
+                        <option value="">All Statuses</option>
+                        <t t-foreach="state.meta.payment_statuses" t-as="s" t-key="s.value">
+                            <option t-att-value="s.value"
+                                    t-att-selected="state.filters.payment_status === s.value ? 'selected' : undefined"
+                                    t-esc="s.label"/>
+                        </t>
+                    </select>
+                </div>
+                <div class="mfd-filter">
+                    <label>Payment Mode</label>
+                    <select class="form-select" t-on-change="(ev) => this.onFilterChange('payment_mode', ev)">
+                        <option value="">All Modes</option>
+                        <t t-foreach="state.meta.payment_modes" t-as="m" t-key="m.value">
+                            <option t-att-value="m.value"
+                                    t-att-selected="state.filters.payment_mode === m.value ? 'selected' : undefined"
+                                    t-esc="m.label"/>
+                        </t>
+                    </select>
+                </div>
+                <div class="mfd-filter mfd-filter-sm">
+                    <label>Paid From</label>
+                    <input type="date" class="form-control"
+                           t-att-value="state.filters.date_from"
+                           t-on-change="(ev) => this.onFilterChange('date_from', ev)"/>
+                </div>
+                <div class="mfd-filter mfd-filter-sm">
+                    <label>Paid To</label>
+                    <input type="date" class="form-control"
+                           t-att-value="state.filters.date_to"
+                           t-on-change="(ev) => this.onFilterChange('date_to', ev)"/>
+                </div>
+                <div class="mfd-filter mfd-filter-actions">
+                    <label>&#160;</label>
+                    <button class="btn mfd-btn-reset" t-on-click="resetFilters">
+                        <i class="fa fa-refresh me-1"/> Reset
+                    </button>
+                </div>
+            </div>
+
+            <!-- ================= KPI tiles ================= -->
+            <div class="mfd-kpis">
+                <div class="mfd-kpi mfd-kpi-students">
+                    <div class="mfd-kpi-label">Students</div>
+                    <div class="mfd-kpi-value" t-esc="state.kpi.students"/>
+                </div>
+                <div class="mfd-kpi mfd-kpi-payable">
+                    <div class="mfd-kpi-label">Payable</div>
+                    <div class="mfd-kpi-value" t-esc="money(state.kpi.payable)"/>
+                </div>
+                <div class="mfd-kpi mfd-kpi-paid">
+                    <div class="mfd-kpi-label">Paid</div>
+                    <div class="mfd-kpi-value" t-esc="money(state.kpi.paid)"/>
+                </div>
+                <div class="mfd-kpi mfd-kpi-balance">
+                    <div class="mfd-kpi-label">Balance</div>
+                    <div class="mfd-kpi-value" t-esc="money(state.kpi.balance)"/>
+                </div>
+                <div class="mfd-kpi mfd-kpi-admpaid">
+                    <div class="mfd-kpi-label">Admission Paid</div>
+                    <div class="mfd-kpi-value" t-esc="state.kpi.admission_paid"/>
+                </div>
+                <div class="mfd-kpi mfd-kpi-admunpaid">
+                    <div class="mfd-kpi-label">Admission Unpaid</div>
+                    <div class="mfd-kpi-value" t-esc="state.kpi.admission_unpaid"/>
+                </div>
+            </div>
+
+            <!-- ================= Legend ================= -->
+            <div class="mfd-legend">
+                <span><i class="mfd-dot mfd-c-paid"/> Paid</span>
+                <span><i class="mfd-dot mfd-c-unpaid"/> Unpaid</span>
+                <span><i class="mfd-dot mfd-c-overdue"/> Overdue</span>
+                <span><i class="mfd-dot mfd-c-upcoming"/> Upcoming</span>
+                <span><i class="mfd-dot mfd-c-none"/> No fee line</span>
+                <span class="mfd-legend-note">Filters choose the students; each row always shows the full April&#8211;March year.</span>
+            </div>
+        </div>
+
+        <!-- ================= Grid ================= -->
+        <div class="mfd-table-wrap">
+            <t t-if="state.loading">
+                <div class="mfd-loading">
+                    <i class="fa fa-spinner fa-spin fa-2x"/>
+                    <div>Loading fee data...</div>
+                </div>
+            </t>
+            <t t-elif="!state.students.length">
+                <div class="mfd-empty">
+                    <i class="fa fa-search fa-2x"/>
+                    <div>No students match the selected filters.</div>
+                </div>
+            </t>
+            <t t-else="">
+                <table class="mfd-grid">
+                    <thead>
+                        <tr class="mfd-grouprow">
+                            <th class="mfd-sticky mfd-s1" rowspan="2">#</th>
+                            <th class="mfd-sticky mfd-s2" rowspan="2">Student Name</th>
+                            <th rowspan="2">Register No</th>
+                            <th rowspan="2">Roll No</th>
+                            <th rowspan="2">Division</th>
+                            <t t-foreach="state.meta.buckets" t-as="b" t-key="b.key">
+                                <th colspan="2" class="mfd-grp-onetime" t-esc="b.label"/>
+                            </t>
+                            <th t-att-colspan="state.meta.months.length" class="mfd-grp-months">
+                                April to March
+                            </th>
+                            <th rowspan="2">Months</th>
+                            <th rowspan="2">Paid</th>
+                            <th rowspan="2">Balance</th>
+                            <th rowspan="2">Payable</th>
+                        </tr>
+                        <tr class="mfd-subrow">
+                            <t t-foreach="state.meta.buckets" t-as="b" t-key="b.key">
+                                <th class="mfd-sub">Amount</th>
+                                <th class="mfd-sub">Status</th>
+                            </t>
+                            <t t-foreach="state.meta.months" t-as="m" t-key="m.key">
+                                <th class="mfd-sub mfd-month-head" t-esc="m.short"/>
+                            </t>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="state.students" t-as="st" t-key="st.id">
+                            <tr>
+                                <td class="mfd-sticky mfd-s1 mfd-num" t-esc="st.sno"/>
+                                <td class="mfd-sticky mfd-s2">
+                                    <div class="mfd-student-name" t-esc="st.student"/>
+                                    <div class="mfd-student-sub">
+                                        <t t-esc="st.division"/> | Roll: <t t-esc="st.roll_no"/> | <t t-esc="st.register_number"/>
+                                    </div>
+                                </td>
+                                <td class="mfd-mono" t-esc="st.register_number"/>
+                                <td class="mfd-mono mfd-num" t-esc="st.roll_no"/>
+                                <td>
+                                    <span class="mfd-division-badge" t-esc="st.division"/>
+                                </td>
+
+                                <!-- One-time fee buckets: amount + status -->
+                                <t t-foreach="state.meta.buckets" t-as="b" t-key="b.key">
+                                    <td class="mfd-amt" t-esc="shortMoney(st.buckets[b.key].amount)"/>
+                                    <td t-attf-class="mfd-status {{ cellClass(st.buckets[b.key]) }}"
+                                        t-att-title="cellTip(st.buckets[b.key], b.label)"
+                                        t-esc="cellLabel(st.buckets[b.key])"/>
+                                </t>
+
+                                <!-- April..March grid -->
+                                <t t-foreach="state.meta.months" t-as="m" t-key="m.key">
+                                    <td t-attf-class="mfd-month {{ cellClass(st.months[m_index]) }}"
+                                        t-att-title="cellTip(st.months[m_index], m.label)">
+                                        <span class="mfd-month-status" t-esc="cellLabel(st.months[m_index])"/>
+                                        <span class="mfd-month-amt" t-if="st.months[m_index].has"
+                                              t-esc="shortMoney(st.months[m_index].amount)"/>
+                                    </td>
+                                </t>
+
+                                <td class="mfd-months-count">
+                                    <span class="mfd-mc-paid" t-esc="st.months_paid"/>/<span t-esc="st.months_total"/>
+                                </td>
+                                <td class="mfd-amt mfd-text-paid" t-esc="money(st.total_paid)"/>
+                                <td class="mfd-amt mfd-text-due" t-esc="money(st.total_balance)"/>
+                                <td class="mfd-amt mfd-text-bold" t-esc="money(st.total_payable)"/>
+                            </tr>
+                        </t>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td class="mfd-sticky mfd-s1"/>
+                            <td class="mfd-sticky mfd-s2">TOTAL</td>
+                            <td t-att-colspan="3 + (state.meta.buckets.length * 2) + state.meta.months.length + 1"/>
+                            <td class="mfd-amt" t-esc="money(state.kpi.paid)"/>
+                            <td class="mfd-amt" t-esc="money(state.kpi.balance)"/>
+                            <td class="mfd-amt" t-esc="money(state.kpi.payable)"/>
+                        </tr>
+                    </tfoot>
+                </table>
+            </t>
+        </div>
+    </div>
+</t>
+
+</templates>

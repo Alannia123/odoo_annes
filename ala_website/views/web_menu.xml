@@ -4,16 +4,17 @@
 
 
    <record id="action_go_to_website" model="ir.actions.act_url">
-        <field name="name">Website</field>
-        <field name="url">/ala_home</field>
-       <field name="target">self</field><!-- must match JS -->
-   </record>
+    <field name="name">Website</field>
+    <field name="url">https://st.annes.school</field>
+    <field name="target">new</field>
+</record>
 
+<menuitem id="website_redirect_root_menu"
+          name="School Website"
+          web_icon="ala_website,static/description/website.png"
+          action="action_go_to_website"
+          sequence="10"/>
 
-
-        <menuitem id="website_redirect_root_menu" name="School Website"
-              web_icon="ala_website,static/description/website.png"
-              action="action_go_to_website" sequence="10"/>
     </data>
 
 </odoo>

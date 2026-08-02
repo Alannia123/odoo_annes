@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_principal_fee_overview" model="ir.actions.client">
+        <field name="name">Fee Collection Overview</field>
+        <field name="tag">ala_fee_dashboard.principal_fee_overview</field>
+        <field name="target">current</field>
+    </record>
+
+    <menuitem id="menu_principal_fee_overview"
+              name="Fee Collection Overview"
+              parent="ala_fee_dashboard.menu_fee_dashboard_root"
+              action="action_principal_fee_overview"
+              groups="ala_education_core.group_education_principal"
+              sequence="20"/>
+</odoo>

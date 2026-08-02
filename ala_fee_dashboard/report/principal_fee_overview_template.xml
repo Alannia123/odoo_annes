@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_principal_fee_overview">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <div class="page">
+                    <style>
+                        .pfo-r-title{ font-size:16px; font-weight:bold; color:#14306B; margin:0; }
+                        .pfo-r-meta{ font-size:9px; color:#64748B; margin:2px 0 0; }
+                        .pfo-r-tbl{ width:100%; border-collapse:collapse; margin-top:10px; font-size:9px; }
+                        .pfo-r-tbl th{ background:#14306B; color:#fff; border:1px solid #14306B;
+                                       padding:4px 5px; font-size:8.5px; text-align:left; }
+                        .pfo-r-tbl td{ border:1px solid #E3E9F2; padding:3px 5px; }
+                        .pfo-r-right{ text-align:right; }
+                        .pfo-r-foot td{ background:#F1F5F9; font-weight:bold; border-top:2px solid #14306B; }
+                        .pfo-r-kpi{ width:100%; border-collapse:collapse; margin-top:8px; }
+                        .pfo-r-kpi td{ border:1px solid #E3E9F2; padding:6px 8px; width:25%; }
+                        .pfo-r-kpi .k{ font-size:8px; color:#64748B; text-transform:uppercase; }
+                        .pfo-r-kpi .v{ font-size:13px; font-weight:bold; color:#14306B; }
+                    </style>
+
+                    <p class="pfo-r-title">Fee Collection Overview</p>
+                    <p class="pfo-r-meta">
+                        <span t-esc="company.name"/> &amp;#8226;
+                        <span t-esc="filter_text"/> &amp;#8226;
+                        Printed <span t-esc="print_datetime"/>
+                    </p>
+
+                    <table class="pfo-r-kpi">
+                        <tr>
+                            <td>
+                                <div class="k">Total Collected</div>
+                                <div class="v">
+                                    <span t-esc="currency_symbol"/><span t-esc="'{:,.2f}'.format(totals.get('amount', 0.0))"/>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="k">Receipts</div>
+                                <div class="v"><span t-esc="totals.get('count', 0)"/></div>
+                            </td>
+                            <td t-if="view_type == 'summary'">
+                                <div class="k">Days</div>
+                                <div class="v"><span t-esc="totals.get('days', 0)"/></div>
+                            </td>
+                            <td t-if="view_type == 'summary'">
+                                <div class="k">Daily Average</div>
+                                <div class="v">
+                                    <span t-esc="currency_symbol"/><span t-esc="'{:,.2f}'.format(totals.get('average', 0.0))"/>
+                                </div>
+                            </td>
+                            <td t-if="view_type != 'summary'">
+                                <div class="k">Fine Collected</div>
+                                <div class="v">
+                                    <span t-esc="currency_symbol"/><span t-esc="'{:,.2f}'.format(totals.get('fine', 0.0))"/>
+                                </div>
+                            </td>
+                            <td t-if="view_type != 'summary'">
+                                <div class="k">Concession</div>
+                                <div class="v">
+                                    <span t-esc="currency_symbol"/><span t-esc="'{:,.2f}'.format(totals.get('concession', 0.0))"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Day-wise summary -->
+                    <table class="pfo-r-tbl" t-if="view_type == 'summary'">
+                        <thead>
+                            <tr>
+                                <th style="width:28px">#</th>
+                                <th style="width:70px">Date</th>
+                                <th t-foreach="mode_columns" t-as="col"
+                                    class="pfo-r-right" t-esc="col['label']"/>
+                                <th class="pfo-r-right" style="width:55px">Receipts</th>
+                                <th class="pfo-r-right" style="width:90px">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="rows" t-as="row">
+                                <td t-esc="row['sno']"/>
+                                <td t-esc="row['date']"/>
+                                <td t-foreach="mode_columns" t-as="col" class="pfo-r-right">
+                                    <span t-esc="'{:,.2f}'.format(row['modes'].get(col['key'], 0.0))"/>
+                                </td>
+                                <td class="pfo-r-right" t-esc="row['count']"/>
+                                <td class="pfo-r-right">
+                                    <span t-esc="'{:,.2f}'.format(row['total'])"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr class="pfo-r-foot">
+                                <td/>
+                                <td>Grand Total</td>
+                                <td t-foreach="mode_columns" t-as="col" class="pfo-r-right">
+                                    <span t-esc="'{:,.2f}'.format(totals.get('by_mode', {}).get(col['key'], 0.0))"/>
+                                </td>
+                                <td class="pfo-r-right" t-esc="totals.get('count', 0)"/>
+                                <td class="pfo-r-right">
+                                    <span t-esc="'{:,.2f}'.format(totals.get('amount', 0.0))"/>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <!-- Receipt detail -->
+                    <table class="pfo-r-tbl" t-if="view_type != 'summary'">
+                        <thead>
+                            <tr>
+                                <th style="width:26px">#</th>
+                                <th style="width:60px">Date</th>
+                                <th>Student</th>
+                                <th style="width:60px">Reg. No</th>
+                                <th style="width:55px">Division</th>
+                                <th>Particulars</th>
+                                <th style="width:60px">Mode</th>
+                                <th class="pfo-r-right" style="width:55px">Fine</th>
+                                <th class="pfo-r-right" style="width:60px">Concession</th>
+                                <th class="pfo-r-right" style="width:70px">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="lines" t-as="line">
+                                <td t-esc="line['sno']"/>
+                                <td t-esc="line['date']"/>
+                                <td t-esc="line['student']"/>
+                                <td t-esc="line['register_number']"/>
+                                <td t-esc="line['division']"/>
+                                <td t-esc="line['description']"/>
+                                <td t-esc="line['mode_label']"/>
+                                <td class="pfo-r-right">
+                                    <span t-esc="'{:,.2f}'.format(line['fine'])"/>
+                                </td>
+                                <td class="pfo-r-right">
+                                    <span t-esc="'{:,.2f}'.format(line['concession'])"/>
+                                </td>
+                                <td class="pfo-r-right">
+                                    <span t-esc="'{:,.2f}'.format(line['amount'])"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr class="pfo-r-foot">
+                                <td colspan="7">Total</td>
+                                <td class="pfo-r-right">
+                                    <span t-esc="'{:,.2f}'.format(totals.get('fine', 0.0))"/>
+                                </td>
+                                <td class="pfo-r-right">
+                                    <span t-esc="'{:,.2f}'.format(totals.get('concession', 0.0))"/>
+                                </td>
+                                <td class="pfo-r-right">
+                                    <span t-esc="'{:,.2f}'.format(totals.get('amount', 0.0))"/>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <p t-if="not rows and not lines" style="margin-top:20px; font-size:10px; color:#94A3B8;">
+                        No payments recorded for this period.
+                    </p>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_principal_fee_overview" model="ir.actions.report">
+        <field name="name">Fee Collection Overview</field>
+        <field name="model">ala.student.fee.line</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ala_fee_dashboard.report_principal_fee_overview</field>
+        <field name="report_file">ala_fee_dashboard.report_principal_fee_overview</field>
+        <field name="paperformat_id" ref="ala_fee_dashboard.paperformat_fee_dashboard"/>
+        <field name="print_report_name">'Fee Collection Overview'</field>
+    </record>
+
+</odoo>

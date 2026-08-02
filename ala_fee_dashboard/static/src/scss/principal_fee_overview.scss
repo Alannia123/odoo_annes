@@ -1,0 +1,390 @@
+// =====================================================================
+// Principal Fee Overview
+// Ink-blue + brass, matching the school portal. Sticky table headers so
+// the mode columns stay readable while scrolling a full month.
+// =====================================================================
+
+.pfo {
+    --pfo-ink: #14306b;
+    --pfo-blue: #1e4fa3;
+    --pfo-brass: #c98a12;
+    --pfo-line: #e3e9f2;
+    --pfo-muted: #64748b;
+
+    padding: 18px 20px 40px;
+    background: #f6f8fc;
+    min-height: 100%;
+    font-size: 13px;
+    color: #0f172a;
+
+    // -----------------------------------------------------------------
+    // Header
+    // -----------------------------------------------------------------
+    .pfo-head {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+
+        h2 {
+            margin: 0;
+            font-size: 21px;
+            font-weight: 700;
+            color: var(--pfo-ink);
+        }
+    }
+
+    .pfo-head__title { flex: 1 1 auto; min-width: 0; }
+
+    .pfo-head__sub {
+        display: block;
+        margin-top: 3px;
+        font-size: 12.5px;
+        color: var(--pfo-muted);
+    }
+
+    .pfo-dot { margin: 0 7px; color: #cbd5e1; }
+
+    .pfo-head__actions { display: flex; gap: 8px; flex: 0 0 auto; }
+
+    // -----------------------------------------------------------------
+    // Buttons
+    // -----------------------------------------------------------------
+    .pfo-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 15px;
+        border-radius: 9px;
+        font-size: 12.5px;
+        font-weight: 600;
+        border: 1px solid var(--pfo-line);
+        background: #fff;
+        color: #334155;
+        transition: background .15s ease, border-color .15s ease;
+
+        &:hover { background: #f1f5f9; border-color: #cbd5e1; }
+        &:active { transform: translateY(1px); }
+    }
+
+    .pfo-btn--primary {
+        background: linear-gradient(135deg, var(--pfo-ink), #2c6fd1);
+        border-color: transparent;
+        color: #fff;
+
+        &:hover { background: linear-gradient(135deg, #0f2452, #235bb0); }
+    }
+
+    // -----------------------------------------------------------------
+    // Presets
+    // -----------------------------------------------------------------
+    .pfo-presets {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin-bottom: 12px;
+    }
+
+    .pfo-preset {
+        padding: 6px 15px;
+        border-radius: 999px;
+        border: 1px solid var(--pfo-line);
+        background: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--pfo-muted);
+
+        &:hover { border-color: #b9c6da; color: #334155; }
+    }
+
+    .pfo-preset--on {
+        background: var(--pfo-ink);
+        border-color: var(--pfo-ink);
+        color: #fff;
+    }
+
+    // -----------------------------------------------------------------
+    // Filters
+    // -----------------------------------------------------------------
+    .pfo-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 14px 16px;
+        background: #fff;
+        border: 1px solid var(--pfo-line);
+        border-radius: 14px;
+        margin-bottom: 16px;
+    }
+
+    .pfo-field {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        min-width: 150px;
+        flex: 1 1 150px;
+
+        label {
+            margin: 0;
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            color: var(--pfo-muted);
+        }
+
+        input, select {
+            padding: 8px 11px;
+            border: 1px solid var(--pfo-line);
+            border-radius: 9px;
+            font-size: 12.5px;
+            background: #fff;
+            color: #0f172a;
+
+            &:focus {
+                outline: none;
+                border-color: var(--pfo-blue);
+                box-shadow: 0 0 0 3px rgba(30, 79, 163, .12);
+            }
+        }
+    }
+
+    .pfo-field--actions {
+        flex: 0 0 auto;
+        min-width: 0;
+        flex-direction: row;
+        align-items: flex-end;
+        gap: 8px;
+    }
+
+    // -----------------------------------------------------------------
+    // KPI tiles
+    // -----------------------------------------------------------------
+    .pfo-kpis {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(158px, 1fr));
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .pfo-kpi {
+        position: relative;
+        padding: 14px 16px;
+        background: #fff;
+        border: 1px solid var(--pfo-line);
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
+    }
+
+    .pfo-kpi__label {
+        display: block;
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+        color: var(--pfo-muted);
+    }
+
+    .pfo-kpi__value {
+        display: block;
+        margin-top: 5px;
+        font-size: 21px;
+        font-weight: 700;
+        color: var(--pfo-ink);
+        line-height: 1.15;
+    }
+
+    .pfo-kpi__value--sm { font-size: 17px; }
+
+    .pfo-kpi__foot {
+        display: block;
+        margin-top: 3px;
+        font-size: 11px;
+        color: #94a3b8;
+    }
+
+    .pfo-kpi--total {
+        background: linear-gradient(140deg, var(--pfo-ink), #2c6fd1);
+        border-color: transparent;
+
+        .pfo-kpi__label { color: #f2c14e; }
+        .pfo-kpi__value { color: #fff; }
+        .pfo-kpi__foot  { color: rgba(255, 255, 255, .78); }
+    }
+
+    .pfo-kpi--mode:before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: var(--pfo-brass);
+    }
+
+    // -----------------------------------------------------------------
+    // View switch
+    // -----------------------------------------------------------------
+    .pfo-tabs {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 12px;
+        border-bottom: 1px solid var(--pfo-line);
+    }
+
+    .pfo-tab {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 9px 16px;
+        border: 0;
+        background: transparent;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--pfo-muted);
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+
+        &:hover { color: #334155; }
+    }
+
+    .pfo-tab--on {
+        color: var(--pfo-ink);
+        border-bottom-color: var(--pfo-brass);
+    }
+
+    // -----------------------------------------------------------------
+    // States
+    // -----------------------------------------------------------------
+    .pfo-state {
+        padding: 54px 20px;
+        text-align: center;
+        color: #94a3b8;
+        background: #fff;
+        border: 1px solid var(--pfo-line);
+        border-radius: 14px;
+
+        i { font-size: 26px; display: block; margin-bottom: 10px; }
+        p { margin: 0; font-size: 13px; }
+    }
+
+    // -----------------------------------------------------------------
+    // Tables
+    // -----------------------------------------------------------------
+    .pfo-table-wrap {
+        background: #fff;
+        border: 1px solid var(--pfo-line);
+        border-radius: 14px;
+        overflow: auto;
+        max-height: calc(100vh - 400px);
+        min-height: 240px;
+    }
+
+    .pfo-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 12.5px;
+
+        th, td {
+            padding: 9px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            white-space: nowrap;
+        }
+
+        thead th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background: #f8fafc;
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            color: var(--pfo-muted);
+            border-bottom: 1px solid var(--pfo-line);
+        }
+
+        tbody tr:hover { background: #f8fbff; }
+
+        tfoot td {
+            position: sticky;
+            bottom: 0;
+            z-index: 2;
+            background: #f1f5f9;
+            border-top: 2px solid var(--pfo-ink);
+            border-bottom: 0;
+            font-size: 12.5px;
+        }
+    }
+
+    .pfo-num   { width: 46px; color: #94a3b8; text-align: right; }
+    .pfo-right { text-align: right; font-variant-numeric: tabular-nums; }
+    .pfo-strong{ font-weight: 700; color: var(--pfo-ink); }
+    .pfo-zero  { color: #cbd5e1; }
+
+    .pfo-desc {
+        max-width: 280px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .pfo-date {
+        small {
+            display: block;
+            font-size: 10.5px;
+            color: #94a3b8;
+        }
+    }
+
+    // Inline share bar
+    .pfo-bar-col { width: 120px; }
+
+    .pfo-bar {
+        display: block;
+        height: 7px;
+        border-radius: 999px;
+        background: #eef2f7;
+        overflow: hidden;
+    }
+
+    .pfo-bar__fill {
+        display: block;
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--pfo-blue), #2c6fd1);
+    }
+
+    // Mode pills
+    .pfo-pill {
+        display: inline-block;
+        padding: 2px 9px;
+        border-radius: 999px;
+        font-size: 10.5px;
+        font-weight: 700;
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+    .pfo-pill--cash   { background: #ecfdf5; color: #047857; }
+    .pfo-pill--bank   { background: #eff6ff; color: #1d4ed8; }
+    .pfo-pill--online { background: #fdf4ff; color: #a21caf; }
+
+    // -----------------------------------------------------------------
+    // Narrow screens
+    // -----------------------------------------------------------------
+    @media (max-width: 768px) {
+        padding: 12px;
+
+        .pfo-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .pfo-field { min-width: 120px; }
+        .pfo-table-wrap { max-height: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .pfo-btn { transition: none; }
+    }
+}

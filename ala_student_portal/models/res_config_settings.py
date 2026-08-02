@@ -36,3 +36,11 @@ class ResConfigSettings(models.TransientModel):
              "from the payer; the school is settled the full face value. Requires "
              "Customer Fee Bearer to be enabled on the Razorpay account.",
     )
+
+    ala_principal_user_id = fields.Many2one(
+        "res.users",
+        string="Principal",
+        config_parameter="ala_student_portal.principal_user_id",
+        domain="[('share', '=', False)]",
+        help="Internal user notified whenever a parent submits feedback "
+             "from the student portal.")

@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_fee_dashboard">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page" style="font-family: Arial, Helvetica, sans-serif; font-size: 8px; color: #1E293B;">
+
+                    <div style="margin-bottom: 5px;">
+                        <span style="font-size: 14px; font-weight: bold; color: #0F766E;">Student Fee Payment Tracker</span>
+                        <span style="font-size: 7.5px; color: #64748B; margin-left: 10px;">
+                            <t t-esc="filter_text"/> &#160;&#8226;&#160; Printed: <t t-esc="print_datetime"/>
+                        </span>
+                    </div>
+
+                    <!-- ============ KPI strip ============ -->
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
+                        <tr>
+                            <td style="width: 16.6%; background: #F0FDFA; border: 1px solid #99F6E4; padding: 3px 6px;">
+                                <div style="font-size: 6.5px; color: #0F766E; text-transform: uppercase;">Students</div>
+                                <div style="font-size: 11px; font-weight: bold;"><t t-esc="kpi['students']"/></div>
+                            </td>
+                            <td style="width: 16.6%; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 3px 6px;">
+                                <div style="font-size: 6.5px; color: #475569; text-transform: uppercase;">Payable</div>
+                                <div style="font-size: 11px; font-weight: bold;"><t t-esc="currency_symbol"/><t t-esc="'{:,.2f}'.format(kpi['payable'])"/></div>
+                            </td>
+                            <td style="width: 16.6%; background: #F0FDF4; border: 1px solid #BBF7D0; padding: 3px 6px;">
+                                <div style="font-size: 6.5px; color: #15803D; text-transform: uppercase;">Paid</div>
+                                <div style="font-size: 11px; font-weight: bold; color: #15803D;"><t t-esc="currency_symbol"/><t t-esc="'{:,.2f}'.format(kpi['paid'])"/></div>
+                            </td>
+                            <td style="width: 16.6%; background: #FEF2F2; border: 1px solid #FECACA; padding: 3px 6px;">
+                                <div style="font-size: 6.5px; color: #B91C1C; text-transform: uppercase;">Balance</div>
+                                <div style="font-size: 11px; font-weight: bold; color: #B91C1C;"><t t-esc="currency_symbol"/><t t-esc="'{:,.2f}'.format(kpi['balance'])"/></div>
+                            </td>
+                            <td style="width: 16.6%; background: #F0FDF4; border: 1px solid #BBF7D0; padding: 3px 6px;">
+                                <div style="font-size: 6.5px; color: #15803D; text-transform: uppercase;">Admission Paid</div>
+                                <div style="font-size: 11px; font-weight: bold; color: #15803D;"><t t-esc="kpi['admission_paid']"/></div>
+                            </td>
+                            <td style="width: 16.6%; background: #FFFBEB; border: 1px solid #FDE68A; padding: 3px 6px;">
+                                <div style="font-size: 6.5px; color: #B45309; text-transform: uppercase;">Admission Unpaid</div>
+                                <div style="font-size: 11px; font-weight: bold; color: #B45309;"><t t-esc="kpi['admission_unpaid']"/></div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- ============ Legend ============ -->
+                    <div style="margin-bottom: 4px; font-size: 7px; color: #475569;">
+                        <span style="display: inline-block; background: #DCFCE7; color: #15803D; border: 1px solid #BBF7D0; padding: 0 4px; font-weight: bold;">P</span> Paid &#160;
+                        <span style="display: inline-block; background: #FEF3C7; color: #B45309; border: 1px solid #FDE68A; padding: 0 4px; font-weight: bold;">U</span> Unpaid &#160;
+                        <span style="display: inline-block; background: #FEE2E2; color: #B91C1C; border: 1px solid #FECACA; padding: 0 4px; font-weight: bold;">O</span> Overdue &#160;
+                        <span style="display: inline-block; background: #F1F5F9; color: #475569; border: 1px solid #E2E8F0; padding: 0 4px; font-weight: bold;">C</span> Upcoming &#160;
+                        <span style="display: inline-block; background: #FFFFFF; color: #94A3B8; border: 1px solid #E2E8F0; padding: 0 4px; font-weight: bold;">&#8211;</span> No fee line
+                    </div>
+
+                    <!-- ============ Main grid ============ -->
+                    <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" style="width: 2.2%; border: 1px solid #0D9488; background: #0F766E; color: #fff; padding: 2px; font-size: 7px;">#</th>
+                                <th rowspan="2" style="width: 11%; border: 1px solid #0D9488; background: #0F766E; color: #fff; padding: 2px; font-size: 7px; text-align: left;">Student's Name</th>
+                                <th rowspan="2" style="width: 6.5%; border: 1px solid #0D9488; background: #0F766E; color: #fff; padding: 2px; font-size: 7px;">Register No</th>
+                                <th rowspan="2" style="width: 3%; border: 1px solid #0D9488; background: #0F766E; color: #fff; padding: 2px; font-size: 7px;">Roll</th>
+                                <th rowspan="2" style="width: 4.5%; border: 1px solid #0D9488; background: #0F766E; color: #fff; padding: 2px; font-size: 7px;">Division</th>
+                                <t t-foreach="buckets" t-as="b">
+                                    <th colspan="2" style="width: 8%; border: 1px solid #0D9488; background: #134E4A; color: #fff; padding: 2px; font-size: 6.5px;"><t t-esc="b['label']"/></th>
+                                </t>
+                                <th t-att-colspan="len(months)" style="width: 26.4%; border: 1px solid #0D9488; background: #0F172A; color: #fff; padding: 2px; font-size: 6.5px;">April to March</th>
+                                <th rowspan="2" style="width: 3.4%; border: 1px solid #0D9488; background: #0F766E; color: #fff; padding: 2px; font-size: 7px;">Months</th>
+                                <th rowspan="2" style="width: 6%; border: 1px solid #0D9488; background: #0F766E; color: #fff; padding: 2px; font-size: 7px;">Paid</th>
+                                <th rowspan="2" style="width: 6%; border: 1px solid #0D9488; background: #0F766E; color: #fff; padding: 2px; font-size: 7px;">Balance</th>
+                                <th rowspan="2" style="width: 6%; border: 1px solid #0D9488; background: #0F766E; color: #fff; padding: 2px; font-size: 7px;">Payable</th>
+                            </tr>
+                            <tr>
+                                <t t-foreach="buckets" t-as="b">
+                                    <th style="border: 1px solid #0D9488; background: #0D9488; color: #fff; padding: 1px; font-size: 6px;">Amt</th>
+                                    <th style="border: 1px solid #0D9488; background: #0D9488; color: #fff; padding: 1px; font-size: 6px;">St</th>
+                                </t>
+                                <t t-foreach="months" t-as="m">
+                                    <th style="border: 1px solid #0D9488; background: #0D9488; color: #fff; padding: 1px; font-size: 6px;"><t t-esc="m['short']"/></th>
+                                </t>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-if="students">
+                                <t t-foreach="students" t-as="st">
+                                    <t t-set="row_bg" t-value="'#F8FAFC' if st_index % 2 else '#FFFFFF'"/>
+                                    <tr>
+                                        <td t-attf-style="border: 1px solid #E2E8F0; padding: 2px; text-align: center; background: {{ row_bg }};"><t t-esc="st['sno']"/></td>
+                                        <td t-attf-style="border: 1px solid #E2E8F0; padding: 2px; font-weight: bold; background: {{ row_bg }}; overflow: hidden;"><t t-esc="st['student']"/></td>
+                                        <td t-attf-style="border: 1px solid #E2E8F0; padding: 2px; text-align: center; background: {{ row_bg }};"><t t-esc="st['register_number']"/></td>
+                                        <td t-attf-style="border: 1px solid #E2E8F0; padding: 2px; text-align: center; background: {{ row_bg }};"><t t-esc="st['roll_no']"/></td>
+                                        <td t-attf-style="border: 1px solid #E2E8F0; padding: 2px; text-align: center; background: {{ row_bg }};"><t t-esc="st['division']"/></td>
+
+                                        <t t-foreach="buckets" t-as="b">
+                                            <t t-set="cell" t-value="st['buckets'][b['key']]"/>
+                                            <t t-set="sty" t-value="status_style.get(cell['status'] if cell['has'] else '', status_style[''])"/>
+                                            <td t-attf-style="border: 1px solid #E2E8F0; padding: 2px; text-align: right; background: {{ row_bg }};">
+                                                <t t-if="cell['has']"><t t-esc="'{:,.0f}'.format(cell['amount'])"/></t>
+                                                <t t-else="">&#8211;</t>
+                                            </td>
+                                            <td t-attf-style="border: 1px solid #E2E8F0; padding: 2px; text-align: center; font-weight: bold; font-size: 6.5px; background: {{ sty[0] }}; color: {{ sty[1] }};">
+                                                <t t-esc="sty[2]"/>
+                                            </td>
+                                        </t>
+
+                                        <t t-foreach="months" t-as="m">
+                                            <t t-set="cell" t-value="st['months'][m_index]"/>
+                                            <t t-set="sty" t-value="status_style.get(cell['status'] if cell['has'] else '', status_style[''])"/>
+                                            <td t-attf-style="border: 1px solid #E2E8F0; padding: 2px; text-align: center; font-weight: bold; font-size: 7px; background: {{ sty[0] }}; color: {{ sty[1] }};">
+                                                <t t-esc="sty[2]"/>
+                                            </td>
+                                        </t>
+
+                                        <td t-attf-style="border: 1px solid #E2E8F0; padding: 2px; text-align: center; background: {{ row_bg }};"><t t-esc="st['months_paid']"/>/<t t-esc="st['months_total']"/></td>
+                                        <td t-attf-style="border: 1px solid #E2E8F0; padding: 2px; text-align: right; color: #15803D; background: {{ row_bg }};"><t t-esc="'{:,.2f}'.format(st['total_paid'])"/></td>
+                                        <td t-attf-style="border: 1px solid #E2E8F0; padding: 2px; text-align: right; color: #B91C1C; background: {{ row_bg }};"><t t-esc="'{:,.2f}'.format(st['total_balance'])"/></td>
+                                        <td t-attf-style="border: 1px solid #E2E8F0; padding: 2px; text-align: right; font-weight: bold; background: {{ row_bg }};"><t t-esc="'{:,.2f}'.format(st['total_payable'])"/></td>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <tr>
+                                    <td t-att-colspan="11 + len(months)" style="border: 1px solid #E2E8F0; padding: 12px; text-align: center; color: #64748B;">
+                                        No records match the selected filters.
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                        <tfoot>
+                            <t t-if="students">
+                                <tr style="background: #FDE68A; font-weight: bold;">
+                                    <td t-att-colspan="10 + len(months)" style="border: 1px solid #F59E0B; padding: 3px; text-align: right;">TOTAL</td>
+                                    <td style="border: 1px solid #F59E0B; padding: 3px; text-align: right;"><t t-esc="'{:,.2f}'.format(kpi['paid'])"/></td>
+                                    <td style="border: 1px solid #F59E0B; padding: 3px; text-align: right;"><t t-esc="'{:,.2f}'.format(kpi['balance'])"/></td>
+                                    <td style="border: 1px solid #F59E0B; padding: 3px; text-align: right;"><t t-esc="'{:,.2f}'.format(kpi['payable'])"/></td>
+                                </tr>
+                            </t>
+                            <t t-else="">
+                                <tr><td t-att-colspan="11 + len(months)" style="border: none; padding: 0;"/></tr>
+                            </t>
+                        </tfoot>
+                    </table>
+
+                    <!-- ============ Admission fee paid / unpaid lists ============ -->
+                    <t t-if="admission_paid or admission_unpaid">
+                        <div style="page-break-before: always;"/>
+                        <div style="font-size: 12px; font-weight: bold; color: #0F766E; margin-bottom: 4px;">
+                            Admission Fee &#8211; Paid &amp; Unpaid List
+                        </div>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 50%; vertical-align: top; padding-right: 6px;">
+                                    <div style="font-size: 9px; font-weight: bold; color: #15803D; margin-bottom: 3px;">
+                                        Paid (<t t-esc="len(admission_paid)"/>)
+                                    </div>
+                                    <table style="width: 100%; border-collapse: collapse; font-size: 7.5px;">
+                                        <thead>
+                                            <tr style="background: #15803D; color: #fff;">
+                                                <th style="border: 1px solid #BBF7D0; padding: 2px;">#</th>
+                                                <th style="border: 1px solid #BBF7D0; padding: 2px; text-align: left;">Student</th>
+                                                <th style="border: 1px solid #BBF7D0; padding: 2px;">Reg No</th>
+                                                <th style="border: 1px solid #BBF7D0; padding: 2px;">Div</th>
+                                                <th style="border: 1px solid #BBF7D0; padding: 2px;">Amount</th>
+                                                <th style="border: 1px solid #BBF7D0; padding: 2px;">Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-if="admission_paid">
+                                                <t t-foreach="admission_paid" t-as="a">
+                                                    <tr style="background: #F0FDF4;">
+                                                        <td style="border: 1px solid #DCFCE7; padding: 2px; text-align: center;"><t t-esc="a_index + 1"/></td>
+                                                        <td style="border: 1px solid #DCFCE7; padding: 2px;"><t t-esc="a['student']"/></td>
+                                                        <td style="border: 1px solid #DCFCE7; padding: 2px; text-align: center;"><t t-esc="a['register_number']"/></td>
+                                                        <td style="border: 1px solid #DCFCE7; padding: 2px; text-align: center;"><t t-esc="a['division']"/></td>
+                                                        <td style="border: 1px solid #DCFCE7; padding: 2px; text-align: right;"><t t-esc="'{:,.2f}'.format(a['amount'])"/></td>
+                                                        <td style="border: 1px solid #DCFCE7; padding: 2px; text-align: center;"><t t-esc="a['date']"/></td>
+                                                    </tr>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <tr><td colspan="6" style="border: 1px solid #DCFCE7; padding: 5px; text-align: center; color: #64748B;">None</td></tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td style="width: 50%; vertical-align: top; padding-left: 6px;">
+                                    <div style="font-size: 9px; font-weight: bold; color: #B45309; margin-bottom: 3px;">
+                                        Unpaid (<t t-esc="len(admission_unpaid)"/>)
+                                    </div>
+                                    <table style="width: 100%; border-collapse: collapse; font-size: 7.5px;">
+                                        <thead>
+                                            <tr style="background: #B45309; color: #fff;">
+                                                <th style="border: 1px solid #FDE68A; padding: 2px;">#</th>
+                                                <th style="border: 1px solid #FDE68A; padding: 2px; text-align: left;">Student</th>
+                                                <th style="border: 1px solid #FDE68A; padding: 2px;">Reg No</th>
+                                                <th style="border: 1px solid #FDE68A; padding: 2px;">Div</th>
+                                                <th style="border: 1px solid #FDE68A; padding: 2px;">Amount</th>
+                                                <th style="border: 1px solid #FDE68A; padding: 2px;">Due</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-if="admission_unpaid">
+                                                <t t-foreach="admission_unpaid" t-as="a">
+                                                    <tr style="background: #FFFBEB;">
+                                                        <td style="border: 1px solid #FEF3C7; padding: 2px; text-align: center;"><t t-esc="a_index + 1"/></td>
+                                                        <td style="border: 1px solid #FEF3C7; padding: 2px;"><t t-esc="a['student']"/></td>
+                                                        <td style="border: 1px solid #FEF3C7; padding: 2px; text-align: center;"><t t-esc="a['register_number']"/></td>
+                                                        <td style="border: 1px solid #FEF3C7; padding: 2px; text-align: center;"><t t-esc="a['division']"/></td>
+                                                        <td style="border: 1px solid #FEF3C7; padding: 2px; text-align: right;"><t t-esc="'{:,.2f}'.format(a['amount'])"/></td>
+                                                        <td style="border: 1px solid #FEF3C7; padding: 2px; text-align: center;"><t t-esc="a['due']"/></td>
+                                                    </tr>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <tr><td colspan="6" style="border: 1px solid #FEF3C7; padding: 5px; text-align: center; color: #64748B;">None</td></tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
