@@ -237,7 +237,7 @@ class StudentFeeLineDashboard(models.Model):
                     'register_number': line.register_number or '',
                     'roll_no': line.student_id.roll_no or '',
                     'division': line.student_division_id.name or '',
-                    'academic_year': line.academic_year.name or '',
+                    'academic_year': line.academic_year_id.name or '',
                     'buckets': {b['key']: _empty_cell() for b in BUCKETS},
                     'months': [_empty_cell() for _ in MONTHS],
                     'total_payable': sf.final_amount_total if sf else 0.0,
