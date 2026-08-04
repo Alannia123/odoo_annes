@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Standalone verification pages. They inherit web.frontend_layout so they
+        work with only `web` + `http` available. If your module already depends
+        on `website`, swap the t-call for "website.layout" to pick up the site
+        header/footer and theme.
+    -->
+
+    <!-- ============ VALID ============ -->
+    <template id="tc_verify_valid" name="Transfer Certificate - Verified">
+        <t t-call="web.frontend_layout">
+            <t t-set="no_header" t-value="True"/>
+            <t t-set="no_footer" t-value="True"/>
+
+            <div style="min-height:100vh; background:#F3F7E7; padding:40px 16px;
+                        font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+
+                <div style="max-width:640px; margin:0 auto; background:#ffffff;
+                            border:1px solid #D6E3C0; border-radius:10px;
+                            box-shadow:0 2px 14px rgba(20,54,31,0.10); overflow:hidden;">
+
+                    <!-- header band -->
+                    <div style="background:#2F5D3A; color:#ffffff; padding:22px 26px;">
+                        <div style="display:flex; align-items:center; gap:14px;">
+                            <img t-if="company.logo"
+                                 t-att-src="image_data_uri(company.logo)"
+                                 style="height:46px; width:46px; object-fit:contain;
+                                        background:#fff; border-radius:6px; padding:3px;"/>
+                            <div>
+                                <div style="font-size:18px; font-weight:600; line-height:1.2;">
+                                    <t t-esc="company.tc_school_name or company.name"/>
+                                </div>
+                                <div style="font-size:13px; opacity:0.85;">
+                                    Transfer Certificate Verification
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- verified badge -->
+                    <div style="padding:20px 26px; border-bottom:1px solid #EDF1E4;">
+                        <span style="display:inline-block; background:#E6F4EA; color:#1E7A3C;
+                                     border:1px solid #B7E0C4; border-radius:999px;
+                                     padding:6px 16px; font-size:14px; font-weight:600;">
+                            &#10004; Genuine certificate
+                        </span>
+                        <div style="margin-top:10px; font-size:13px; color:#5A6B5E;">
+                            This certificate was issued from our records and has not been altered.
+                        </div>
+                    </div>
+
+                    <!-- details -->
+                    <table style="width:100%; border-collapse:collapse; font-size:14.5px;">
+                        <tr>
+                            <td style="padding:12px 26px; color:#6B7A6E; width:45%;">Certificate No.</td>
+                            <td style="padding:12px 26px; font-weight:600; color:#14361F;">
+                                <t t-esc="tc.tc_no or '-'"/>
+                            </td>
+                        </tr>
+                        <tr style="background:#FAFCF5;">
+                            <td style="padding:12px 26px; color:#6B7A6E;">Student Name</td>
+                            <td style="padding:12px 26px; font-weight:600; color:#14361F;">
+                                <t t-esc="tc.student_name or '-'"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:12px 26px; color:#6B7A6E;">Father's Name</td>
+                            <td style="padding:12px 26px; color:#14361F;">
+                                <t t-esc="tc.father_name or '-'"/>
+                            </td>
+                        </tr>
+                        <tr style="background:#FAFCF5;">
+                            <td style="padding:12px 26px; color:#6B7A6E;">School Roll No.</td>
+                            <td style="padding:12px 26px; color:#14361F;">
+                                <t t-esc="tc.school_roll_no or '-'"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:12px 26px; color:#6B7A6E;">Date of Birth</td>
+                            <td style="padding:12px 26px; color:#14361F;">
+                                <t t-esc="tc.dob_str or '-'"/>
+                            </td>
+                        </tr>
+                        <tr style="background:#FAFCF5;">
+                            <td style="padding:12px 26px; color:#6B7A6E;">Class Studied</td>
+                            <td style="padding:12px 26px; color:#14361F;">
+                                <t t-esc="tc.studying_class or '-'"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:12px 26px; color:#6B7A6E;">Date of Leaving</td>
+                            <td style="padding:12px 26px; color:#14361F;">
+                                <t t-esc="tc.leaving_date_str or '-'"/>
+                            </td>
+                        </tr>
+                        <tr style="background:#FAFCF5;">
+                            <td style="padding:12px 26px; color:#6B7A6E;">Issued On</td>
+                            <td style="padding:12px 26px; color:#14361F;">
+                                <t t-esc="tc.issue_date_str or '-'"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div style="padding:16px 26px; background:#F7FAF0; font-size:12px;
+                                color:#7A8A7E; border-top:1px solid #EDF1E4;">
+                        Verified against school records. For any discrepancy, contact the
+                        school office directly.
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============ INVALID ============ -->
+    <template id="tc_verify_invalid" name="Transfer Certificate - Not Found">
+        <t t-call="web.frontend_layout">
+            <t t-set="no_header" t-value="True"/>
+            <t t-set="no_footer" t-value="True"/>
+
+            <div style="min-height:100vh; background:#FBF3F3; padding:60px 16px;
+                        font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+                <div style="max-width:520px; margin:0 auto; background:#ffffff;
+                            border:1px solid #E8CFCF; border-radius:10px;
+                            padding:36px 30px; text-align:center;
+                            box-shadow:0 2px 14px rgba(90,20,20,0.08);">
+                    <div style="font-size:40px; line-height:1; color:#C0392B;">&#10007;</div>
+                    <div style="font-size:19px; font-weight:600; color:#8E2C22; margin-top:14px;">
+                        Certificate not found
+                    </div>
+                    <div style="font-size:14px; color:#6B5A5A; margin-top:10px; line-height:1.5;">
+                        This verification link does not match any certificate in our records.
+                        The code may have been mistyped, or the certificate may not be genuine.
+                        Please contact the school office.
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>
