@@ -48,10 +48,10 @@
                             <field name="student_id" placeholder="SPARSH ROY"/>
                             <field name="student_name" placeholder="SPARSH ROY"/>
                             <field name="gender"/>
-                            <field name="father_name" placeholder="DIBYENDU ROY"/>
-                            <field name="mother_name" placeholder="ESHITA BARAL"/>
-                            <field name="religion" placeholder="HINDU"/>
-                            <field name="school_roll_no" placeholder="23"/>
+                            <field name="father_name" placeholder="DIBYENDU ROY" readonly="0"/>
+                            <field name="mother_name" placeholder="ESHITA BARAL" readonly="0"/>
+                            <field name="religion" placeholder="HINDU" readonly="0"/>
+                            <field name="school_roll_no" placeholder="01"/>
                         </group>
                         <group string="Birth">
                             <field name="dob"/>

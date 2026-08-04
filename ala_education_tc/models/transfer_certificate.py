@@ -85,7 +85,7 @@ class AlaTransferCertificate(models.Model):
     tc_no = fields.Char(
         string='T.C. No.', required=True, copy=False, readonly=True,
         index=True, default=lambda self: _('New'), tracking=True)
-    school_roll_no = fields.Char(related='student_id.roll_no', string='School Roll No.', tracking=True)
+    school_roll_no = fields.Char(related='student_id.roll_no', string='School Roll No.', tracking=True, store=True)
     company_id = fields.Many2one(
         'res.company', string='School', required=True,
         default=lambda self: self.env.company)
@@ -94,16 +94,16 @@ class AlaTransferCertificate(models.Model):
     # Scholar particulars (all manual entry)
     # ------------------------------------------------------------------
     student_id = fields.Many2one('ala.education.student', string='Name of Scholar', required=True, tracking=True)
-    student_name = fields.Char(related='student_id.name', string='Name of Scholar', required=True, tracking=True)
-    father_name = fields.Char(related='student_id.father_name', string="Father's Name")
-    mother_name = fields.Char(related='student_id.mother_name', string="Mother's Name")
-    religion = fields.Char(related='student_id.religion', string='Religion')
+    student_name = fields.Char(related='student_id.name', string='Name of Scholar', required=True, tracking=True, store=True)
+    father_name = fields.Char(related='student_id.father_name', string="Father's Name", store=True)
+    mother_name = fields.Char(related='student_id.mother_name', string="Mother's Name", store=True)
+    religion = fields.Char(related='student_id.religion', string='Religion', store=True)
     gender = fields.Selection(related='student_id.gender',
 
         string='Gender', default='male', required=True,
-        help="Drives the pronouns printed on the certificate (He/She, his/her).")
+        help="Drives the pronouns printed on the certificate (He/She, his/her).", store=True)
 
-    admission_date = fields.Date(related='student_id.date_of_addmission',string='Date of Admission')
+    admission_date = fields.Date(related='student_id.date_of_addmission',string='Date of Admission', store=True)
     previous_school = fields.Char(
         string='T.C. Received From',
         help="Printed after 'on a transfer certificate from'.")
@@ -126,7 +126,7 @@ class AlaTransferCertificate(models.Model):
         [('paid', 'Paid'), ('not_paid', 'Not Paid')],
         string='All Sums Due (4)', default='paid', required=True)
 
-    dob = fields.Date(related='student_id.date_of_birth', string='Date of Birth')
+    dob = fields.Date(related='student_id.date_of_birth', string='Date of Birth', store=True)
     dob_in_words = fields.Char(
         string='Date of Birth (in words)', compute='_compute_dob_in_words',
         store=True, readonly=False,
