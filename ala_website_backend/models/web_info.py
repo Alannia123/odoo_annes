@@ -10,7 +10,7 @@ class WebAnouInfo(models.Model):
 
     name = fields.Char('Name', required=False, default='New')
     date = fields.Date('Date', default=lambda self: date.today())
-    anounce = fields.Char('Annoucements')
+    anounce = fields.Char('Annoucements', required=True)
     enable = fields.Boolean('Enable/Disable')
     color = fields.Char(string="Color HEX", default='#4d0000')
 

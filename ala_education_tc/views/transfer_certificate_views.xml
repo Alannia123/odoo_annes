@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_ala_transfer_certificate_list" model="ir.ui.view">
+        <field name="name">ala.transfer.certificate.list</field>
+        <field name="model">ala.transfer.certificate</field>
+        <field name="arch" type="xml">
+            <list string="Transfer Certificates"
+                  decoration-muted="state == 'cancelled'"
+                  decoration-success="state == 'issued'">
+                <field name="tc_no"/>
+                <field name="student_id"/>
+                <field name="student_name"/>
+                <field name="school_roll_no"/>
+                <field name="studying_class"/>
+                <field name="father_name" optional="show"/>
+                <field name="leaving_date"/>
+                <field name="issue_date"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ala_transfer_certificate_form" model="ir.ui.view">
+        <field name="name">ala.transfer.certificate.form</field>
+        <field name="model">ala.transfer.certificate</field>
+        <field name="arch" type="xml">
+            <form string="Transfer Certificate">
+                <header>
+                    <button name="action_issue" type="object" string="Issue T.C."
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_print_tc" type="object" string="Print T.C."
+                            class="btn-primary" invisible="state != 'issued'"/>
+                    <button name="action_print_blank" type="object" string="Print Blank Form"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state == 'cancelled'"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
+                            invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,issued"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="tc_no" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Scholar">
+                            <field name="student_id" placeholder="SPARSH ROY"/>
+                            <field name="student_name" placeholder="SPARSH ROY"/>
+                            <field name="gender"/>
+                            <field name="father_name" placeholder="DIBYENDU ROY"/>
+                            <field name="mother_name" placeholder="ESHITA BARAL"/>
+                            <field name="religion" placeholder="HINDU"/>
+                            <field name="school_roll_no" placeholder="23"/>
+                        </group>
+                        <group string="Birth">
+                            <field name="dob"/>
+                            <field name="dob_in_words"
+                                   placeholder="FOURTH JUNE TWO THOUSAND TWELVE"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Admission &amp; Leaving">
+                            <field name="admission_date"/>
+                            <field name="previous_school"
+                                   placeholder="INTERNATIONAL PUBLIC SCHOOL"/>
+                            <field name="leaving_date"/>
+                            <field name="character_conduct"/>
+                        </group>
+                        <group string="Academic">
+                            <field name="studying_class" placeholder="CLASS - 7"/>
+                            <field name="exam_stream" placeholder="I.C.S.E. WB468"/>
+                            <field name="session_from"/>
+                            <field name="session_to"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Clearance">
+                            <field name="dues_status"/>
+                            <field name="promotion"/>
+                        </group>
+                        <group string="Issue">
+                            <field name="issue_date"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Remarks" name="remarks">
+                            <field name="remarks" placeholder="Internal notes - not printed on the certificate."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_ala_transfer_certificate_search" model="ir.ui.view">
+        <field name="name">ala.transfer.certificate.search</field>
+        <field name="model">ala.transfer.certificate</field>
+        <field name="arch" type="xml">
+            <search string="Transfer Certificates">
+                <field name="tc_no"/>
+                <field name="student_name"
+                       filter_domain="['|', '|', ('student_name', 'ilike', self), ('father_name', 'ilike', self), ('school_roll_no', 'ilike', self)]"
+                       string="Scholar / Father / Roll No."/>
+                <field name="studying_class"/>
+                <filter name="filter_draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_issued" string="Issued" domain="[('state', '=', 'issued')]"/>
+                <separator/>
+                <filter name="filter_issue_date" string="Issue Date" date="issue_date"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_class" string="Class" context="{'group_by': 'studying_class'}"/>
+                    <filter name="group_issue_date" string="Issue Month" context="{'group_by': 'issue_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_ala_transfer_certificate" model="ir.actions.act_window">
+        <field name="name">Transfer Certificates</field>
+        <field name="res_model">ala.transfer.certificate</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_ala_transfer_certificate_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Issue your first Transfer Certificate</p>
+            <p>Fill the scholar details exactly as they appear in the Admission Register.
+               The printed certificate reproduces the school stationery layout.</p>
+        </field>
+    </record>
+
+</odoo>

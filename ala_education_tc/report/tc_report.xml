@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_transfer_certificate" model="ir.actions.report">
+        <field name="name">Transfer Certificate</field>
+        <field name="model">ala.transfer.certificate</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ala_education_tc.report_transfer_certificate</field>
+        <field name="report_file">ala_education_tc.report_transfer_certificate</field>
+        <field name="print_report_name">'Transfer Certificate - %s' % (object.tc_no or '')</field>
+        <field name="binding_model_id" ref="model_ala_transfer_certificate"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_tc_a4"/>
+    </record>
+
+    <record id="action_report_transfer_certificate_blank" model="ir.actions.report">
+        <field name="name">Transfer Certificate (Blank Form)</field>
+        <field name="model">ala.transfer.certificate</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ala_education_tc.report_transfer_certificate_blank</field>
+        <field name="report_file">ala_education_tc.report_transfer_certificate_blank</field>
+        <field name="print_report_name">'Transfer Certificate - Blank'</field>
+        <field name="paperformat_id" ref="paperformat_tc_a4"/>
+    </record>
+
+</odoo>

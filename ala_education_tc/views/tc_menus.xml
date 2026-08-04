@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_ala_tc_root"
+              name="Certificates"
+              web_icon="ala_education_tc,static/description/icon.png"
+              sequence="72"
+              groups="ala_education_tc.group_ala_tc_officer"/>
+
+    <menuitem id="menu_ala_tc_operations"
+              name="Transfer Certificate"
+              parent="menu_ala_tc_root"
+              sequence="10"/>
+
+    <menuitem id="menu_ala_transfer_certificate"
+              name="Transfer Certificates"
+              parent="menu_ala_tc_operations"
+              action="action_ala_transfer_certificate"
+              sequence="10"/>
+
+</odoo>

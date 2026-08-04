@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        ================================================================
+        Transfer Certificate - printed replica
+        ================================================================
+        wkhtmltopdf notes (deliberate choices, please keep them):
+          * NO bootstrap utility classes (text-right, d-flex, row/col).
+          * Every alignment is an INLINE style on a <td> (block-level),
+            never on a <span>.  (Font styling on <span> IS safe.)
+          * Layout is table-based, table-layout:fixed.
+          * All vertical space is budgeted in mm, wrapper is
+            overflow:hidden -> guaranteed single page.
+          * BACKGROUND: the cream/green wash is painted on the wrapper
+            div.  wkhtmltopdf must NOT be run with -no-background
+            (Odoo does not pass it by default).  Set the paperformat
+            margins to 0 if you want full-bleed colour to the paper edge.
+    -->
+
+    <template id="tc_document">
+
+        <!-- static printed text = Times, normal.  Filled-in values = Georgia bold italic, ink colour -->
+        <t t-set="paper_bg" t-value="'#F3F7E7'"/>
+        <t t-set="val_style"
+           t-value="'font-family:Georgia,serif; font-weight:bold; font-style:italic; font-size:12.5pt; color:#14361F;'"/>
+
+        <div t-attf-style="width:100%; height:286mm; overflow:hidden; background:{{paper_bg}};
+                    font-family:'Times New Roman', Times, serif; color:#000000;
+                    font-size:12pt; line-height:1.15;">
+
+            <table style="width:100%; height:286mm; border-collapse:collapse; table-layout:fixed;">
+                <tr>
+
+                    <!-- ============ decorative left band ============ -->
+                    <td style="width:24mm; vertical-align:middle; padding:0;">
+                        <table style="width:100%; height:280mm; border-collapse:collapse; table-layout:fixed;">
+                            <tr>
+                                <td style="width:7mm; vertical-align:middle; text-align:center;
+                                           font-size:11pt; line-height:7.2mm; letter-spacing:0; color:#2F5D3A;">
+                                    *<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>
+                                    *<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>
+                                    *<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>
+                                    *<br/>*<br/>*<br/>*<br/>*<br/>*
+                                </td>
+                                <td style="width:10mm; vertical-align:middle; text-align:center; overflow:visible;">
+                                    <div style="-webkit-transform:rotate(-90deg); transform:rotate(-90deg);
+                                                white-space:nowrap; font-size:12pt; font-weight:bold;
+                                                letter-spacing:2px;">
+                                        <t t-esc="o.company_id.tc_side_text or o.company_id.tc_school_name or o.company_id.name"/>
+                                    </div>
+                                </td>
+                                <td style="width:7mm; vertical-align:middle; text-align:center;
+                                           font-size:11pt; line-height:7.2mm; color:#2F5D3A;">
+                                    *<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>
+                                    *<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>
+                                    *<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>*<br/>
+                                    *<br/>*<br/>*<br/>*<br/>*<br/>*
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+
+                    <!-- ================= certificate body ================= -->
+                    <td style="vertical-align:top; padding:6mm 6mm 0 3mm;">
+
+                        <!-- letterhead -->
+                        <table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-bottom:1mm;">
+                            <tr>
+                                <td style="width:22mm; vertical-align:top; text-align:center; padding-top:2mm;">
+                                    <img t-if="o.company_id.logo"
+                                         t-att-src="image_data_uri(o.company_id.logo)"
+                                         style="width:19mm; height:19mm; object-fit:contain;"/>
+                                </td>
+                                <td style="vertical-align:top; text-align:center;">
+                                    <div style="font-size:29pt; font-weight:bold; letter-spacing:1px; line-height:1.05;">
+                                        <t t-esc="o.company_id.tc_school_name or o.company_id.name"/>
+                                    </div>
+                                    <div style="font-size:11.5pt; font-weight:bold; margin-top:1mm;">
+                                        <t t-esc="o.company_id.tc_address_line1 or ''"/>
+                                    </div>
+                                    <div style="font-size:11.5pt; font-weight:bold;">
+                                        <t t-esc="o.company_id.tc_address_line2 or ''"/>
+                                    </div>
+                                </td>
+                                <td style="width:12mm;"></td>
+                            </tr>
+                        </table>
+
+                        <div style="text-align:center; font-size:16pt; font-weight:bold;
+                                    letter-spacing:0.5px; margin:1.5mm 0 3mm 0;">
+                            TRANSFER CERTIFICATE
+                        </div>
+
+                        <!-- line 1 : numbers -->
+                        <table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-bottom:3.2mm;">
+                            <tr style="vertical-align:bottom;">
+                                <td style="width:9mm; white-space:nowrap;">No.</td>
+                                <td style="width:33mm; border-bottom:1px dotted #000; text-align:center;
+                                           padding-bottom:0.4mm;">
+                                    <span t-att-style="val_style"><t t-esc="'' if blank else (o.tc_no or '')"/></span>
+                                </td>
+                                <td style="width:14mm;"></td>
+                                <td style="width:33mm; white-space:nowrap; text-align:right;">School Roll No.</td>
+                                <td style="border-bottom:1px dotted #000; text-align:center;
+                                           padding-bottom:0.4mm;">
+                                    <span t-att-style="val_style"><t t-esc="'' if blank else (o.school_roll_no or '')"/></span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- line 2 : name -->
+                        <table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-bottom:3.2mm;">
+                            <tr style="vertical-align:bottom;">
+                                <td style="width:8mm;"></td>
+                                <td style="width:44mm; white-space:nowrap; font-style:italic; font-weight:bold;">
+                                    This is Certify that
+                                </td>
+                                <td style="border-bottom:1px dotted #000; text-align:center; padding-bottom:0.4mm;">
+                                    <span t-att-style="val_style"><t t-esc="'' if blank else (o.student_name or '')"/></span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- line 3 : parents -->
+                        <table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-bottom:3.2mm;">
+                            <tr style="vertical-align:bottom;">
+                                <td style="width:52mm; white-space:nowrap;">Son / daughter of Father</td>
+                                <td style="border-bottom:1px dotted #000; text-align:center; padding-bottom:0.4mm;">
+                                    <span t-att-style="val_style"><t t-esc="'' if blank else (o.father_name or '')"/></span>
+                                </td>
+                                <td style="width:16mm; white-space:nowrap; text-align:right;">Mother</td>
+                                <td style="border-bottom:1px dotted #000; text-align:center; padding-bottom:0.4mm;">
+                                    <span t-att-style="val_style"><t t-esc="'' if blank else (o.mother_name or '')"/></span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- line 4 : religion -->
+                        <table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-bottom:3.2mm;">
+                            <tr style="vertical-align:bottom;">
+                                <td style="width:21mm; white-space:nowrap;">Religion</td>
+                                <td style="border-bottom:1px dotted #000; text-align:center; padding-bottom:0.4mm;">
+                                    <span t-att-style="val_style"><t t-esc="'' if blank else (o.religion or '')"/></span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- line 5 : admission date -->
+                        <table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-bottom:3.2mm;">
+                            <tr style="vertical-align:bottom;">
+                                <td style="width:73mm; white-space:nowrap;">was admitted into this school on the (date)</td>
+                                <td style="border-bottom:1px dotted #000; text-align:center; padding-bottom:0.4mm;">
+                                    <span t-att-style="val_style"><t t-esc="'' if blank else (o.admission_date_str or '')"/></span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- line 6 : previous school -->
+                        <table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-bottom:3.2mm;">
+                            <tr style="vertical-align:bottom;">
+                                <td style="width:58mm; white-space:nowrap;">on a transfer certificate from</td>
+                                <td style="border-bottom:1px dotted #000; text-align:center; padding-bottom:0.4mm;">
+                                    <span t-att-style="val_style"><t t-esc="'' if blank else (o.previous_school or '')"/></span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- line 7 : leaving + character -->
+                        <table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-bottom:3.2mm;">
+                            <tr style="vertical-align:bottom;">
+                                <td style="width:29mm; white-space:nowrap;">and left on the</td>
+                                <td style="width:40mm; border-bottom:1px dotted #000; text-align:center; padding-bottom:0.4mm;">
+                                    <span t-att-style="val_style"><t t-esc="'' if blank else (o.leaving_date_str or '')"/></span>
+                                </td>
+                                <td style="width:15mm; white-space:nowrap; text-align:center;">with a</td>
+                                <td style="border-bottom:1px dotted #000; text-align:center; padding-bottom:0.4mm;">
+                                    <span t-att-style="val_style"><t t-esc="'' if blank else (o.character_conduct or '')"/></span>
+                                </td>
+                                <td style="width:20mm; white-space:nowrap; text-align:right;">character.</td>
+                            </tr>
+                        </table>
+
+                        <!-- line 8 : class -->
+                        <table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-bottom:3.2mm;">
+                            <tr style="vertical-align:bottom;">
+                                <td style="width:56mm; white-space:nowrap;">
+                                    <t t-esc="o.pronoun_subject"/> was then studying in the (1)
+                                </td>
+                                <td style="border-bottom:1px dotted #000; text-align:center; padding-bottom:0.4mm;">
+                                    <span t-att-style="val_style"><t t-esc="'' if blank else (o.studying_class or '')"/></span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- line 9 : stream -->
+                        <table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-bottom:3.2mm;">
+                            <tr style="vertical-align:bottom;">
+                                <td style="width:32mm; white-space:nowrap;">Class of the (2)</td>
+                                <td style="width:56mm; border-bottom:1px dotted #000; text-align:center; padding-bottom:0.4mm;">
+                                    <span t-att-style="val_style"><t t-esc="'' if blank else (o.exam_stream or '')"/></span>
+                                </td>
+                                <td style="white-space:nowrap; text-align:left; padding-left:2mm;">
+                                    stream, the school year being from
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- line 10 : session -->
+                        <table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-bottom:3.2mm;">
+                            <tr style="vertical-align:bottom;">
+                                <td style="width:12mm; white-space:nowrap;">(3)</td>
+                                <td style="border-bottom:1px dotted #000; text-align:center; padding-bottom:0.4mm;">
+                                    <span t-att-style="val_style"><t t-esc="'' if blank else (o.session_from_label or '')"/></span>
+                                </td>
+                                <td style="width:12mm; white-space:nowrap; text-align:center;">(3)</td>
+                                <td style="border-bottom:1px dotted #000; text-align:center; padding-bottom:0.4mm;">
+                                    <span t-att-style="val_style"><t t-esc="'' if blank else (o.session_to_label or '')"/></span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- line 11 : dues -->
+                        <table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-bottom:3.2mm;">
+                            <tr style="vertical-align:bottom;">
+                                <td style="width:32mm; white-space:nowrap;">All sums due (4)</td>
+                                <td style="border-bottom:1px dotted #000; text-align:center; padding-bottom:0.4mm;">
+                                    <span t-att-style="val_style"><t t-esc="'' if blank else (o.dues_label or '')"/></span>
+                                </td>
+                                <td style="width:52mm; white-space:nowrap; text-align:right;">
+                                    to this school on <t t-esc="o.pronoun_possessive"/> account
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- line 12 : static sentence -->
+                        <div style="margin-bottom:3.2mm;">
+                            have been remitted or satisfactorily arranged for.
+                            <t t-esc="o.pronoun_possessive_cap"/> date of birth according to the
+                        </div>
+
+                        <!-- line 13 : dob figures -->
+                        <table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-bottom:3.2mm;">
+                            <tr style="vertical-align:bottom;">
+                                <td style="width:64mm; white-space:nowrap;">Admission Register is (in figures)</td>
+                                <td style="border-bottom:1px dotted #000; text-align:center; padding-bottom:0.4mm;">
+                                    <span t-att-style="val_style"><t t-esc="'' if blank else (o.dob_str or '')"/></span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- line 14 : dob words -->
+                        <table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-bottom:3.2mm;">
+                            <tr style="vertical-align:bottom;">
+                                <td style="width:24mm; white-space:nowrap;">(in words)</td>
+                                <td style="border-bottom:1px dotted #000; text-align:center; padding-bottom:0.4mm;">
+                                    <span t-att-style="val_style"><t t-esc="'' if blank else (o.dob_in_words or '')"/></span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- line 15/16 : static note -->
+                        <div style="margin-bottom:2mm;">
+                            (The following additional information must be supplied if the scholar left at the end of
+                        </div>
+                        <div style="margin-bottom:3.2mm;">the School year.)</div>
+
+                        <!-- line 17 : promotion -->
+                        <table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-bottom:3mm;">
+                            <tr style="vertical-align:bottom;">
+                                <td style="width:44mm; white-space:nowrap;">Promotion has been (5)</td>
+                                <td style="border-bottom:1px dotted #000; text-align:center; padding-bottom:0.4mm;">
+                                    <span t-att-style="val_style"><t t-esc="'' if blank else (o.promotion_label or '')"/></span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!--
+                            ============ signature block ============
+                            principal record is resolved here.  If `env` is not exposed in your
+                            QWeb context, swap the first t-set for:
+                                <t t-set="members" t-value="o.get_members()"/>
+                        -->
+                        <t t-set="members" t-value="env['ala.school.members'].search([], limit=1)"/>
+                        <t t-set="principal"
+                           t-value="members.member_line_ids.filtered(lambda x: x.designation == 'principal')[:1]"/>
+
+                        <table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-bottom:2mm;">
+                            <tr style="vertical-align:bottom; height:14mm;">
+                                <td style="width:15mm; white-space:nowrap;">Date</td>
+                                <td style="width:42mm; border-bottom:1px solid #000; text-align:center; padding-bottom:0.4mm;">
+                                    <span t-att-style="val_style"><t t-esc="'' if blank else (o.issue_date_str or '')"/></span>
+                                </td>
+                                <td style="width:20mm;"></td>
+                                <td style="width:26mm; white-space:nowrap; text-align:right;">Signature</td>
+                                <td style="border-bottom:1px solid #000; text-align:center; padding-bottom:0.4mm;">
+                                    <t t-if="not blank and principal and principal.signature">
+                                        <img t-att-src="image_data_uri(principal.signature)"
+                                             style="max-height:12mm; max-width:38mm; object-fit:contain;"/>
+                                    </t>
+                                    <t t-else="">&#160;</t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4"></td>
+                                <td style="text-align:center; font-size:10pt; padding-top:0.5mm;">
+<!--                                    <t t-if="not blank and principal and principal.name">-->
+<!--                                        <span t-att-style="val_style + 'font-size:10.5pt;'">-->
+<!--                                            <t t-esc="principal.name"/>-->
+<!--                                        </span>-->
+<!--                                        <br/>-->
+<!--                                    </t>-->
+                                    (Principal)
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- footnotes -->
+                        <table style="width:100%; border-collapse:collapse; table-layout:fixed;
+                                      font-size:9.5pt; line-height:1.35; margin-top:2mm;">
+                            <tr style="vertical-align:top;">
+                                <td style="width:8mm; padding-left:6mm;">1.</td>
+                                <td>To be given in words.</td>
+                            </tr>
+                            <tr style="vertical-align:top;">
+                                <td style="width:8mm; padding-left:6mm;">2.</td>
+                                <td>Mention whether I.C.S.E. / Madhyamik stream or any other examination stream.</td>
+                            </tr>
+                            <tr style="vertical-align:top;">
+                                <td style="width:8mm; padding-left:6mm;">3.</td>
+                                <td>Insert month.</td>
+                            </tr>
+                            <tr style="vertical-align:top;">
+                                <td style="width:8mm; padding-left:6mm;">4.</td>
+                                <td>Sums due to the School include payment for which provision, the scholar was admitted into the school.</td>
+                            </tr>
+                            <tr style="vertical-align:top;">
+                                <td style="width:8mm; padding-left:6mm;">5.</td>
+                                <td>Granted or refused.</td>
+                            </tr>
+                        </table>
+
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </template>
+
+    <!-- ================= filled certificate ================= -->
+    <template id="report_transfer_certificate">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="blank" t-value="False"/>
+                <div class="page" style="padding:0; margin:0;">
+                    <t t-call="ala_education_tc.tc_document"/>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- ============ blank stationery (for hand filling) ============ -->
+    <template id="report_transfer_certificate_blank">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="blank" t-value="True"/>
+                <div class="page" style="padding:0; margin:0;">
+                    <t t-call="ala_education_tc.tc_document"/>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>
