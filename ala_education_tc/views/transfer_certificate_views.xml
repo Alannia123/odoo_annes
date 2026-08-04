@@ -62,7 +62,7 @@
                     <group>
                         <group string="Admission &amp; Leaving">
                             <field name="admission_date" readonly="0"/>
-                            <field name="previous_school"
+                            <field name="previous_school" required="1"
                                    placeholder="INTERNATIONAL PUBLIC SCHOOL"/>
                             <field name="leaving_date"/>
                             <field name="character_conduct"/>
