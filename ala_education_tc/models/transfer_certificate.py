@@ -94,13 +94,13 @@ class AlaTransferCertificate(models.Model):
     # Scholar particulars (all manual entry)
     # ------------------------------------------------------------------
     student_id = fields.Many2one('ala.education.student', string='Name of Scholar', required=True, tracking=True)
-    student_name = fields.Char(related='student_id.name', string='Name of Scholar', required=True, tracking=True, store=True)
+    student_name = fields.Char(related='student_id.name', string='Name of Scholar', required=False, tracking=True, store=True)
     father_name = fields.Char(related='student_id.father_name', string="Father's Name", store=True)
     mother_name = fields.Char(related='student_id.mother_name', string="Mother's Name", store=True)
     religion = fields.Char(related='student_id.religion', string='Religion', store=True)
     gender = fields.Selection(related='student_id.gender',
 
-        string='Gender', default='male', required=True,
+        string='Gender', default='male', required=False,
         help="Drives the pronouns printed on the certificate (He/She, his/her).", store=True)
 
     admission_date = fields.Date(related='student_id.date_of_addmission',string='Date of Admission', store=True)
