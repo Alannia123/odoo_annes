@@ -25,16 +25,37 @@
         <t t-set="val_style"
            t-value="'font-family:Georgia,serif; font-weight:bold; font-style:italic; font-size:12.5pt; color:#14361F;'"/>
 
-        <div t-attf-style="width:100%; height:286mm; overflow:hidden; background:{{paper_bg}};
+        <!--
+            web.html_container renders <body class="container">.  Bootstrap's
+            .container caps max-width and adds gutters, which is why the
+            certificate was landing on roughly 70% of the sheet.  Neutralising
+            it here (rather than fighting body_classname, which moves between
+            Odoo versions) makes the layout version-proof.
+        -->
+        <style>
+            @page { size: A4 portrait; margin: 0; }
+            html, body { margin:0 !important; padding:0 !important; width:100% !important; }
+            body.container, body > .container, .container, .container-fluid {
+                max-width:100% !important; width:100% !important;
+                margin:0 !important; padding:0 !important;
+            }
+            .article, .page, div.page {
+                margin:0 !important; padding:0 !important;
+                width:100% !important; max-width:100% !important;
+            }
+            .header, .footer, .o_report_layout_standard { display:none !important; }
+        </style>
+
+        <div t-attf-style="width:100%; height:296mm; overflow:hidden; background:{{paper_bg}};
                     font-family:'Times New Roman', Times, serif; color:#000000;
                     font-size:12pt; line-height:1.15;">
 
-            <table style="width:100%; height:286mm; border-collapse:collapse; table-layout:fixed;">
+            <table style="width:100%; height:296mm; border-collapse:collapse; table-layout:fixed;">
                 <tr>
 
                     <!-- ============ decorative left band ============ -->
                     <td style="width:24mm; vertical-align:middle; padding:0;">
-                        <table style="width:100%; height:280mm; border-collapse:collapse; table-layout:fixed;">
+                        <table style="width:100%; height:292mm; border-collapse:collapse; table-layout:fixed;">
                             <tr>
                                 <td style="width:7mm; vertical-align:middle; text-align:center;
                                            font-size:11pt; line-height:7.2mm; letter-spacing:0; color:#2F5D3A;">
@@ -62,7 +83,7 @@
                     </td>
 
                     <!-- ================= certificate body ================= -->
-                    <td style="vertical-align:top; padding:6mm 6mm 0 3mm;">
+                    <td style="vertical-align:top; padding:8mm 8mm 6mm 3mm;">
 
                         <!-- letterhead -->
                         <table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-bottom:1mm;">
@@ -315,28 +336,49 @@
                             </tr>
                         </table>
 
-                        <!-- footnotes -->
-                        <table style="width:100%; border-collapse:collapse; table-layout:fixed;
-                                      font-size:9.5pt; line-height:1.35; margin-top:2mm;">
-                            <tr style="vertical-align:top;">
-                                <td style="width:8mm; padding-left:6mm;">1.</td>
-                                <td>To be given in words.</td>
-                            </tr>
-                            <tr style="vertical-align:top;">
-                                <td style="width:8mm; padding-left:6mm;">2.</td>
-                                <td>Mention whether I.C.S.E. / Madhyamik stream or any other examination stream.</td>
-                            </tr>
-                            <tr style="vertical-align:top;">
-                                <td style="width:8mm; padding-left:6mm;">3.</td>
-                                <td>Insert month.</td>
-                            </tr>
-                            <tr style="vertical-align:top;">
-                                <td style="width:8mm; padding-left:6mm;">4.</td>
-                                <td>Sums due to the School include payment for which provision, the scholar was admitted into the school.</td>
-                            </tr>
-                            <tr style="vertical-align:top;">
-                                <td style="width:8mm; padding-left:6mm;">5.</td>
-                                <td>Granted or refused.</td>
+                        <!-- footnotes (left) + verification QR (bottom right) -->
+                        <table style="width:100%; border-collapse:collapse; table-layout:fixed; margin-top:2mm;">
+                            <tr style="vertical-align:bottom;">
+
+                                <td style="vertical-align:top;">
+                                    <table style="width:100%; border-collapse:collapse; table-layout:fixed;
+                                                  font-size:9.5pt; line-height:1.35;">
+                                        <tr style="vertical-align:top;">
+                                            <td style="width:8mm; padding-left:6mm;">1.</td>
+                                            <td>To be given in words.</td>
+                                        </tr>
+                                        <tr style="vertical-align:top;">
+                                            <td style="width:8mm; padding-left:6mm;">2.</td>
+                                            <td>Mention whether I.C.S.E. / Madhyamik stream or any other examination stream.</td>
+                                        </tr>
+                                        <tr style="vertical-align:top;">
+                                            <td style="width:8mm; padding-left:6mm;">3.</td>
+                                            <td>Insert month.</td>
+                                        </tr>
+                                        <tr style="vertical-align:top;">
+                                            <td style="width:8mm; padding-left:6mm;">4.</td>
+                                            <td>Sums due to the School include payment for which provision, the scholar was admitted into the school.</td>
+                                        </tr>
+                                        <tr style="vertical-align:top;">
+                                            <td style="width:8mm; padding-left:6mm;">5.</td>
+                                            <td>Granted or refused.</td>
+                                        </tr>
+                                    </table>
+                                </td>
+
+                                <!-- QR is suppressed on the blank stationery -->
+                                <td style="width:30mm; vertical-align:bottom; text-align:center; padding-left:3mm;">
+                                    <t t-if="not blank">
+                                        <t t-set="tc_qr" t-value="o.get_verify_qr()"/>
+                                        <t t-if="tc_qr">
+                                            <img t-att-src="image_data_uri(tc_qr)"
+                                                 style="width:24mm; height:24mm; display:block; margin:0 auto;"/>
+                                            <div style="font-size:7pt; line-height:1.2; margin-top:0.8mm; color:#2F5D3A;">
+                                                Scan to verify
+                                            </div>
+                                        </t>
+                                    </t>
+                                </td>
                             </tr>
                         </table>
 
@@ -349,6 +391,8 @@
     <!-- ================= filled certificate ================= -->
     <template id="report_transfer_certificate">
         <t t-call="web.html_container">
+            <!-- kills the bootstrap .container gutters on the <body> -->
+            <t t-set="body_classname" t-value="'o_tc_report'"/>
             <t t-foreach="docs" t-as="o">
                 <t t-set="blank" t-value="False"/>
                 <div class="page" style="padding:0; margin:0;">
@@ -361,6 +405,8 @@
     <!-- ============ blank stationery (for hand filling) ============ -->
     <template id="report_transfer_certificate_blank">
         <t t-call="web.html_container">
+            <!-- kills the bootstrap .container gutters on the <body> -->
+            <t t-set="body_classname" t-value="'o_tc_report'"/>
             <t t-foreach="docs" t-as="o">
                 <t t-set="blank" t-value="True"/>
                 <div class="page" style="padding:0; margin:0;">

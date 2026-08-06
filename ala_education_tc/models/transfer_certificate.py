@@ -1,10 +1,21 @@
 # -*- coding: utf-8 -*-
+import base64
 import logging
+import secrets
+from io import BytesIO
 
 from odoo import api, fields, models, _
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, AccessError
 
 _logger = logging.getLogger(__name__)
+
+try:
+    import qrcode
+except ImportError:  # pragma: no cover - qrcode ships with Odoo requirements
+    qrcode = None
+    _logger.info(
+        "python-qrcode not available; Transfer Certificate QR codes will fall "
+        "back to Odoo's built-in reportlab barcode renderer.")
 
 ONES = [
     '', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE',
@@ -141,8 +152,30 @@ class AlaTransferCertificate(models.Model):
     remarks = fields.Text(string='Internal Remarks')
 
     state = fields.Selection(
-        [('draft', 'Draft'), ('issued', 'Issued'), ('cancelled', 'Cancelled')],
+        [('draft', 'Draft'),
+         ('to_approve', 'Waiting Approval'),
+         ('issued', 'Issued'),
+         ('cancelled', 'Cancelled')],
         string='Status', default='draft', required=True, tracking=True)
+
+    approved_by_id = fields.Many2one(
+        'res.users', string='Approved By', readonly=True, copy=False, tracking=True)
+    approved_on = fields.Datetime(
+        string='Approved On', readonly=True, copy=False, tracking=True)
+
+    # ------------------------------------------------------------------
+    # Verification QR
+    # ------------------------------------------------------------------
+    qr_token = fields.Char(
+        string='QR Token', copy=False, readonly=True, index=True, tracking=True,
+        help="Public identifier embedded in the verification URL. Generated "
+             "from a sequence and never reused.")
+    qr_url = fields.Char(
+        string='QR Url', copy=False, readonly=True,
+        help="The URL a scanner is sent to. Rebuilt every time the QR is generated.")
+    qr_code = fields.Binary(
+        string='QR Code', copy=False, readonly=True, attachment=True,
+        help="PNG image printed on the bottom-right of the certificate.")
 
     # ------------------------------------------------------------------
     # Print helpers
@@ -163,6 +196,9 @@ class AlaTransferCertificate(models.Model):
         ('tc_no_company_uniq',
          'unique(tc_no, company_id)',
          'The T.C. number must be unique per school.'),
+        ('qr_token_uniq',
+         'unique(qr_token)',
+         'The verification token must be unique.'),
     ]
 
     # ------------------------------------------------------------------
@@ -239,7 +275,8 @@ class AlaTransferCertificate(models.Model):
     # ------------------------------------------------------------------
     # Actions
     # ------------------------------------------------------------------
-    def action_issue(self):
+    def _check_mandatory_fields(self):
+        """Shared gate: the printed stationery has no room for blanks."""
         for rec in self:
             missing = [
                 label for label, value in (
@@ -252,11 +289,48 @@ class AlaTransferCertificate(models.Model):
             ]
             if missing:
                 raise UserError(_(
-                    "Fill the following before issuing the T.C.:\n- %s",
+                    "Fill the following before submitting the T.C.:\n- %s",
                     "\n- ".join(missing)))
             if rec.leaving_date and rec.admission_date and rec.leaving_date < rec.admission_date:
                 raise UserError(_("Date of leaving cannot be earlier than date of admission."))
-            rec.state = 'issued'
+
+    def action_submit(self):
+        """Officer hands the draft over to the Principal."""
+        self._check_mandatory_fields()
+        for rec in self:
+            if rec.state != 'draft':
+                raise UserError(_("Only a draft T.C. can be submitted for approval."))
+        self.write({'state': 'to_approve'})
+        return True
+
+    def action_approve(self):
+        """Principal-only approval. This is the moment the QR is minted."""
+        if not self.env.user.has_group('ala_education_tc.group_ala_tc_principal'):
+            raise AccessError(_(
+                "Only the Principal can approve a Transfer Certificate."))
+        self._check_mandatory_fields()
+        for rec in self:
+            if rec.state != 'to_approve':
+                raise UserError(_(
+                    "T.C. %s is not waiting for approval.", rec.tc_no))
+            rec.write({
+                'state': 'issued',
+                'approved_by_id': self.env.user.id,
+                'approved_on': fields.Datetime.now(),
+                'issue_date': rec.issue_date or fields.Date.context_today(rec),
+            })
+            rec.action_generate_qr_code()
+            rec.message_post(body=_(
+                "Transfer Certificate approved and issued by %s.",
+                self.env.user.display_name))
+        return True
+
+    def action_refuse(self):
+        """Principal sends it back to the officer for correction."""
+        if not self.env.user.has_group('ala_education_tc.group_ala_tc_principal'):
+            raise AccessError(_(
+                "Only the Principal can refuse a Transfer Certificate."))
+        self.write({'state': 'draft'})
         return True
 
     def action_cancel(self):
@@ -264,11 +338,100 @@ class AlaTransferCertificate(models.Model):
         return True
 
     def action_reset_to_draft(self):
+        for rec in self:
+            if rec.state == 'issued' and not self.env.user.has_group(
+                    'ala_education_tc.group_ala_tc_manager'):
+                raise AccessError(_(
+                    "An issued T.C. can only be reopened by a Certificate Manager."))
         self.write({'state': 'draft'})
         return True
 
+    # ------------------------------------------------------------------
+    # QR generation / verification
+    # ------------------------------------------------------------------
+    def _get_base_url(self):
+        """web.base.url is the single source of truth behind an Nginx proxy."""
+        return (self.env['ir.config_parameter'].sudo()
+                .get_param('web.base.url', '') or '').rstrip('/')
+
+    def _next_qr_token(self):
+        """Sequence-derived token plus a short random suffix.
+
+        The sequence keeps tokens traceable and ordered. The random suffix is
+        what stops someone walking TCQR000031, TCQR000032, ... and harvesting
+        student names, parents' names and dates of birth from the public verify
+        page. Drop the suffix only if you accept that enumeration risk.
+        """
+        self.ensure_one()
+        seq = (self.env['ir.sequence'].sudo()
+               .next_by_code('ala.transfer.certificate.qr.token')
+               or 'TCQR%s' % (self._origin.id or 0))
+        return '%s%s' % (seq.replace('/', ''), secrets.token_hex(3).upper())
+
+    def _build_qr_verify_url(self):
+        self.ensure_one()
+        return '%s/tc/verify/%s/%s' % (
+            self._get_base_url(), self._origin.id or self.id, self.qr_token or '')
+
+    def _render_qr_png(self, payload):
+        """Return raw PNG bytes for `payload`.
+
+        Primary path is python-qrcode. If it is missing we fall back to the
+        renderer Odoo already ships (reportlab, via ir.actions.report.barcode)
+        so the module never hard-fails on a lean server build.
+        """
+        if qrcode is not None:
+            qr = qrcode.QRCode(version=None, box_size=10, border=2,
+                               error_correction=qrcode.constants.ERROR_CORRECT_M)
+            qr.add_data(payload)
+            qr.make(fit=True)
+            img = qr.make_image(fill_color='black', back_color='white')
+            buffer = BytesIO()
+            img.save(buffer, format='PNG')
+            return buffer.getvalue()
+        return self.env['ir.actions.report'].barcode(
+            'QR', payload, width=256, height=256, humanreadable=0)
+
+    def action_generate_qr_code(self):
+        """Mint (or re-render) the verification QR.
+
+        The token is created once and then frozen: regenerating the image must
+        never invalidate a QR that is already printed on paper in a parent's
+        hands.
+        """
+        for rec in self:
+            if not rec._origin.id:
+                raise UserError(_("Save the record before generating a QR code."))
+            if not rec.qr_token:
+                rec.qr_token = rec._next_qr_token()
+
+            qr_data = rec._build_qr_verify_url()
+            rec.qr_url = qr_data
+            try:
+                png = rec._render_qr_png(qr_data)
+            except Exception:
+                _logger.exception("QR generation failed for T.C. %s", rec.tc_no)
+                raise UserError(_(
+                    "Could not generate the QR code. Check that the 'qrcode' "
+                    "Python package is installed on the server."))
+            rec.qr_code = base64.b64encode(png)
+        return True
+
+    def get_verify_qr(self):
+        """Called from QWeb. Renders on demand so old records still print a QR."""
+        self.ensure_one()
+        if not self.qr_code and self.state == 'issued':
+            self.sudo().action_generate_qr_code()
+        return self.qr_code
+
+    # ------------------------------------------------------------------
+    # Printing
+    # ------------------------------------------------------------------
     def action_print_tc(self):
         self.ensure_one()
+        if self.state != 'issued':
+            raise UserError(_(
+                "Only an approved (issued) T.C. can be printed."))
         return self.env.ref(
             'ala_education_tc.action_report_transfer_certificate').report_action(self)
 

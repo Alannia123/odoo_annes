@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Injected into ala_student_portal.student_info, directly after the
+        "Basic Details" block so it sits inside the existing .student-card.
+
+        WebView notes (the Android app renders this page in a plain WebView):
+          * no external fonts, no CDN assets, no JS - the icon is inline SVG
+          * download is a plain <a href>, so the WebView download manager
+            handles it; nothing extra to intercept in the Android layer
+          * flex with wrap, so it survives a 360dp viewport
+    -->
+    <template id="student_info_tc"
+              inherit_id="ala_student_portal.student_info"
+              name="Student Info - Transfer Certificate">
+
+        <xpath expr="//div[hasclass('info-section')]" position="after">
+            <t t-if="student">
+                <t t-set="tc_records" t-value="student.get_portal_transfer_certificates()"/>
+
+                <div class="info-section ala-tc-section">
+                    <h4>Transfer Certificate</h4>
+
+                    <t t-if="tc_records">
+                        <t t-foreach="tc_records" t-as="tc">
+                            <a t-att-href="'/my/tc/download/%s' % tc.id"
+                               class="ala-tc-row"
+                               t-att-title="'Download Transfer Certificate %s' % (tc.tc_no or '')">
+                                <span class="ala-tc-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                        <polyline points="7 10 12 15 17 10"/>
+                                        <line x1="12" y1="15" x2="12" y2="3"/>
+                                    </svg>
+                                </span>
+                                <span class="ala-tc-meta">
+                                    <span class="ala-tc-title">
+                                        T.C. No. <t t-esc="tc.tc_no or '-'"/>
+                                    </span>
+                                    <span class="ala-tc-sub">
+                                        Issued <t t-esc="tc.issue_date_str or '-'"/>
+                                    </span>
+                                </span>
+                                <span class="ala-tc-action">Download</span>
+                            </a>
+                        </t>
+                    </t>
+
+                    <t t-elif="student.has_pending_transfer_certificate()">
+                        <div class="ala-tc-note ala-tc-note-wait">
+                            Your Transfer Certificate has been prepared and is waiting for
+                            the Principal's approval. It will appear here for download
+                            once approved.
+                        </div>
+                    </t>
+
+                    <t t-else="">
+                        <div class="ala-tc-note">
+                            No Transfer Certificate has been issued for this student.
+                            Please contact the school office if you need one.
+                        </div>
+                    </t>
+                </div>
+
+                <style>
+                    .ala-tc-section { margin-top: 18px; }
+
+                    .ala-tc-row {
+                        display: flex;
+                        align-items: center;
+                        flex-wrap: wrap;
+                        gap: 12px;
+                        padding: 12px 14px;
+                        margin-bottom: 10px;
+                        border: 1px solid #d6e3c0;
+                        border-radius: 12px;
+                        background: #f7faf0;
+                        text-decoration: none;
+                        color: #2c3e50;
+                    }
+
+                    .ala-tc-row:active { background: #eef4de; }
+
+                    .ala-tc-icon {
+                        flex: 0 0 auto;
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 10px;
+                        background: #2f5d3a;
+                        color: #ffffff;
+                    }
+
+                    .ala-tc-meta {
+                        flex: 1 1 140px;
+                        min-width: 0;
+                        display: flex;
+                        flex-direction: column;
+                        line-height: 1.3;
+                    }
+
+                    .ala-tc-title { font-weight: 600; font-size: 14px; }
+                    .ala-tc-sub { font-size: 12px; color: #7f8c8d; }
+
+                    .ala-tc-action {
+                        flex: 0 0 auto;
+                        font-size: 12px;
+                        font-weight: 600;
+                        color: #ffffff;
+                        background: #2f5d3a;
+                        border-radius: 999px;
+                        padding: 6px 14px;
+                    }
+
+                    .ala-tc-note {
+                        padding: 12px 14px;
+                        border: 1px dashed #cfd8dc;
+                        border-radius: 12px;
+                        background: #fafafa;
+                        font-size: 13px;
+                        color: #607d8b;
+                        line-height: 1.45;
+                    }
+
+                    .ala-tc-note-wait {
+                        border-color: #f0d9a8;
+                        background: #fdf8ec;
+                        color: #8a6d1f;
+                    }
+                </style>
+            </t>
+        </xpath>
+
+    </template>
+
+</odoo>

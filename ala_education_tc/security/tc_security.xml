@@ -14,10 +14,15 @@
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
         </record>
 
+        <record id="group_ala_tc_principal" model="res.groups">
+            <field name="name">Principal (Approver)</field>
+            <field name="implied_ids" eval="[(4, ref('group_ala_tc_officer'))]"/>
+        </record>
+
         <record id="group_ala_tc_manager" model="res.groups">
             <field name="name">Manager</field>
 <!--            <field name="category_id" ref="module_category_ala_education_tc"/>-->
-            <field name="implied_ids" eval="[(4, ref('group_ala_tc_officer'))]"/>
+            <field name="implied_ids" eval="[(4, ref('group_ala_tc_principal'))]"/>
             <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>
         </record>
 

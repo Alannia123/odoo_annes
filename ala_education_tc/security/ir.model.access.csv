@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_ala_transfer_certificate_officer,ala.transfer.certificate.officer,model_ala_transfer_certificate,group_ala_tc_officer,1,1,1,0
 access_ala_transfer_certificate_manager,ala.transfer.certificate.manager,model_ala_transfer_certificate,group_ala_tc_manager,1,1,1,1
+access_ala_transfer_certificate_principal,ala.transfer.certificate.principal,model_ala_transfer_certificate,group_ala_tc_principal,1,1,1,0
