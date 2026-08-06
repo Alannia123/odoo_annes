@@ -20,7 +20,7 @@ Transfer Certificate
     'category': 'Education',
     'version': '19.0.1.1.0',
     'license': 'LGPL-3',
-    'depends': ['base', 'mail', 'ala_education_core', 'ala_website_backend'],
+    'depends': ['base', 'mail', 'ala_education_core', 'ala_website_backend', 'website'],
     'data': [
         'security/tc_security.xml',
         'security/ir.model.access.csv',

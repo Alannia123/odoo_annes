@@ -18,7 +18,7 @@ class TransferCertificateVerifyController(http.Controller):
 
     @http.route(
         ['/tc/verify/<int:tc_id>/<string:token>'],
-        type='http', auth='public', csrf=False, sitemap=False)
+        type='http', auth='public', csrf=False, website=True, sitemap=False)
     def verify_transfer_certificate(self, tc_id, token, **kwargs):
         company = request.env.company.sudo()
 
