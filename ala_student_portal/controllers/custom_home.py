@@ -1,42 +1,24 @@
+# -*- coding: utf-8 -*-
 from odoo import http
 from odoo.http import request
 from odoo.addons.website.controllers.main import Website
-#
-# class CustomLoginRedirect(Website):
-#
-#
-#     def _login_redirect(self, uid, redirect=None):
-#         """ Redirect regular users (employees) to the backend) and others to
-#         the frontend
-#         """
-#         print('CCCCCCCCFFFFFFFFFFFFFFFFF============',redirect)
-#         if not redirect and request.params.get('login_success'):
-#             if request.env['res.users'].browse(uid)._is_internal():
-#                 redirect = '/web#action=747&cids=1&menu_id=543'
-#             else:
-#                 redirect = '/my'
-#         return super()._login_redirect(uid, redirect=redirect)
-
-# controllers/main.py
-
-from odoo import http
-from odoo.http import request
-# from odoo.addons.web.controllers.main import Home
-
-# class CustomAuth(Home):
-#
-#     @http.route('/web/login', type='http', auth="none", csrf=False, website=True)
-#     def web_login(self, redirect=None, **kw):
-#         response = super().web_login(redirect=redirect, **kw)
-#         # If login successful (uid is set), redirect to custom action
-#         if request.httprequest.method == 'POST' and request.session.uid:
-#             # Redirect to your action
-#             return http.redirect_with_hash('/web#action=education_erp_dashboard_action')
-#
-#         return response
 
 
+class CustomLoginRedirect(Website):
+    """Send portal (student / parent) logins straight to the portal home url.
 
+    Odoo's website layer already redirects non-internal users to ``/my`` after
+    login. We make that explicit and point it at the real home page
+    (``/my/home``) so a portal user always lands on their dashboard. Internal
+    users (staff / admin) are left to the standard backend redirect.
+    """
+
+    def _login_redirect(self, uid, redirect=None):
+        if not redirect and request.params.get('login_success'):
+            user = request.env['res.users'].sudo().browse(uid)
+            if not user._is_internal():
+                redirect = '/my/home'
+        return super()._login_redirect(uid, redirect=redirect)
 
 
 class CustomLogout(http.Controller):
@@ -44,5 +26,3 @@ class CustomLogout(http.Controller):
     def logout(self, redirect='/web/login'):
         request.session.logout()
         return request.redirect(redirect)
-
-

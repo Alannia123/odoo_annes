@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_ala_announcement_root"
+              name="Announcements"
+              sequence="90"
+              groups="ala_portal_announcement.group_ala_announcement_manager"/>
+
+    <menuitem id="menu_ala_announcement_all"
+              name="Announcements"
+              parent="menu_ala_announcement_root"
+              action="action_ala_portal_announcement"
+              sequence="10"/>
+
+</odoo>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_ala_portal_announcement_list" model="ir.ui.view">
+        <field name="name">ala.portal.announcement.list</field>
+        <field name="model">ala.portal.announcement</field>
+        <field name="arch" type="xml">
+            <list string="Announcements" decoration-muted="state in ('expired', 'archived')"
+                  decoration-info="state == 'scheduled'" decoration-bf="state == 'live'">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="display_mode"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="frequency"/>
+                <field name="show_on_website" string="Website" widget="boolean_toggle"/>
+                <field name="show_on_portal" string="Portal" widget="boolean_toggle"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'live'"
+                       decoration-info="state == 'scheduled'"
+                       decoration-warning="state == 'expired'"/>
+                <field name="active" column_invisible="True"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ala_portal_announcement_form" model="ir.ui.view">
+        <field name="name">ala.portal.announcement.form</field>
+        <field name="model">ala.portal.announcement</field>
+        <field name="arch" type="xml">
+            <form string="Announcement">
+                <header>
+                    <button name="action_preview" type="object" string="Open home page"
+                            class="btn-secondary"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="scheduled,live,expired"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <label for="name" string="Internal Reference"/>
+                        <h1><field name="name" placeholder="e.g. Independence Day 2026 invitation"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Schedule">
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="frequency"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group string="Where">
+                            <field name="show_on_website"/>
+                            <field name="show_on_portal"/>
+                            <field name="audience"/>
+                            <field name="group_ids" widget="many2many_tags"
+                                   invisible="audience == 'public'"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Content" name="content">
+                            <group>
+                                <field name="display_mode" widget="radio" options="{'horizontal': true}"/>
+                            </group>
+                            <group>
+                                <group string="Poster" invisible="display_mode == 'message'">
+                                    <field name="image" widget="image" class="oe_avatar"
+                                           options="{'size': [400, 560]}" nolabel="1"/>
+                                    <field name="image_alt"/>
+                                </group>
+                                <group string="Button (optional)">
+                                    <field name="cta_label" placeholder="e.g. View full notice"/>
+                                    <field name="cta_url" placeholder="/my/notices or https://..."/>
+                                </group>
+                            </group>
+                            <separator string="Heading"/>
+                            <field name="title" placeholder="e.g. Independence Day Invitation"/>
+                            <separator string="Message" invisible="display_mode == 'image'"/>
+                            <field name="body" invisible="display_mode == 'image'"
+                                   placeholder="Message shown under the poster..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_ala_portal_announcement_search" model="ir.ui.view">
+        <field name="name">ala.portal.announcement.search</field>
+        <field name="model">ala.portal.announcement</field>
+        <field name="arch" type="xml">
+            <search string="Announcements">
+                <field name="name"/>
+                <field name="title"/>
+                <filter name="filter_running" string="Currently live"
+                        domain="[('date_start', '&lt;=', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
+                                 ('date_end', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))]"/>
+                <filter name="filter_website" string="Website home" domain="[('show_on_website', '=', True)]"/>
+                <filter name="filter_portal" string="Portal home" domain="[('show_on_portal', '=', True)]"/>
+                <separator/>
+                <filter name="filter_archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="group_display_mode" string="Content type" context="{'group_by': 'display_mode'}"/>
+                    <filter name="group_frequency" string="Frequency" context="{'group_by': 'frequency'}"/>
+                    <filter name="group_date_end" string="Show Until" context="{'group_by': 'date_end'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_ala_portal_announcement" model="ir.actions.act_window">
+        <field name="name">Announcements</field>
+        <field name="res_model">ala.portal.announcement</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_ala_portal_announcement_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Publish your first announcement</p>
+            <p>
+                Upload a poster or write a message, set a "Show Until" date, and it
+                will pop up the first time visitors open the home page.
+            </p>
+        </field>
+    </record>
+
+</odoo>

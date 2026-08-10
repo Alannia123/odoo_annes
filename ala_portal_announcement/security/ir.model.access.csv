@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ala_portal_announcement_manager,ala.portal.announcement manager,model_ala_portal_announcement,group_ala_announcement_manager,1,1,1,1
+access_ala_portal_announcement_user,ala.portal.announcement user,model_ala_portal_announcement,base.group_user,1,0,0,0

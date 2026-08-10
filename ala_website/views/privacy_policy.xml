@@ -2,7 +2,7 @@
 <odoo>
 
 <!--    Privacy Policye-->
-    <template id="ala_school_privacy_policy" name="Student Performance MIS">
+    <template id="ala_school_privacy_policy" name="Student Performance">
         <t t-call="website.layout">
             <section
                     class="s_title parallax s_parallax_is_fixed bg-black-50 pt24 pb24"

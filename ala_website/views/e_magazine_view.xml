@@ -2,7 +2,7 @@
 <odoo>
 
 <!--    About MIS-->
-     <template id="template_magazine_list" name="E-Magazine Gallery (Parallax Animated)">
+     <template id="template_magazine_list" name="E-Magazine Gallery">
     <t t-call="website.layout">
       <style>
         /* ===== BACKGROUND  GLOBAL ===== */

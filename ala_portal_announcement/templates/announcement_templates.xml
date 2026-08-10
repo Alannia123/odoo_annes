@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Mount point for the popup. Injected into the shared frontend layout so it
+        covers both the website home page and the portal home page, but rendered
+        only when the current path is actually a home page (see
+        ala.portal.announcement._popup_scope_for_request).
+
+        Nothing is fetched here: the payload comes from /ala/announcement/active
+        at runtime, so cached website pages never serve stale announcements.
+    -->
+    <template id="announcement_frontend_hook" inherit_id="web.frontend_layout"
+              name="Announcement Popup Mount Point">
+        <xpath expr="//div[@id='wrapwrap']" position="inside">
+            <t t-set="ala_ann_scope"
+               t-value="request.env['ala.portal.announcement'].sudo()._popup_scope_for_request()"/>
+            <t t-if="ala_ann_scope">
+                <div id="ala_announcement_root" class="ala-ann-root"
+                     t-att-data-scope="ala_ann_scope">
+                    <!-- Translatable UI strings, read by the popup script. -->
+                    <span class="ala-ann-i18n" data-key="close">Close</span>
+                    <span class="ala-ann-i18n" data-key="dontshow">Do not show this again</span>
+                    <span class="ala-ann-i18n" data-key="fullsize">Open full size</span>
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>

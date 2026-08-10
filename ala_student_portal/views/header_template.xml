@@ -116,7 +116,7 @@
                 }
             </style>
 
-            <div t-if="not request.env.user._is_public()" class="ala-appbar">
+            <div t-if="request.env.user.has_group('base.group_portal')" class="ala-appbar">
                 <a href="/my/home" class="d-flex align-items-center flex-grow-1 gap-2 text-decoration-none"
                    style="min-width:0;">
                     <img class="ala-appbar__crest"

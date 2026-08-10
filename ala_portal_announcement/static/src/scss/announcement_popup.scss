@@ -1,0 +1,220 @@
+// Announcement popup.
+// The poster is the content; the chrome around it stays deliberately quiet.
+// Everything is scoped under .ala-ann-* so it cannot leak into portal or
+// website theme styles. No web fonts, no JS-driven animation: safe inside the
+// school's Android WebView.
+
+.ala-ann-root {
+    display: none;
+}
+
+html.ala-ann-locked,
+html.ala-ann-locked body {
+    overflow: hidden;
+}
+
+.ala-ann-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    padding-top: calc(16px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    background: rgba(12, 16, 28, 0.72);
+    opacity: 0;
+    transition: opacity 180ms ease-out;
+    -webkit-overflow-scrolling: touch;
+
+    &.is-open {
+        opacity: 1;
+    }
+}
+
+.ala-ann-dialog {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 520px;
+    max-height: 100%;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+    transform: translateY(12px) scale(0.98);
+    transition: transform 200ms ease-out;
+
+    .ala-ann-overlay.is-open & {
+        transform: translateY(0) scale(1);
+    }
+}
+
+.ala-ann-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    line-height: 1;
+    font-size: 15px;
+    color: #ffffff;
+    background: rgba(18, 22, 34, 0.55);
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+        background: rgba(18, 22, 34, 0.8);
+    }
+
+    &:focus-visible {
+        outline: 2px solid #ffffff;
+        outline-offset: 2px;
+    }
+}
+
+.ala-ann-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+// The poster runs edge to edge - no frame, no padding, nothing competing.
+.ala-ann-figure {
+    display: block;
+    background: #f2f2f2;
+
+    &:focus-visible {
+        outline: 2px solid #1a3a6b;
+        outline-offset: -2px;
+    }
+}
+
+.ala-ann-image {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.ala-ann-text {
+    padding: 18px 20px 4px;
+    color: #1f2430;
+    font-size: 15px;
+    line-height: 1.55;
+}
+
+.ala-ann-title {
+    margin: 0 0 8px;
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #14213d;
+}
+
+.ala-ann-body {
+    p:last-child {
+        margin-bottom: 0;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+.ala-ann-footer {
+    flex: 0 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 16px;
+    border-top: 1px solid rgba(20, 33, 61, 0.1);
+    background: #ffffff;
+}
+
+.ala-ann-optout {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    font-size: 13px;
+    font-weight: 400;
+    color: #5b6478;
+    cursor: pointer;
+
+    input {
+        margin: 0;
+    }
+}
+
+.ala-ann-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.ala-ann-cta,
+.ala-ann-dismiss {
+    display: inline-block;
+    padding: 8px 16px;
+    font-size: 14px;
+    line-height: 1.3;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.ala-ann-cta {
+    color: #ffffff;
+    background: #14213d;
+
+    &:hover,
+    &:focus {
+        color: #ffffff;
+        background: #0e1830;
+        text-decoration: none;
+    }
+}
+
+.ala-ann-dismiss {
+    color: #14213d;
+    background: transparent;
+    border-color: rgba(20, 33, 61, 0.25);
+
+    &:hover {
+        background: rgba(20, 33, 61, 0.06);
+    }
+}
+
+@media (max-width: 575.98px) {
+    .ala-ann-overlay {
+        padding: 10px;
+    }
+
+    .ala-ann-dialog {
+        max-width: 100%;
+    }
+
+    .ala-ann-footer {
+        padding: 10px 12px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ala-ann-overlay,
+    .ala-ann-dialog {
+        transition: none;
+        transform: none;
+    }
+}

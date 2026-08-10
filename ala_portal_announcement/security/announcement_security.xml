@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="group_ala_announcement_manager" model="res.groups">
+        <field name="name">Announcement Manager</field>
+<!--        <field name="category_id" ref="base.module_category_website"/>-->
+        <field name="comment">Create and publish popups on the website and portal home pages.</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="base.group_system" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('group_ala_announcement_manager'))]"/>
+    </record>
+
+</odoo>

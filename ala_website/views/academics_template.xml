@@ -153,7 +153,7 @@
     </template>
 
 <!--    Student Performance-->
-    <template id="student_performance" name="Student Performance MIS">
+    <template id="student_performance" name="Student Performance">
         <t t-call="website.layout">
             <section
                     class="s_title parallax s_parallax_is_fixed bg-black-50 pt24 pb24"
