@@ -13,6 +13,10 @@ LANG_RE = re.compile(r'^[a-z]{2,3}(_[A-Z]{2})?$')
 
 # Frontend paths on which a popup may be rendered.
 PORTAL_HOME_PATHS = (('my',), ('my', 'home'))
+# Website home page(s). The bare '/' is always treated as home (see
+# _popup_scope_for_request); list here any extra URL used as the public
+# landing page, e.g. this site serves its home at /ala_home.
+WEBSITE_HOME_PATHS = (('ala_home',),)
 
 
 class AlaPortalAnnouncement(models.Model):
@@ -239,6 +243,8 @@ class AlaPortalAnnouncement(models.Model):
                 return 'website'
             if tuple(parts) in PORTAL_HOME_PATHS:
                 return 'portal'
+            if tuple(parts) in WEBSITE_HOME_PATHS:
+                return 'website'
         except Exception:  # never break page rendering because of a popup
             _logger.exception("Announcement: could not resolve popup scope")
         return False
@@ -249,5 +255,5 @@ class AlaPortalAnnouncement(models.Model):
         return {
             'type': 'ir.actions.act_url',
             'target': 'new',
-            'url': '/my/home' if self.show_on_portal else '/',
+            'url': '/my/home' if self.show_on_portal else '/ala_home',
         }
