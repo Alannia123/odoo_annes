@@ -116,6 +116,7 @@
 
     <menuitem id="menu_ala_parent_feedback"
               name="Parent Feedback"
+              groups="ala_education_core.group_education_principal,ala_education_core.group_education_office_admin"
               action="action_ala_parent_feedback"
               sequence="90"/>
 

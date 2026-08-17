@@ -10,7 +10,7 @@
     'company': 'alanniainfotechz',
     'maintainer': 'Alanniainfotechz',
     'depends': ['web', 'website', 'portal', 'account', 'mail',
-            'ala_education_erp_dashboard', 'ala_homework',
+            'ala_education_erp_dashboard', 'ala_homework', 'ala_education_core',
             'ala_school_calender', 'ala_education_fee'],
     'external_dependencies': {'python': ['razorpay']},
     'data': [
