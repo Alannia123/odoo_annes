@@ -3,12 +3,14 @@
 import { registry } from "@web/core/registry";
 import { Component, useState, onWillStart } from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
+import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 
 export class FeeOverview extends Component {
     setup() {
         this.orm = useService("orm");
         this.notification = useService("notification");
         this.action = useService("action");
+        this.dialog = useService("dialog");
 
         this.state = useState({
             search: "",
@@ -31,6 +33,48 @@ export class FeeOverview extends Component {
             await this.loadDivisions();
             await this.loadAcademicYears();
             await this.loadFees();
+        });
+    }
+
+        resetFeePayment(ev) {
+        const feeId = parseInt(ev.currentTarget.dataset.fee);
+        if (!feeId) {
+            return;
+        }
+
+        this.dialog.add(ConfirmationDialog, {
+            title: "Reset Payment",
+            body: "This cancels the related invoice and its payment, and moves the fee "
+                + "back to unpaid. Monthly fees sharing the same invoice will also be reset. "
+                + "This cannot be undone. Continue?",
+            confirmLabel: "Reset",
+            cancelLabel: "Keep as Paid",
+            confirm: async () => {
+                const result = await this.orm.call(
+                    "ala.student.fee.line",
+                    "reset_payment_to_draft",
+                    [[feeId]]
+                );
+
+                let msg = `${result.reset_count} fee line(s) reset.`;
+                if (result.invoices && result.invoices.length) {
+                    msg += ` Invoice cancelled: ${result.invoices.join(", ")}.`;
+                }
+                if (result.skipped_payments) {
+                    msg += ` ${result.skipped_payments} payment(s) left untouched `
+                         + `(they also settle other invoices).`;
+                }
+
+                this.notification.add(msg, {
+                    type: result.skipped_payments ? "warning" : "success",
+                });
+
+                this.state.selected_fee_ids = this.state.selected_fee_ids.filter(
+                    (id) => id !== feeId
+                );
+                await this.loadFees();
+            },
+            cancel: () => {},
         });
     }
 

@@ -36,6 +36,22 @@
                                            widget="monetary"/>
                                     <field name="reminder_date" required="1"/>
                                     <field name="due_date" required="1"/>
+                                    <button name="action_pay_all_students"
+                                            type="object"
+                                            string="Pay All"
+                                            icon="fa-check-circle"
+                                            class="text-success"
+                                            groups="account.group_account_manager"
+                                            title="Mark this fee as Paid for all students of this academic year"
+                                            confirm="This will mark this fee as PAID for every active student in the applied classes for this academic year. No invoice or payment will be created. Continue?"/>
+                                    <button name="action_unpay_all_students"
+                                            type="object"
+                                            string="Unpay All"
+                                            icon="fa-undo"
+                                            class="text-danger"
+                                            groups="account.group_account_manager"
+                                            title="Revert this fee to unpaid for all students of this academic year"
+                                            confirm="This will REVERT this fee to unpaid for every active student in the applied classes. Lines already settled through an invoice will be skipped. Continue?"/>
                                 </list>
                             </field>
                             <group class="oe_subtotal_footer oe_right">

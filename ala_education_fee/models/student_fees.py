@@ -392,6 +392,96 @@ class StudentFeeLine(models.Model):
     fine_log_ids = fields.One2many('ala.student.fine.log', 'fee_line_id', string="Fine Logs")
     
 
+    def _date_based_status(self):
+        """Status this line should carry when it is not settled."""
+        self.ensure_one()
+        today = fields.Date.context_today(self)
+        if self.overdue_date and self.overdue_date < today:
+            return 'over_due'
+        if self.reminder_date and self.reminder_date > today:
+            return 'upcoming'
+        return 'unpaid'
+
+    def reset_payment_to_draft(self):
+        """Revert settled fee lines: cancel the linked invoice and its payment,
+        then move the lines back to their date-based unpaid status."""
+        if not self.env.user.has_group('account.group_account_manager'):
+            raise UserError(_("Only an Accounting Manager can reset a settled fee."))
+
+        lines = self.exists()
+        if not lines:
+            raise UserError(_("No fee line found."))
+
+        invoices = lines.mapped('invoice_id').filtered(lambda m: m.state != 'cancel')
+
+        # A monthly invoice covers several fee lines — pull the siblings in,
+        # or they stay 'paid' against a cancelled invoice.
+        if invoices:
+            lines |= self.search([('invoice_id', 'in', invoices.ids)])
+
+        Payment = self.env['account.payment']
+        cancelled_names, skipped_payments = [], Payment
+
+        for invoice in invoices:
+            if invoice._fields.get('inalterable_hash') and invoice.inalterable_hash:
+                raise UserError(_(
+                    "Invoice %s is hash-locked and cannot be cancelled. "
+                    "Issue a credit note instead.", invoice.name))
+
+            # Capture payments BEFORE button_draft — unreconciling loses the link
+            payments = (invoice.matched_payment_ids
+                        if 'matched_payment_ids' in invoice._fields
+                        else invoice._get_reconciled_payments())
+
+            to_cancel = Payment
+            for payment in payments:
+                linked = (payment.reconciled_invoice_ids
+                          if 'reconciled_invoice_ids' in payment._fields else invoice)
+                # never touch a payment that also settles invoices outside this reset
+                if set(linked.ids) - set(invoices.ids):
+                    skipped_payments |= payment
+                else:
+                    to_cancel |= payment
+
+            if invoice.state == 'posted':
+                invoice.button_draft()
+            invoice.button_cancel()
+            cancelled_names.append(invoice.name)
+
+            for payment in to_cancel:
+                if payment.state not in ('draft', 'canceled', 'cancel'):
+                    payment.action_draft()
+                if payment.state not in ('canceled', 'cancel'):
+                    payment.action_cancel()
+
+            for line in lines.filtered(lambda l: l.invoice_id == invoice):
+                line.message_post(body=_(
+                    "Payment reset by %(user)s — invoice %(inv)s and its payment cancelled.",
+                    user=self.env.user.name, inv=invoice.name))
+
+        for line in lines:
+            line.write({
+                'invoice_id': False,
+                'select_for_invoice': False,
+                'payment_status': line._date_based_status(),
+            })
+
+        parents = lines.student_fee_id
+        stale = parents.filtered(lambda p: p.last_fee_line_id in lines)
+        if stale:
+            stale.write({'last_fee_line_id': False})
+        parents.update_fee_status_students()
+
+        _logger.warning(
+            "Fee payment RESET by %s: lines %s, invoices cancelled %s, payments skipped %s",
+            self.env.user.login, lines.ids, cancelled_names, skipped_payments.ids)
+
+        return {
+            'reset_count': len(lines),
+            'invoices': cancelled_names,
+            'skipped_payments': len(skipped_payments),
+        }
+
 
     @api.depends('amount', 'concession_amount', 'fine_amount')
     def _compute_amount_to_paid(self):
@@ -784,6 +874,7 @@ class StudentFeeLine(models.Model):
         # settlement flow should already set this)
         self.search([
             ('invoice_id', '!=', False),
+            ('invoice_id.state', '!=', 'cancel'),
             ('payment_status', '!=', 'paid'),
         ]).write({'payment_status': 'paid'})
 

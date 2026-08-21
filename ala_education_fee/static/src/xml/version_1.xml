@@ -543,6 +543,14 @@
                                                                 "/>
                                                             </span>
 
+                                                            <button t-if="fee.payment_status === 'paid'"
+                                                                    class="btn btn-sm btn-link text-danger p-0 me-1"
+                                                                    title="Reset payment — cancels the invoice"
+                                                                    t-att-data-fee="fee.id"
+                                                                    t-on-click="resetFeePayment">
+                                                                <i class="fa fa-undo"/>
+                                                            </button>
+
                                                             <label class="modern-checkbox">
                                                                 <input type="checkbox"
                                                                        t-att-disabled="fee.payment_status === 'paid'"
