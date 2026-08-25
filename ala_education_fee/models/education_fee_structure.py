@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from collections import defaultdict
+
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
+from odoo.tools import float_compare
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -201,12 +204,22 @@ class EducationFeeStructureLines(models.Model):
     # Bulk Pay / Unpay for all students of this structure's academic year
     # ------------------------------------------------------------------
 
+    #: students processed between two intermediate commits when the caller
+    #: explicitly opts in via context (``ala_bulk_commit=True``). Never
+    #: commits by default -- see action_pay_all_students docstring.
+    _BULK_COMMIT_EVERY = 50
+
     def _assert_saved(self):
         """Buttons inside a one2many row can fire on an unsaved line."""
         for rec in self:
             if not rec._origin.id:
                 raise UserError(_("Please save the fee structure before "
                                   "using Pay All / Unpay All."))
+
+    def _assert_bulk_rights(self):
+        if not self.env.user.has_group('account.group_account_manager'):
+            raise UserError(_("Only an Accounting Manager can run "
+                              "Pay All / Unpay All."))
 
     def _get_student_fee_line_domain(self):
         """Student fee lines generated from THIS structure line, limited to
@@ -230,97 +243,275 @@ class EducationFeeStructureLines(models.Model):
             ('student_id.drop_out', '=', False),
         ]
 
-    def _notify_bulk_result(self, title, message):
+    def _bulk_env(self):
+        """Context for mass accounting writes.
+
+        ala.student.fees and ala.student.fee.line both inherit mail.thread and
+        carry tracked monetary fields. Without this, a 900-student run writes
+        thousands of mail.message / mail.tracking.value rows and roughly
+        doubles the runtime.
+        """
+        return self.with_context(
+            tracking_disable=True,
+            mail_create_nolog=True,
+            mail_notrack=True,
+            mail_auto_subscribe_no_notify=True,
+            ala_bulk_skip_line_log=True,
+        ).env
+
+    def _resolve_bulk_journal(self, payment_mode):
+        journal_type = {
+            'cash': 'cash',
+            'bank': 'bank',
+            'online': 'bank',
+        }.get(payment_mode)
+        if not journal_type:
+            raise UserError(_("Unsupported payment mode %s.", payment_mode))
+
+        journal = self.env['account.journal'].search([
+            ('type', '=', journal_type),
+            ('company_id', '=', self.env.company.id),
+        ], limit=1)
+        if not journal:
+            raise UserError(_(
+                "No %(type)s journal configured for company %(company)s.",
+                type=journal_type, company=self.env.company.display_name))
+        if not journal.inbound_payment_method_line_ids:
+            raise UserError(_(
+                "Journal %s has no inbound payment method line; the payment "
+                "cannot be created.", journal.display_name))
+        return journal
+
+    def _group_by_student_fee(self, lines):
+        """{ala.student.fees record: ala.student.fee.line recordset}.
+
+        The invoice is per student -- action_create_invoice() refuses a mixed
+        recordset -- so the batch has to be sliced this way.
+        """
+        FeeLine = lines.browse()
+        grouped = defaultdict(lambda: FeeLine)
+        for line in lines:
+            grouped[line.student_fee_id] |= line
+        return grouped
+
+    def _notify_bulk_result(self, title, message, warning=False):
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
                 'title': title,
                 'message': message,
-                'sticky': False,
+                'type': 'warning' if warning else 'success',
+                'sticky': True,
             },
         }
 
-    def action_pay_all_students(self):
-        """Mark this fee as PAID for every active student of the structure's
-        academic year. Does NOT create invoices or payments."""
+    # ------------------------------------------------------------------
+    # PAY ALL
+    # ------------------------------------------------------------------
+
+    def action_pay_all_students(self, payment_mode=None, payment_date=None):
+        """Settle this fee for every active student of the structure's
+        academic year: one posted customer invoice + one posted payment +
+        reconciliation per student, exactly like action_pay_selected_fees().
+
+        Each student is wrapped in its own SQL savepoint, so a student with a
+        broken configuration (no partner, locked period, ...) is reported and
+        skipped instead of rolling back the whole run.
+
+        Payment mode / date default to cash / today and can be overridden
+        through the context keys ``bulk_payment_mode`` / ``bulk_payment_date``.
+        """
         self.ensure_one()
         self._assert_saved()
+        self._assert_bulk_rights()
 
-        FeeLine = self.env['ala.student.fee.line']
+        ctx = self.env.context
+        payment_mode = payment_mode or ctx.get('bulk_payment_mode') or 'cash'
+        payment_date = (payment_date or ctx.get('bulk_payment_date')
+                        or fields.Date.context_today(self))
+        journal = self._resolve_bulk_journal(payment_mode)
+
+        env = self._bulk_env()
+        FeeLine = env['ala.student.fee.line']
         lines = FeeLine.search(self._get_student_fee_line_domain())
-        to_pay = lines.filtered(lambda l: l.payment_status != 'paid')
 
-        if to_pay:
-            to_pay.write({'payment_status': 'paid'})
-            to_pay.student_fee_id.update_fee_status_students()
+        # A line that already carries an invoice must never be re-invoiced,
+        # even if its status drifted away from 'paid'.
+        todo = lines.filtered(lambda l: l.payment_status != 'paid' and not l.invoice_id)
+        already = len(lines) - len(todo)
+
+        if not todo:
+            return self._notify_bulk_result(
+                _("Nothing to Pay"),
+                _("All %s student fee lines for this fee are already settled.",
+                  len(lines)))
+
+        grouped = self._group_by_student_fee(todo)
+        commit_every = self._BULK_COMMIT_EVERY if ctx.get('ala_bulk_commit') else 0
+
+        paid_lines = zero_lines = failed_lines = 0
+        invoices_created = 0
+        failures = []
+
+        for seq, (student_fee, fee_lines) in enumerate(grouped.items(), start=1):
+            partner = student_fee.student_id.partner_id
+            if not partner:
+                failed_lines += len(fee_lines)
+                failures.append(_("%s: student has no linked contact",
+                                  student_fee.display_name))
+                continue
+
+            payable = sum(
+                l.amount - l.concession_amount + l.fine_amount for l in fee_lines)
+
+            try:
+                with self.env.cr.savepoint():
+                    if float_compare(payable, 0.0,
+                                     precision_rounding=student_fee.company_currency_id.rounding or 0.01) <= 0:
+                        # Fully waived / zero fee: no accounting entry is
+                        # possible (a 0.00 payment cannot be posted), so the
+                        # line is closed without an invoice.
+                        fee_lines.write({
+                            'payment_mode': payment_mode,
+                            'journal_id': journal.id,
+                            'payment_status': 'paid',
+                            'select_for_invoice': False,
+                        })
+                        zero_lines += len(fee_lines)
+                    else:
+                        fee_lines.write({
+                            'payment_mode': payment_mode,
+                            'journal_id': journal.id,
+                            'select_for_invoice': False,
+                        })
+                        FeeLine.action_create_invoice(fee_lines.ids, payment_date)
+                        invoices_created += 1
+                        paid_lines += len(fee_lines)
+
+                    student_fee.last_fee_line_id = fee_lines[0].id
+                    student_fee.update_fee_status_students()
+            except Exception as err:
+                failed_lines += len(fee_lines)
+                failures.append("%s: %s" % (student_fee.display_name, err))
+                _logger.exception(
+                    "Bulk PAY failed for student fee %s (structure line %s)",
+                    student_fee.id, self.id)
+                continue
+
+            if commit_every and seq % commit_every == 0:
+                self.env.cr.commit()  # noqa: E8102 - opt-in, see docstring
 
         _logger.info(
-            "Bulk PAY on structure line %s (%s / AY %s): %s of %s lines marked paid by %s",
+            "Bulk PAY structure line %s (%s / AY %s) by %s: %s invoices, "
+            "%s lines settled, %s zero-value, %s already paid, %s failed",
             self.id, self.product_id.display_name,
             self.fee_structure_id.academic_year_id.display_name,
-            len(to_pay), len(lines), self.env.user.login)
+            self.env.user.login, invoices_created, paid_lines, zero_lines,
+            already, failed_lines)
+
+        message = _(
+            "Students processed: %(students)s\n"
+            "Invoices created and settled: %(invoices)s\n"
+            "Fee lines paid: %(paid)s\n"
+            "Zero-value lines closed without invoice: %(zero)s\n"
+            "Already settled (skipped): %(already)s\n"
+            "Failed: %(failed)s",
+            students=len(grouped), invoices=invoices_created, paid=paid_lines,
+            zero=zero_lines, already=already, failed=failed_lines)
+
+        if failures:
+            message += _("\n\nFirst errors:\n%s", "\n".join(failures[:10]))
 
         return self._notify_bulk_result(
-            _("Fees Marked Paid"),
-            _("%(done)s of %(total)s student fee lines marked as Paid.\n"
-              "Already paid: %(skipped)s",
-              done=len(to_pay), total=len(lines),
-              skipped=len(lines) - len(to_pay)))
+            _("Bulk Payment Completed"), message, warning=bool(failures))
+
+    # ------------------------------------------------------------------
+    # UNPAY ALL
+    # ------------------------------------------------------------------
 
     def action_unpay_all_students(self):
-        """Revert this fee to its date-based status for every active student
-        of the structure's academic year. Lines already settled through an
-        invoice are skipped — they represent real accounting entries."""
+        """Reverse this fee for every active student of the academic year:
+        cancel the linked invoice and its payment, unlink the invoice from the
+        fee lines and put them back on their date-based status.
+
+        Delegates to ala.student.fee.line.reset_payment_to_draft() so the
+        accounting behaviour is identical to the single-line reset (sibling
+        lines sharing a monthly invoice are pulled in, payments that also
+        settle other invoices are left alone).
+
+        Hash-locked invoices raise inside reset_payment_to_draft(); that
+        student is rolled back to its savepoint, reported, and the run
+        continues.
+        """
         self.ensure_one()
         self._assert_saved()
+        self._assert_bulk_rights()
 
-        FeeLine = self.env['ala.student.fee.line']
+        env = self._bulk_env()
+        FeeLine = env['ala.student.fee.line']
         lines = FeeLine.search(self._get_student_fee_line_domain())
-        paid = lines.filtered(lambda l: l.payment_status == 'paid')
+        paid = lines.filtered(lambda l: l.payment_status == 'paid' or l.invoice_id)
 
-        settled = paid.filtered(lambda l: l.invoice_id)
-        revertible = paid - settled
+        if not paid:
+            return self._notify_bulk_result(
+                _("Nothing to Revert"),
+                _("None of the %s student fee lines for this fee is settled.",
+                  len(lines)))
 
-        today = fields.Date.context_today(self)
-        buckets = {'over_due': FeeLine, 'unpaid': FeeLine, 'upcoming': FeeLine}
+        grouped = self._group_by_student_fee(paid)
+        commit_every = (self._BULK_COMMIT_EVERY
+                        if self.env.context.get('ala_bulk_commit') else 0)
 
-        for line in revertible:
-            if line.overdue_date and line.overdue_date < today:
-                status = 'over_due'
-            elif line.reminder_date and line.reminder_date > today:
-                status = 'upcoming'
-            else:
-                status = 'unpaid'
-            buckets[status] |= line
+        reverted_lines = failed_lines = 0
+        cancelled_invoices = []
+        skipped_payments = 0
+        failures = []
 
-        for status, recs in buckets.items():
-            if recs:
-                recs.write({'payment_status': status})
+        for seq, (student_fee, fee_lines) in enumerate(grouped.items(), start=1):
+            try:
+                with self.env.cr.savepoint():
+                    result = fee_lines.reset_payment_to_draft()
+                reverted_lines += result.get('reset_count', 0)
+                cancelled_invoices += result.get('invoices', [])
+                skipped_payments += result.get('skipped_payments', 0)
+            except Exception as err:
+                failed_lines += len(fee_lines)
+                failures.append("%s: %s" % (student_fee.display_name, err))
+                _logger.exception(
+                    "Bulk UNPAY failed for student fee %s (structure line %s)",
+                    student_fee.id, self.id)
+                continue
 
-        if revertible:
-            # drop stale "last paid line" pointers
-            parents = revertible.student_fee_id
-            stale = parents.filtered(lambda p: p.last_fee_line_id in revertible)
-            if stale:
-                stale.write({'last_fee_line_id': False})
-            parents.update_fee_status_students()
+            if commit_every and seq % commit_every == 0:
+                self.env.cr.commit()  # noqa: E8102 - opt-in, see docstring
 
         _logger.warning(
-            "Bulk UNPAY on structure line %s (%s / AY %s): %s reverted, "
-            "%s skipped (invoiced) by %s",
+            "Bulk UNPAY structure line %s (%s / AY %s) by %s: %s lines "
+            "reverted, %s invoices cancelled, %s payments left untouched, "
+            "%s lines failed",
             self.id, self.product_id.display_name,
             self.fee_structure_id.academic_year_id.display_name,
-            len(revertible), len(settled), self.env.user.login)
+            self.env.user.login, reverted_lines, len(cancelled_invoices),
+            skipped_payments, failed_lines)
+
+        # reset_payment_to_draft() also reverts sibling lines that shared a
+        # monthly invoice, so the reverted count can exceed the selection.
+        collateral = max(reverted_lines - len(paid), 0)
+
+        message = _(
+            "Students processed: %(students)s\n"
+            "Invoices cancelled: %(invoices)s\n"
+            "Fee lines reverted: %(reverted)s\n"
+            "Sibling lines reverted (shared invoice): %(collateral)s\n"
+            "Payments left untouched (shared with other invoices): %(skipped)s\n"
+            "Failed: %(failed)s",
+            students=len(grouped), invoices=len(cancelled_invoices),
+            reverted=reverted_lines, collateral=collateral,
+            skipped=skipped_payments, failed=failed_lines)
+
+        if failures:
+            message += _("\n\nFirst errors:\n%s", "\n".join(failures[:10]))
 
         return self._notify_bulk_result(
-            _("Fees Reverted"),
-            _("%(done)s student fee lines reverted to unpaid status.\n"
-              "Skipped (already invoiced): %(skipped)s",
-              done=len(revertible), skipped=len(settled)))
-
-
-
-
-
-
+            _("Bulk Reversal Completed"), message, warning=bool(failures))

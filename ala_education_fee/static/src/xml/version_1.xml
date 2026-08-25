@@ -184,6 +184,25 @@
                     transform: translateX(2px);
                 }
 
+                .select-all-btn {
+                    background: #f2fbf5;
+                    border: 1px solid #bfe6cd;
+                    border-radius: 20px;
+                    color: #17683a;
+                    font-weight: 500;
+                    transition: all 0.2s ease;
+                }
+
+                .select-all-btn:hover {
+                    background: #e3f6ea;
+                }
+
+                .select-all-btn.is-active {
+                    background: #fdf2f2;
+                    border-color: #f3c6c6;
+                    color: #a12c2c;
+                }
+
                 .fee-grid-compact {
                     display: grid;
                     gap: 8px;
@@ -503,6 +522,16 @@
                                             <span class="summary-badge overdue">
                                                 Overdue ₹ <t t-esc="student.total_overdue || 0"/>
                                             </span>
+
+                                            <button type="button"
+                                                    t-if="getSelectableCount(student)"
+                                                    t-attf-class="btn btn-sm d-flex align-items-center gap-2 px-3 py-1 shadow-sm select-all-btn #{isAllSelected(student) ? 'is-active' : ''}"
+                                                    t-att-data-student="student.id"
+                                                    t-att-title="isAllSelected(student) ? 'Clear the selection for this student' : 'Select every pending fee of this student'"
+                                                    t-on-click="toggleSelectAll">
+                                                <i t-attf-class="fa #{isAllSelected(student) ? 'fa-times-circle' : 'fa-check-square-o'}"/>
+                                                <span t-esc="isAllSelected(student) ? 'Clear Selection' : 'Select All (' + getSelectableCount(student) + ')'"/>
+                                            </button>
 
                                             <button type="button"
                                                     class="btn btn-sm d-flex align-items-center gap-2 px-3 py-1 shadow-sm view-fee-btn"

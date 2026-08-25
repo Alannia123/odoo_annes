@@ -13,7 +13,8 @@
     'data': [
         # 'security/ir.model.access.csv',
         'data/web_menu.xml',
-        'views/ala_home_template.xml',
+        # 'views/ala_home_template.xml',
+        'views/home_zi.xml',
         'views/prospectus_template.xml',
         'views/academics_template.xml',
         'views/school_commitee_temp.xml',

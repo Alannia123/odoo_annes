@@ -176,6 +176,67 @@ export class FeeOverview extends Component {
         await this.loadFees();
     }
 
+    /**
+     * Fees a cashier is allowed to tick. A settled line is never selectable —
+     * it must go through resetFeePayment() first.
+     *
+     * To make "Select All" skip future months as well, add
+     *   && f.payment_status !== "upcoming"
+     * to the filter below. Everything else keeps working unchanged.
+     */
+    getSelectableFees(student) {
+        return (student.fees || []).filter((f) => f.payment_status !== "paid");
+    }
+
+    getSelectableCount(student) {
+        return this.getSelectableFees(student).length;
+    }
+
+    isAllSelected(student) {
+        const selectable = this.getSelectableFees(student);
+        return (
+            selectable.length > 0 &&
+            selectable.every((f) => this.state.selected_fee_ids.includes(f.id))
+        );
+    }
+
+    /**
+     * Per-student Select All / Clear. Scoped to one student on purpose:
+     * action_pay_selected_fees() builds one invoice per student, so a
+     * cross-student selection could never be paid in a single click anyway.
+     */
+    toggleSelectAll(ev) {
+        const studentId = parseInt(ev.currentTarget.dataset.student);
+        const student = this.state.fees.find((s) => s.id === studentId);
+
+        if (!student) {
+            return;
+        }
+
+        const selectable = this.getSelectableFees(student);
+
+        if (!selectable.length) {
+            this.notification.add("No pending fees to select for this student.", {
+                type: "warning",
+            });
+            return;
+        }
+
+        const ids = selectable.map((f) => f.id);
+
+        if (this.isAllSelected(student)) {
+            this.state.selected_fee_ids = this.state.selected_fee_ids.filter(
+                (id) => !ids.includes(id)
+            );
+        } else {
+            // Set() keeps other students' selections intact and prevents
+            // duplicate ids from partial manual ticking.
+            this.state.selected_fee_ids = [
+                ...new Set([...this.state.selected_fee_ids, ...ids]),
+            ];
+        }
+    }
+
     toggleFee(ev) {
         const feeId = parseInt(ev.target.dataset.id);
 

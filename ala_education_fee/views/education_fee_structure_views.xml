@@ -42,16 +42,16 @@
                                             icon="fa-check-circle"
                                             class="text-success"
                                             groups="account.group_account_manager"
-                                            title="Mark this fee as Paid for all students of this academic year"
-                                            confirm="This will mark this fee as PAID for every active student in the applied classes for this academic year. No invoice or payment will be created. Continue?"/>
+                                            title="Create invoice + payment and settle this fee for all students of this academic year"
+                                            confirm="This will CREATE AND POST a customer invoice and a matching payment for every active student in the applied classes for this academic year, then mark the fee as Paid. Real accounting entries will be generated. Continue?"/>
                                     <button name="action_unpay_all_students"
                                             type="object"
                                             string="Unpay All"
                                             icon="fa-undo"
                                             class="text-danger"
                                             groups="account.group_account_manager"
-                                            title="Revert this fee to unpaid for all students of this academic year"
-                                            confirm="This will REVERT this fee to unpaid for every active student in the applied classes. Lines already settled through an invoice will be skipped. Continue?"/>
+                                            title="Cancel invoices and payments and revert this fee to unpaid for all students"
+                                            confirm="This will CANCEL the invoice and the matched payment of every active student in the applied classes for this fee, and revert the fee lines to unpaid. Lines sharing a monthly invoice will be reverted too. Continue?"/>
                                 </list>
                             </field>
                             <group class="oe_subtotal_footer oe_right">
