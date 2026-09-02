@@ -92,6 +92,7 @@
         <t t-set="classe_divs" t-value="doc.get_all_class_divs()"/>
         <t t-foreach="classe_divs" t-as="div">
             <t t-foreach="div.student_ids" t-as="student">
+                <t t-if="not student.drop_out and not student.tc_issued">
               <div class="a4-sheet">
 <!--                   <div class="watermark">-->
 <!--                      <img t-if="doc.exam_type_id.image_1920" t-att-src="image_data_uri(doc.exam_type_id.image_1920)"/>-->
@@ -196,6 +197,7 @@
                 </div>
 <!--                  <br></br>-->
               </div>
+                </t>
             </t>
 
         </t>
