@@ -102,8 +102,8 @@
               <table class="no-border school-header"  >
                   <td width="15%"><img t-if="student.class_division_id.company_id.logo" t-att-src="image_data_uri(student.class_division_id.company_id.logo)"
                                                 style="height: 70px; width:75 px;padding-top: 5px; padding-left: 5px;padding-bottom: 5px" alt="Logo"/></td>
-                  <td width="85%"><span style="font-size: 24px;font-style: italic;text-align: center">Mary Immaculate English Medium School</span><br/>
-                  <span style="font-size: 13px;text-align: center"> Vill.-Patlichandra, P.O.-Paschim Madhyampur, P.S.-Basirhat, Dist.-North 24 Parganas, PIN-743429</span></td>
+                  <td width="85%"><span style="font-size: 24px;font-style: italic;text-align: center">ST.ANNE'S SCHOOL</span><br/>
+                  <span style="font-size: 13px;text-align: center"> Vill+P.O - Chotojagulia, P.S - Duttapukur,North 24 Parganas - 743294</span></td>
               </table>
               <table class="info-table" >
                   <tr>
@@ -114,7 +114,7 @@
                       <td width="2%"></td>
                       <td width="20%"></td>
                       <td  width="20%" rowspan="5">
-                            <img t-if="student.image_128" t-att-src="image_data_uri(student.image_128)" alt="Student Photo" class="student-photo"/>
+<!--                            <img t-if="student.image_128" t-att-src="image_data_uri(student.image_128)" alt="Student Photo" class="student-photo"/>-->
                       </td>
                   </tr>
                   <tr class="sub-header">
@@ -155,13 +155,15 @@
                 </tr>
                   <tbody>
                       <t t-foreach="doc.subject_line_ids.sorted(key=lambda l: l.date)" t-as="line">
-                          <tr>
-                            <td name="td_produc_code" ><span t-field="line.subject_id.name"></span></td>
-                            <td name="desc" ><span t-field="line.date"></span></td>
-                            <td name="desc" ><span t-field="line.time_from"></span> - <span t-field="line.time_to"></span></td>
-                            <td name="td_qty" class="br-right text-center"></td>
-                            <td name="td_qty" class="br-right text-center"></td>
-                          </tr>
+                          <t t-if="line.date">
+                              <tr>
+                                <td name="td_produc_code" ><span t-field="line.subject_id.name"></span></td>
+                                <td name="desc" ><span t-field="line.date"></span></td>
+                                <td name="desc" ><span t-field="line.time_from"></span> - <span t-field="line.time_to"></span></td>
+                                <td name="td_qty" class="br-right text-center"></td>
+                                <td name="td_qty" class="br-right text-center"></td>
+                              </tr>
+                          </t>
                       </t>
                   </tbody>
               </table>
