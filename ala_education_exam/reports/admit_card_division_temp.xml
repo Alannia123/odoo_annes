@@ -154,16 +154,14 @@
                   <th width="22%">Invigilator's Signature</th>
                 </tr>
                   <tbody>
-                      <t t-foreach="doc.subject_line_ids.sorted(key=lambda l: l.date)" t-as="line">
-                          <t t-if="line.date">
-                              <tr>
-                                <td name="td_produc_code" ><span t-field="line.subject_id.name"></span></td>
-                                <td name="desc" ><span t-field="line.date"></span></td>
-                                <td name="desc" ><span t-field="line.time_from"></span> - <span t-field="line.time_to"></span></td>
-                                <td name="td_qty" class="br-right text-center"></td>
-                                <td name="td_qty" class="br-right text-center"></td>
-                              </tr>
-                          </t>
+                      <t t-foreach="doc.subject_line_ids.filtered(lambda l: l.date).sorted(key=lambda l: l.date)" t-as="line">
+                          <tr>
+                            <td name="td_produc_code" ><span t-field="line.subject_id.name"></span></td>
+                            <td name="desc" ><span t-esc="line.date.strftime('%d-%m-%Y')"/></td>
+                            <td name="desc" ><span t-field="line.time_from"></span> - <span t-field="line.time_to"></span></td>
+                            <td name="td_qty" class="br-right text-center"></td>
+                            <td name="td_qty" class="br-right text-center"></td>
+                          </tr>
                       </t>
                   </tbody>
               </table>
